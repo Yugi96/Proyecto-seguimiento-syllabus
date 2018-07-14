@@ -6,6 +6,7 @@ function selectedRow(){
     document.getElementById("apellidos").textContent = table.rows[1].cells[2].innerHTML;
     document.getElementById("telefono").textContent = table.rows[1].cells[3].innerHTML;
     document.getElementById("correo").textContent = table.rows[1].cells[4].innerHTML;
+    table.rows[1].classList.toggle('hover-row')
     for(var i = 1; i < table.rows.length; i++){
         table.rows[i].onclick = function(){
             document.getElementById("cedula").textContent = this.cells[0].innerHTML;
@@ -16,6 +17,7 @@ function selectedRow(){
             if(typeof index !== "undefined"){
                table.rows[index].classList.toggle("hover-row");
             }
+            table.rows[1].classList.remove('hover-row')
             // get the selected row index
             index = this.rowIndex;
             // add class selected to the row

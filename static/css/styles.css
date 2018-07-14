@@ -322,7 +322,7 @@ body {
 
 .docente-row{
     cursor: pointer;
-    transition: all .1s ease-in-out;
+    /* transition: all .1s ease-in-out; */
 }
 .docente-row:hover{
     background-color: #4495FF;
@@ -490,4 +490,12 @@ body {
 
 .box-shadow {
     box-shadow: none;
+}
+
+.message-success {
+    background: #6AC259;
+}
+
+.message-error {
+    background: #F25D5D;
 }

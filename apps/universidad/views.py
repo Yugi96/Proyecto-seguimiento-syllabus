@@ -31,7 +31,7 @@ def homeCoordinador(request):
 class FormMessageMixin(object):
     @property
     def form_valid_message(self):
-        return None
+        return NotImplemented
 
     form_invalid_message = 'ERROR: EL NÚMERO DE CÉDULA YA EXISTE'
 
@@ -48,6 +48,7 @@ class UploadFileView(FormMessageMixin, CreateView):
     form_class = DocenteForm
     success_url = reverse_lazy('coordinador:docentes')
     template_name = 'coordinador/docente/index.docente.template.html'
+    form_valid_message = 'DOCENTE AGREGADO CON EXITO'
 
     def get_context_data(self, **kwargs):
         kwargs['object_list'] = Docente.objects.order_by('doc_apellidos')

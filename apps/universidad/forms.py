@@ -27,13 +27,24 @@ class DocenteForm(forms.ModelForm):
             'doc_cedula' : forms.TextInput(attrs={
                 'class' : 'input-campo', 
                 'id' : 'doc_cedula', 
-                'maxlength' : '10', 
+                'maxlength' : '10',
+                'minlength' : '10', 
                 'onkeypress' : 'return soloNumeros(event);',
                 'autocomplete' : 'off',
                 'required' : 'true',
                 }),
-            'doc_nombres' : forms.TextInput(attrs={'class' : 'input-campo', 'id' : 'doc_nombres'}),
-            'doc_apellidos' : forms.TextInput(attrs={'class' : 'input-campo', 'id' : 'doc_apellidos'}),
+            'doc_nombres' : forms.TextInput(attrs={
+                'class' : 'input-campo', 
+                'id' : 'doc_nombres',
+                'onkeypress' : 'return soloLetras(event);',
+                'onkeyup' : 'convertirMayuscula(this);'
+                }),
+            'doc_apellidos' : forms.TextInput(attrs={
+                'class' : 'input-campo', 
+                'id' : 'doc_apellidos',
+                'onkeypress' : 'return soloLetras(event);',
+                'onkeyup' : 'convertirMayuscula(this);'
+                }),
             'doc_telefono' : forms.TextInput(attrs={
                 'class' : 'input-campo', 
                 'id' : 'doc_telefono',
