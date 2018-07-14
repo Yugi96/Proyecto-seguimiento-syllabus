@@ -1,0 +1,77 @@
+{% extends 'base/base.template.html'%}
+{% load staticfiles %}
+
+
+{% block title %}
+    Seguimiento App
+{% endblock title %}
+
+{% block style %}
+    <link rel="stylesheet" href="{%  static 'css/login.css' %}">
+{% endblock style %}
+
+{% block content %}
+    
+
+    <div class="container-fluid bg">
+            <div class="container-error">
+                {% if form.errors %}
+                <div class="alert alert-dismissible fade show mensajes-error" role="alert">
+                    <strong>USUARIO</strong> O <strong>CONTRASEÑA</strong> INCORRECTOS
+                    <button type="button" class="cerrar-error" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                {% endif %}
+            
+                {% if next %}
+                    <div class="alert alert-dismissible fade show mensajes-error" role="alert">
+                        PERMISO DENEGADO
+                        <button type="button" class="cerrar-error" data-dismiss="alert" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                {% endif %}  
+            </div>
+        <div class="row">
+            <div class="col-xl-4 col-lg-2 col-md-3 col-sm-1 col-xs-12"></div>
+            <div class="col-xl-4 col-lg-8 col-md-6 col-sm-10 col-xs-12">
+                <form class="form-container" action="{% url 'login' %}" method="post">
+                    {% csrf_token %}
+                    <div class="form-group text-center logo">
+                        <div>
+                            <img class="img-fluid " src="{% static 'img/logo.png' %}" alt="">
+                        </div>
+                        <div>
+                            <label class="text-secondary">Seguimiento del Syllabus</label>
+                        </div>                                                
+                    </div>
+                    <div class="form-group">                    
+                        <input name="username" type="text" id="inputUsername" class="form-control" maxlength="10" onkeypress="return soloNumeros(event);" autocomplete="off" required>
+                        <label class="form-control-placeholder" for="inputUsername">Usuario</label>
+                    </div>
+                    <div class="form-group">
+                        <input name="password" type="password" id="inputPassword" class="form-control" required>
+                        <label class="form-control-placeholder" for="inputPassword">Contraseña</label>
+                    </div>
+                    <div class="text-center">
+                        <div>
+                            <a class="recordar" href="{% url 'password_reset' %}">¿Olvidó su usuario o contraseña?</a>
+                        </div>
+                        <div>
+                            <input type="submit" value="Iniciar Sesión" class="btn btn-primary">
+                            <input type="hidden" name="next" value="{{ next }}">                            
+                        </div>                        
+                    </div>
+                </form>
+            </div>
+            <div class="col-xl-4 col-lg-2 col-md-3 col-sm-1 col-xs-12"></div>
+        </div>
+    </div>
+
+
+{% endblock content %}
+
+{% block js %}
+    <script src="{% static 'js/validations.js' %}"></script>
+{% endblock js %}

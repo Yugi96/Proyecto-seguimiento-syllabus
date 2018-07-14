@@ -1,0 +1,493 @@
+html,
+body {
+  width: 100%;
+  height: 100%;
+  font-family: 'Lato';
+}
+
+.row{
+    height: 1%;
+    width: 100%;
+}
+
+
+.wrapper{
+    display: flex;
+    align-items: stretch;
+    height: 99%;
+    margin: 0 0;
+    padding: 0 0;
+    z-index: 3;
+}
+
+
+.sidebar{
+    min-width: 250px;
+    max-width: 250px;
+    background: #3E4149;
+    color: #fff;
+    box-shadow: 15px 0px 15px 0px rgba(0,0,0,0.15);
+    z-index: 1;
+    overflow: auto;    
+}
+
+.container-fluid{
+    background: #F6F6F6 url('../img/footerimg.png') no-repeat bottom;
+    background-size: 100% auto;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-content: flex-start;
+}
+
+/* -------------------
+    CONTENT APP
+------------------- */
+.content-app {
+    width: 100%;
+    height: 94%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* -------------------
+    INFO DE USUARIO
+------------------- */
+
+.sidebar-user{
+    padding-top: 3em;
+    padding-bottom: 3em;
+    border-bottom: 2px solid #2d2f36;
+}
+
+.user-img{
+    width: 50%;
+}
+
+.nomcood {
+    font-size: 13px;
+}
+
+.content-user-name {
+    padding-top: 1em;
+}
+
+
+/* -------------------
+        MENU
+------------------- */
+
+.list-unstyled li{    
+    margin: 10px;
+}
+
+.list-unstyled li a{    
+    text-align: left;
+    font-size: 1em;
+    padding-left: 0.6em;
+    color: rgba(255,255,255,0.5);
+}
+
+.list-unstyled li a i{    
+    text-align: left;
+    width: 50px;
+    text-align: center;
+    font-size: 2em;
+}
+
+.menu-item {
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    padding: 0.5em 0;    
+}
+
+.menu-item:hover {
+    background: #007bff;
+    color: #fff;
+    font-weight: bold;
+    transition: .3s;
+    
+}
+
+.menu-item.active-menu-item {
+    background: #007bff;
+    color: #fff;
+    font-weight: bold;
+    transition: .3s;
+}
+
+
+/* -------------------
+        NAVBAR
+------------------- */
+
+.navbar{
+    border-bottom: 1px solid rgba(0,0,0,0.15);
+    width: 100%;
+    height: 6%;
+}
+
+.nav-item {
+    cursor: pointer;
+}
+
+.navbar-brand{
+    border-left: 1px solid rgba(0,0,0,0.15);
+}
+
+.logo-title {
+    font-size: 1em;
+    margin: 0;
+}
+
+
+.navbar ul li{
+    margin: 0 2em;
+    border-left: 1px solid rgba(0,0,0,0.15);
+}
+
+.navbar ul li i{
+    font-size: 1em;
+    color: #3E4149;
+}
+
+.navbar .nav li{
+    margin: 0 0;
+    padding: 0px 0;
+}
+
+.navbar .nav li i{
+    margin: 0 1em;
+}
+
+.navbar ul li a:hover{
+    box-shadow: inset 0 -3px 0 #3E4149;
+}
+
+.navbar ul li button:hover{
+    box-shadow: inset 0 -3px 0 #3E4149;
+}
+
+/* -------------------
+        SHOW
+------------------- */
+
+.show-menu {
+    min-width: 100px;
+    max-width: 100px;
+}
+
+.show-menu .sidebar-user{
+    padding: 0 1em;
+}
+
+.show-menu .list-unstyled li a span{
+    visibility: hidden;
+}
+
+/* .show .sidebar-user, */
+.show-menu .sidebar-user .imagecood,
+.show-menu .sidebar-user .nomcood{
+    visibility: hidden;
+    /* display: none; */
+}
+
+.btn:focus {
+    box-shadow: none;
+    outline: none;
+}
+
+/* -------------------
+        DOCENTES
+------------------- */
+
+.content-docentes {
+    width: 95%;
+    height: 95%;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 3px 3px 20px 0px rgba(0, 0, 0, .3);
+    display: flex;
+    flex-wrap: wrap;
+    overflow: auto;
+}
+
+.docentes-top {
+    width: 100%;
+    height: 15%;
+    border-bottom: 1px solid #BCBCBC;
+    display: flex;
+}
+
+.docentes-list-perfil {
+    width: 100%;
+    height: 85%;
+    display: flex;
+}
+
+.docentes-list {
+    width: 45%;
+    height: 100%;
+}
+
+.docentes-perfil {
+    width: 55%;
+    height: 100%;
+    border-left: 1px solid #BCBCBC;
+    display: flex;
+    flex-wrap: wrap;
+    overflow: auto;
+}
+
+
+.perfil-username {
+    background: #B95757;
+    width: 100%;
+    height: 40%;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    flex-wrap: wrap;
+}
+
+.content-username {
+    text-align: center;
+    width: 100%;
+    line-height: 1;
+    padding-top: 10px;
+}
+
+.username-text {
+    padding: 0;
+    margin: 0;
+    color: #fff;
+    font-weight: bold;
+}
+
+.perfil-informacion {
+    display: flex;
+    flex-wrap: wrap;
+    height: 60%;
+    width: 100%;
+    padding: 20px 0 20px 50px;
+    align-content: space-between;
+}
+
+.informacion-campo {
+    color: #9C9C9C;
+    font-weight: bold;
+    margin: 0;
+    padding: 0;
+}
+
+.campo-docente {
+    color: #2D2F36;
+}
+
+.table-docente {
+    width: 100%;
+}
+
+.column-cont {
+    padding-right: 2em;
+}
+
+.docente-header {
+    width: 100%;
+    display: inline-block;
+    padding: 10px 0 10px 2em;
+    color: #fff;
+    background: #007bff;
+}
+
+.docente-body {
+    width: 100%;
+    display: inline-block;
+    color: #2D2F36;
+}
+
+.docente-row {
+    width: 100%;
+    height: 100%;
+    display: block;
+    padding: 10px 0 10px 2em;
+    border-bottom: 1px solid #BCBCBC;
+}
+
+.celdas-ocultas {
+    display: none;
+}
+
+.docente-row{
+    cursor: pointer;
+    transition: all .1s ease-in-out;
+}
+.docente-row:hover{
+    background-color: #4495FF;
+    color: #fff;
+}
+
+.hover-row {
+    background-color: #4495FF;
+    color: #fff;
+}
+
+.img-docente {
+    display: block;
+    width: 100%;
+}
+
+.perfil-img {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100px;;
+    height: 100px;
+    border-radius: 50%;
+    background: #fff;
+    overflow: hidden;
+    border: 2px solid #fff;
+}
+
+
+.btn-editar,
+.btn-agregar,
+.btn-cerrar {
+    display: inline-block;
+    padding: 10px 30px;
+    color: #fff;
+    border-radius: 5px;
+    font-weight: bold;
+    transition: all .3s ease;
+    border: none;
+}
+
+.btn-editar {
+    background: #F8A618;
+}
+
+.btn-cerrar {
+    background: #F25D5D;
+}
+
+.btn-agregar {
+    background: #6AC259;
+}
+
+.btn-editar:hover,
+.btn-agregar:hover,
+.btn-cerrar:hover {
+    text-decoration: none;
+    color: #fff;
+    transform: scale(1.05);
+    font-weight: bold;
+}
+
+.content-btn-agregar {
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    margin-left: 2em;
+}
+
+.content-btn {
+    margin-bottom: 1em;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.icon-btn {
+    padding-right: 10px;
+}
+
+/* -------------------
+        MODAL DOCENTES
+------------------- */
+
+.modal {
+    background: rgba(0, 0, 0, .7);
+}
+
+.modal-docente-content {
+    width: 200em;
+}
+
+.modal-body,
+.modal-header,
+.modal-footer {
+    padding: 15px 25px;
+}
+
+.modal-title {
+    font-weight: bolder;
+    font-size: 2em;
+}
+
+.modal-docente {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.group-campo {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+}
+
+.group-fila-cna {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1em;
+}
+
+.label-campo {
+    width: 100%;
+    margin: 0;
+    font-weight: bold;
+    font-size: .8em;
+}
+
+.input-campo {
+    width: 100%;
+    border-radius: 5px;
+    border: 1px solid #9C9C9C;
+    padding: .5em 1em;
+}
+
+.campo-cedula {
+    width: 18%;
+}
+
+.campo-correo {
+    width: 59%;
+}
+
+.campo-nombre-apellido {
+    width: 38%;
+}
+
+.group-fila-tc {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.content-error {
+    position: absolute;
+    top: 2%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #F25D5D;
+    color: #fff;
+    border: none;
+}
+
+.box-shadow {
+    box-shadow: none;
+}

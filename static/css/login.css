@@ -1,0 +1,94 @@
+.bg {
+    background: #fff url('../img/bg.jpg') no-repeat center center fixed;
+    width: 100%;
+    height: 100vh;
+    background-size:cover;
+    overflow: hidden;
+    position: relative;
+}
+
+.mensajes-error {
+    padding: 10px 30px;
+    background: #F25D5D;
+    border-radius: 5px;
+    color: #fff;
+    font-size: 14px;
+    text-align: right;
+}
+
+.container-error {
+    position: absolute;
+    bottom: 2%;
+    right: 2%;
+}
+
+.cerrar-error {
+    color: #fff;
+    background: transparent;
+    display: inline;
+    border: 0;
+    outline: none;
+    cursor: pointer;
+    font-size: 1.5em;
+    line-height: 1;
+    opacity: .3;
+}
+
+.cerrar-error:hover {
+    opacity: 1;
+}
+
+.cerrar-error:focus {
+    outline: none;
+}
+
+.form-group {
+    position: relative;
+    margin-bottom: 1.5rem;
+}
+
+.form-control-placeholder {
+    position: absolute;
+    top: 0;
+    padding: 7px 0 0 13px;
+    transition: all 200ms;
+    opacity: 0.5;
+    outline: none;
+}
+
+.form-control:focus {
+    outline: none;
+    box-shadow: none;
+    border-color: #636e72;
+}
+
+.form-control:focus + .form-control-placeholder,
+.form-control:valid + .form-control-placeholder {
+  font-size: 80%;
+  transform: translate3d(0, -110%, 0);
+  opacity: 1;
+  color: #636e72;
+  outline: none;
+}
+
+.recordar{
+    color: #005C98;    
+}
+
+.recordar:hover{
+    color: #2980b9;
+}
+
+.btn{
+    border: 0;
+    margin-top: 1.5em;
+    background: #005C98;    
+}
+
+.form-container{
+    background: rgba(255, 255, 255, 0.5);
+    padding: 5%;
+    margin-top: 20vh;
+    box-shadow: 3px 3px 15px 0px rgba(0,0,0,0.4);
+    border-radius: 5px;
+}

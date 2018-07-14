@@ -1,0 +1,34 @@
+{% extends 'base/base.app.template.html'%}
+{% load staticfiles %}
+{% block title %}
+    ESTUDIANTE
+{% endblock title %}
+
+{% block modal %}
+{% endblock modal %}
+
+{% block menu_lateral %}
+    <nav id="open-hide" class="sidebar" >
+        <div class="sidebar-user" id="sidebar-user">
+            <img class="imagecood rounded-circle bg-white user-img mx-auto d-block p-1" src="{% static 'img/estudiante-perfil.png' %}" alt="">
+            <div class="content-user-name">
+                <p class="nomcood m-0 text-center">{{ user.last_name }}</p>
+                <p class="nomcood m-0 text-center">{{ user.first_name }}</p>
+            </div>
+        </div>
+        <ul class="list-unstyled">
+            <li><a class="btn btn-block menu-item active-menu-item" href="#">
+                <i class="fas fa-home mx-2"></i> 
+                <span class="mt">INICIO</span>                                       
+            </a></li>                
+            <li><a class="btn btn-block menu-item" href="#">
+                <i class="fas fa-binoculars mx-2"></i>
+                <span class="mt">SEGUIMIENTO</span>                    
+            </a></li>
+        </ul>
+    </nav>
+{% endblock menu_lateral %}
+
+{% block content %}
+
+{% endblock content %}
