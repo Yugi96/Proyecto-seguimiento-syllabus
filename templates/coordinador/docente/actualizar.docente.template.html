@@ -1,0 +1,111 @@
+{% extends 'base/base.app.template.html'%}
+{% load staticfiles %}
+{% block title %}
+    COORDINADOR
+{% endblock title %}
+
+
+{% block menu_lateral %}
+    <nav id="open-hide" class="sidebar" >
+        <div class="sidebar-user">
+            <img class="imagecood rounded-circle bg-white user-img mx-auto d-block p-1" src="{% static 'img/coordinador-perfil.png' %}" alt="">
+            <div class="content-user-name">
+                <p class="nomcood m-0 text-center">{{ user.last_name }}</p>
+                <p class="nomcood m-0 text-center">{{ user.first_name }}</p>
+            </div>
+        </div>
+        <ul class="list-unstyled">
+            <li><a class="btn btn-block menu-item " href="{% url 'coordinador:homeCoordinador' %}">
+                <i class="fas fa-home mx-2"></i> 
+                <span class="mt">INICIO</span>                                       
+            </a></li>
+            <li><a class="btn btn-block menu-item" href="#">
+                <i class="fas fa-file-invoice mx-2"></i>
+                <span class="mt">PERIODOS</span>
+            </a></li>
+            <li><a class="btn btn-block menu-item" href="#">
+                <i class="fas fa-calendar-alt mx-2"></i>
+                <span class="mt">HORARIOS</span>
+            </a></li>
+            <li><a class="btn btn-block menu-item" href="#">
+                <i class="fas fa-user-graduate mx-2"></i>
+                <span class="mt">ESTUDIANTES</span>                    
+            </a></li>
+            <li><a class="btn btn-block menu-item active-menu-item" href="{% url 'coordinador:docentes' %}">
+                <i class="fas fa-chalkboard-teacher mx-2"></i>
+                <span class="mt">DOCENTES</span>                    
+            </a></li>
+        </ul>
+    </nav>
+{% endblock menu_lateral %}
+
+{% block content %}
+    {% if messages %}
+    {% for message in messages %}
+        <div class="message-{{ message.tags }} alert alert-warning alert-dismissible fade show content-error" role="alert">
+            {{ message }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    {% endfor %}
+    {% endif %}
+    <div class="content-docentes-editar">
+        <form method="post">
+            {% csrf_token %}
+            <div class="docentes-editar-top modal-header">
+                <h5 class="modal-title">EDITAR DOCENTE</h5>
+                <div class="group-dar-baja">
+                    <label for="{{ form.doc_estado.name }}" class="label-dar-baja">{{ form.doc_estado.label }}</label>
+                    {{ form.doc_estado }}
+                </div>
+            </div>
+            <div class="modal-body">
+                <div class="modal-docente">
+                    <div class="group-fila-cna">
+                        <div class="group-campo campo-cedula">
+                            <span class="label-campo">CÉDULA</span>
+                            <span class="input-campo">{{ object.doc_cedula }}</span>
+                        </div>
+                        <div class="group-campo campo-nombre-apellido">
+                            <label for="{{ form.doc_nombres.name }}" class="label-campo">{{ form.doc_nombres.label }}</label>
+                            {{ form.doc_nombres }}
+                        </div>
+                        <div class="group-campo campo-nombre-apellido">
+                            <label for="{{ form.doc_apellidos.name }}" class="label-campo">{{ form.doc_apellidos.label }}</label>
+                            {{ form.doc_apellidos }}
+                        </div>
+                    </div>
+                    <div class="group-fila-tc">
+                        <div class="group-campo campo-correo">
+                            <label for="{{ form.doc_correo.name }}" class="label-campo">{{ form.doc_correo.label }}</label>
+                            {{ form.doc_correo }}
+                        </div>
+                        <div class="group-campo campo-nombre-apellido">
+                            <label for="{{ form.doc_telefono.name }}" class="label-campo">{{ form.doc_telefono.label }}</label>
+                            {{ form.doc_telefono }}
+                        </div>
+                    </div>
+                    
+                </div> 
+            </div>
+            <div class="modal-footer">
+                <button class="btn-agregar" type="submit"><i class="icon-btn fas fa-save"></i>GUARDAR</button>
+                <a href="{% url 'coordinador:docentes' %}" class="btn-cerrar" id="btn-cerrar"><i class="icon-btn fas fa-times"></i>CANCELAR</a>
+            </div>
+        </form>
+    </div>
+
+    
+
+{% endblock content %}
+
+{% block scripts-opcionales %}
+    <script src="{% static 'js/popper.min.js' %}"></script>
+    
+    <script>
+        $(function () {
+            $('[data-toggle="popover"]').popover()
+        });
+    </script>
+{% endblock scripts-opcionales %}

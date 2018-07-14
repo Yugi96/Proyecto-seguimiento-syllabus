@@ -7,7 +7,7 @@ from django.urls import reverse_lazy
 from django.http import HttpResponse
 
 from .models import Docente
-from .forms import DocenteForm
+from .forms import DocenteForm, DocenteUpdateForm
 # Create your views here.
 
 @login_required
@@ -51,10 +51,15 @@ class UploadFileView(FormMessageMixin, CreateView):
     form_valid_message = 'DOCENTE AGREGADO CON EXITO'
 
     def get_context_data(self, **kwargs):
-        kwargs['object_list'] = Docente.objects.order_by('doc_apellidos')
+        kwargs['object_list'] = Docente.objects.filter(doc_estado=True).order_by('doc_apellidos')
         return super(UploadFileView, self).get_context_data(**kwargs)
 
-    # def form_invalid(self, form):
-    #     return HttpResponseRedirect(self.get_success_url())
+class UpdateDocente(FormMessageMixin, UpdateView):
+    model = Docente
+    form_class = DocenteUpdateForm
+    success_url = reverse_lazy('coordinador:docentes')
+    template_name = 'coordinador/docente/actualizar.docente.template.html'
+    form_valid_message = 'DOCENTE ACTUALIZADO CON EXITO'
+    form_invalid_message = "ERROR: ERROR AL ACTUALIZAR EL DOCENTE"
 
 
