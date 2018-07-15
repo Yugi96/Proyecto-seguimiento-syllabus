@@ -32,7 +32,7 @@ class Periodo(models.Model):
 class Semestre(models.Model):
     sem_codigo = models.CharField(max_length=6, primary_key=True)
     carrera = models.ForeignKey(Carrera, on_delete=models.CASCADE)
-    sem_nombre = models.CharField(max_length=15)
+    sem_nombre = models.CharField(max_length=30)
     sem_estado = models.BooleanField(default=True)
 
     def __str__(self):
@@ -59,9 +59,10 @@ class Curso(models.Model):
     cur_estado = models.BooleanField(default=True)
 
 class Asignatura(models.Model):
-    asi_codigo = models.CharField(max_length=7, primary_key=True)
+    asi_codigo = models.CharField(max_length=20, primary_key=True)
     semestre = models.ForeignKey(Semestre, on_delete=models.CASCADE)
-    asi_nombre = models.CharField(max_length=50)
+    carrera = models.ForeignKey(Carrera, on_delete=models.CASCADE, default="")
+    asi_nombre = models.CharField(max_length=50, unique=True)
     asi_num_creditos = models.PositiveIntegerField()
     asi_estado = models.BooleanField(default=True)
 

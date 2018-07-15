@@ -6,8 +6,8 @@ from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from django.http import HttpResponse
 
-from .models import Docente
-from .forms import DocenteForm, DocenteUpdateForm
+from .models import Docente, Asignatura
+from .forms import DocenteForm, DocenteUpdateForm, AsignaturaForm
 # Create your views here.
 
 @login_required
@@ -33,7 +33,7 @@ class FormMessageMixin(object):
     def form_valid_message(self):
         return NotImplemented
 
-    form_invalid_message = 'ERROR: EL NÚMERO DE CÉDULA YA EXISTE'
+    # form_invalid_message = 'ERROR: EL NÚMERO DE CÉDULA YA EXISTE'
 
     def form_valid(self, form):
         messages.success(self.request, self.form_valid_message)
@@ -49,6 +49,7 @@ class UploadFileView(FormMessageMixin, CreateView):
     success_url = reverse_lazy('coordinador:docentes')
     template_name = 'coordinador/docente/index.docente.template.html'
     form_valid_message = 'DOCENTE AGREGADO CON EXITO'
+    form_invalid_message = "ERROR: EL NÚMERO DE CÉDULA YA EXISTE"
 
     def get_context_data(self, **kwargs):
         kwargs['object_list'] = Docente.objects.filter(doc_estado=True).order_by('doc_apellidos')
@@ -61,5 +62,16 @@ class UpdateDocente(FormMessageMixin, UpdateView):
     template_name = 'coordinador/docente/actualizar.docente.template.html'
     form_valid_message = 'DOCENTE ACTUALIZADO CON EXITO'
     form_invalid_message = "ERROR: ERROR AL ACTUALIZAR EL DOCENTE"
+
+class UploadFileViewAsignatura(FormMessageMixin, CreateView):
+    form_class = AsignaturaForm
+    success_url = reverse_lazy('coordinador:asignaturas')
+    template_name = 'coordinador/asignatura/index.asignatura.template.html'
+    form_valid_message = 'ASIGNATURA AGREGADA CON EXITO'
+    form_invalid_message = "ERROR: LA ASIGNATURA YA EXISTE"
+
+    def get_context_data(self, **kwargs):
+        kwargs['object_list'] = Asignatura.objects.filter(asi_estado=True).order_by('asi_nombre')
+        return super(UploadFileViewAsignatura, self).get_context_data(**kwargs)
 
 

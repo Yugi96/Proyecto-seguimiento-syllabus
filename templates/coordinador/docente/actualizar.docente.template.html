@@ -1,43 +1,12 @@
-{% extends 'base/base.app.template.html'%}
+{% extends 'base/base.app.coordinador.template.html'%}
 {% load staticfiles %}
 {% block title %}
     COORDINADOR
 {% endblock title %}
 
-
-{% block menu_lateral %}
-    <nav id="open-hide" class="sidebar" >
-        <div class="sidebar-user">
-            <img class="imagecood rounded-circle bg-white user-img mx-auto d-block p-1" src="{% static 'img/coordinador-perfil.png' %}" alt="">
-            <div class="content-user-name">
-                <p class="nomcood m-0 text-center">{{ user.last_name }}</p>
-                <p class="nomcood m-0 text-center">{{ user.first_name }}</p>
-            </div>
-        </div>
-        <ul class="list-unstyled">
-            <li><a class="btn btn-block menu-item " href="{% url 'coordinador:homeCoordinador' %}">
-                <i class="fas fa-home mx-2"></i> 
-                <span class="mt">INICIO</span>                                       
-            </a></li>
-            <li><a class="btn btn-block menu-item" href="#">
-                <i class="fas fa-file-invoice mx-2"></i>
-                <span class="mt">PERIODOS</span>
-            </a></li>
-            <li><a class="btn btn-block menu-item" href="#">
-                <i class="fas fa-calendar-alt mx-2"></i>
-                <span class="mt">HORARIOS</span>
-            </a></li>
-            <li><a class="btn btn-block menu-item" href="#">
-                <i class="fas fa-user-graduate mx-2"></i>
-                <span class="mt">ESTUDIANTES</span>                    
-            </a></li>
-            <li><a class="btn btn-block menu-item active-menu-item" href="{% url 'coordinador:docentes' %}">
-                <i class="fas fa-chalkboard-teacher mx-2"></i>
-                <span class="mt">DOCENTES</span>                    
-            </a></li>
-        </ul>
-    </nav>
-{% endblock menu_lateral %}
+{% block docentes-activo %}
+    active-menu-item
+{% endblock docentes-activo %}
 
 {% block content %}
     {% if messages %}
@@ -90,7 +59,7 @@
                 </div> 
             </div>
             <div class="modal-footer">
-                <button class="btn-agregar" type="submit"><i class="icon-btn fas fa-save"></i>GUARDAR</button>
+                <button class="btn-agregar" type="submit"><i class="icon-btn fas fa-save"></i>GUARDAR CAMBIOS</button>
                 <a href="{% url 'coordinador:docentes' %}" class="btn-cerrar" id="btn-cerrar"><i class="icon-btn fas fa-times"></i>CANCELAR</a>
             </div>
         </form>

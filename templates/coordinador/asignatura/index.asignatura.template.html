@@ -1,7 +1,7 @@
 {% extends 'base/base.app.coordinador.template.html'%}
 {% load staticfiles %}
 {% block title %}
-    COORDINADOR
+    ASIGNATURAS
 {% endblock title %}
 
 {% block modal %}
@@ -10,7 +10,7 @@
         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
           <div class="modal-content modal-docente-content ">
             <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalCenterTitle">AGREGAR DOCENTES</h5>
+              <h5 class="modal-title" id="exampleModalCenterTitle">AGREGAR ASIGNATURAS</h5>
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
@@ -21,27 +21,26 @@
                     <div class="modal-docente">
                         <div class="group-fila-cna">
                             <div class="group-campo campo-cedula">
-                                <label for="{{ form.doc_cedula.name }}" class="label-campo">{{ form.doc_cedula.label }}</label>
-                                {{ form.doc_cedula }}
-                                <!-- <input type="text" id="doc_cedula" class="input-campo"> -->
+                                <label for="{{ form.asi_codigo.name }}" class="label-campo">{{ form.asi_codigo.label }}</label>
+                                {{ form.asi_codigo }}
                             </div>
                             <div class="group-campo campo-nombre-apellido">
-                                <label for="{{ form.doc_nombres.name }}" class="label-campo">{{ form.doc_nombres.label }}</label>
-                                {{ form.doc_nombres }}
+                                    <label for="{{ form.carrera.name }}" class="label-campo">{{ form.carrera.label }}</label>
+                                    {{ form.carrera }}
+                                </div>
+                            <div class="group-campo campo-nombre-apellido">
+                                <label for="{{ form.semestre.name }}" class="label-campo">{{ form.semestre.label }}</label>
+                                {{ form.semestre }}
                             </div>
                             <div class="group-campo campo-nombre-apellido">
-                                <label for="{{ form.doc_apellidos.name }}" class="label-campo">{{ form.doc_apellidos.label }}</label>
-                                {{ form.doc_apellidos }}
+                                <label for="{{ form.asi_nombre.name }}" class="label-campo">{{ form.asi_nombre.label }}</label>
+                                {{ form.asi_nombre }}
                             </div>
                         </div>
                         <div class="group-fila-tc">
                             <div class="group-campo campo-correo">
-                                <label for="{{ form.doc_correo.name }}" class="label-campo">{{ form.doc_correo.label }}</label>
-                                {{ form.doc_correo }}
-                            </div>
-                            <div class="group-campo campo-nombre-apellido">
-                                <label for="{{ form.doc_telefono.name }}" class="label-campo">{{ form.doc_telefono.label }}</label>
-                                {{ form.doc_telefono }}
+                                <label for="{{ form.asi_num_creditos.name }}" class="label-campo">{{ form.asi_num_creditos.label }}</label>
+                                {{ form.asi_num_creditos }}
                             </div>
                         </div>
                         
@@ -57,9 +56,9 @@
     </div>
 {% endblock modal %}
 
-{% block docentes-activo %}
+{% block asignaturas-activo %}
     active-menu-item
-{% endblock docentes-activo %}
+{% endblock asignaturas-activo %}
 
 {% block content %}
     {% if messages %}
@@ -75,7 +74,7 @@
     <div class="content-docentes">
         <div class="docentes-top">
             <div class="content-btn-agregar">
-                <span class="btn-agregar" id="btn-agregar" href="" data-toggle="modal" data-target="#exampleModalCenter"><i class="icon-btn fas fa-plus" ></i>AGREGAR DOCENTE</span>
+                <span class="btn-agregar" id="btn-agregar" href="" data-toggle="modal" data-target="#exampleModalCenter"><i class="icon-btn fas fa-plus" ></i>AGREGAR ASIGNATURA</span>
             </div>
         </div>
         <div class="docentes-list-perfil">
@@ -84,28 +83,22 @@
                 <table class="table-docente" id="table">
                     <thead class="docente-header">
                         <tr>
-                            <th class="celdas-ocultas">Cedula</th>
-                            <th class="celdas-ocultas">Nombres</th>
-                            <th class="celdas-ocultas">Apellidos</th>
-                            <th class="celdas-ocultas">Telefono</th>
-                            <th class="celdas-ocultas">Correo</th>
-                            <th class="celdas-ocultas">Estado</th>
                             <th class="column-cont">#</th>
-                            <th class="header-title">APELLIDOS Y NOMBRES</th>
+                            <th class="celdas-ocultas">CÓDIGO</th>
+                            <th class="celdas-ocultas">NOMBRE</th>
+                            <th class="celdas-ocultas">SEMESTRE</th>
+                            <th class="celdas-ocultas">NUM. CREDITOS</th>
                         </tr>
                     </thead>
                     <tbody class="docente-body">
                         
-                            {% for docente in object_list %}
+                            {% for asignatura in object_list %}
                                 <tr class="docente-row" id="docente-row">
-                                    <td class="celdas-ocultas">{{ docente.doc_cedula }}</td>
-                                    <td class="celdas-ocultas">{{ docente.doc_nombres }}</td>
-                                    <td class="celdas-ocultas">{{ docente.doc_apellidos }}</td>
-                                    <td class="celdas-ocultas">{{ docente.doc_telefono }}</td>
-                                    <td class="celdas-ocultas">{{ docente.doc_correo }}</td>
-                                    <td class="celdas-ocultas">{{ docente.doc_estado }}</td>
                                     <td class="column-cont">{{ forloop.counter }}</td>
-                                    <td>{{ docente.doc_apellidos }} {{ docente.doc_nombres }}</td>
+                                    <td class="celdas-ocultas">{{ asignatura.asi_codigo }}</td>
+                                    <td class="celdas-ocultas">{{ asignatura.asi_nombre }}</td>
+                                    <td class="celdas-ocultas">{{ asignatura.semestre }}</td>
+                                    <td class="celdas-ocultas">{{ asignatura.num_creditos }}</td>
                                 </tr>
                             {% endfor %} 
                         
@@ -113,36 +106,11 @@
                     </tbody>
                 </table>
             </div>
-            <div class="docentes-perfil">
-                <div class="perfil-username">
-                    <div class="perfil-img">
-                        <img class="img-docente" src="{% static 'img/docente-perfil.png' %}" alt="">
-                    </div>
-                    <div class="content-username">
-                        <p id="apellidos" class="username-text"></p>
-                        <p id="nombres" class="username-text"></p>
-                    </div>
-                </div>
-                <div class="perfil-informacion">
-                    <div class="campos-informacion">
-                        <p class="informacion-campo">CEDULA</p>
-                        <p id="cedula" class="campo-docente"></p>
-                        <p class="informacion-campo">CORREO</p>
-                        <p id="correo" class="campo-docente"></p>
-                        <p class="informacion-campo">TELEFONO</p>
-                        <p id="telefono" class="campo-docente"></p>
-                    </div>
-                    <div class="content-btn">
-                        <a class="btn-editar" id="editar-btn"><i class="icon-btn fas fa-pencil-alt"></i>EDITAR</a>
-                    </div>
-                </div>
-            </div>
-            <script src="{% static 'js/table-select.js' %}"></script>
 
             {% else %}
                 <div class="content-vacio">
                     <img class="no-hay-img" src="{% static 'img/no-hay.png' %}" alt="">
-                    <h2 class="title-no-hay">NO HAY DOCENTES INGRESADOS.</h2>
+                    <h2 class="title-no-hay">NO HAY ASIGNATURAS INGRESADAS.</h2>
                 </div>
             {% endif %}
         </div>
@@ -174,6 +142,3 @@
         
 
 {% endblock content %}
-
-
-

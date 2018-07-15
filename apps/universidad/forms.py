@@ -1,6 +1,6 @@
 from django import forms
 
-from apps.universidad.models import Docente
+from apps.universidad.models import Docente, Asignatura, Semestre
 
 class DocenteForm(forms.ModelForm):
     
@@ -101,5 +101,57 @@ class DocenteUpdateForm(forms.ModelForm):
                 })
         }
 
+class AsignaturaForm(forms.ModelForm):
+    def __init__(self,*args,**kwargs):
+        super (AsignaturaForm,self ).__init__(*args,**kwargs)
+        self.fields['semestre'].queryset = Semestre.objects.filter(sem_estado=True, carrera='CA0001')
 
+    class Meta:
+        model = Asignatura
+
+        fields = [
+            'asi_codigo',
+            'carrera',
+            'semestre',
+            'asi_nombre',
+            'asi_num_creditos',
+        ]
+
+        labels = {
+            'asi_codigo' : 'CÓDIGO',
+            'carrera' : 'CARRERA',
+            'semestre' : 'SEMESTRE',
+            'asi_nombre' : 'NOMBRE',
+            'asi_num_creditos' : 'NUM. CREDITOS',
+        }
+
+        widgets = {
+            'asi_codigo' : forms.TextInput(attrs={
+                'class' : 'input-campo', 
+                'id' : 'asi_codigo', 
+                'maxlength' : '10',
+                'minlength' : '10', 
+                'onkeypress' : 'return soloNumeros(event);',
+                'autocomplete' : 'off',
+                'required' : 'true',
+            }),
+            'semestre' : forms.Select(attrs={
+                'class' : 'input-campo', 
+                'id' : 'semestre',
+            }),
+            'carrera' : forms.Select(attrs={
+                'class' : 'input-campo', 
+                'id' : 'semestre',
+            }),
+            'asi_nombre' : forms.TextInput(attrs={
+                'class' : 'input-campo', 
+                'id' : 'asi_nombres',
+                'onkeypress' : 'return soloLetras(event);',
+                'onkeyup' : 'convertirMayuscula(this);'
+            }),
+            'asi_num_creditos' : forms.NumberInput(attrs={
+                'class' : 'input-campo', 
+                'id' : 'asi_num_creditos',
+            }),
+        }
         

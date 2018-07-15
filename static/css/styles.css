@@ -27,8 +27,8 @@ body {
     background: #3E4149;
     color: #fff;
     box-shadow: 15px 0px 15px 0px rgba(0,0,0,0.15);
-    z-index: 1;
-    overflow: auto;    
+    z-index: 100;
+    /* overflow: scroll; */
 }
 
 .container-fluid{
@@ -82,7 +82,7 @@ body {
     margin: 10px;
 }
 
-.list-unstyled li a{    
+.menu-item-lateral{    
     text-align: left;
     font-size: 1em;
     padding-left: 0.6em;
@@ -179,6 +179,10 @@ body {
     max-width: 100px;
 }
 
+.show-menu .menu-item {
+    text-align: center;
+}
+
 .show-menu .sidebar-user{
     padding: 0 1em;
 }
@@ -186,6 +190,7 @@ body {
 .show-menu .list-unstyled li a span{
     visibility: hidden;
 }
+
 
 /* .show .sidebar-user, */
 .show-menu .sidebar-user .imagecood,
@@ -615,4 +620,10 @@ input:checked[type="checkbox"]:after {
     padding: 0;
     margin: 0;
     line-height: 0;
+}
+
+/* Sub menu */
+
+.sub-menu-item {
+    color: #000;
 }
