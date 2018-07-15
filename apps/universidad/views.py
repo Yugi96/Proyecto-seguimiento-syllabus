@@ -5,9 +5,10 @@ from django.contrib import messages
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from django.http import HttpResponse
+from django.core import serializers
 
-from .models import Docente, Asignatura
-from .forms import DocenteForm, DocenteUpdateForm, AsignaturaForm
+from .models import Docente, Asignatura, Semestre
+from .forms import DocenteForm, DocenteUpdateForm, AsignaturaForm, AsignaturaUpdateForm
 # Create your views here.
 
 @login_required
@@ -66,7 +67,7 @@ class UpdateDocente(FormMessageMixin, UpdateView):
 class UploadFileViewAsignatura(FormMessageMixin, CreateView):
     form_class = AsignaturaForm
     success_url = reverse_lazy('coordinador:asignaturas')
-    template_name = 'coordinador/asignatura/index.asignatura.template.html'
+    template_name = 'coordinador/asignatura/index.asignatura.is.template.html'
     form_valid_message = 'ASIGNATURA AGREGADA CON EXITO'
     form_invalid_message = "ERROR: LA ASIGNATURA YA EXISTE"
 
@@ -74,4 +75,13 @@ class UploadFileViewAsignatura(FormMessageMixin, CreateView):
         kwargs['object_list'] = Asignatura.objects.filter(asi_estado=True).order_by('asi_nombre')
         return super(UploadFileViewAsignatura, self).get_context_data(**kwargs)
 
+class UpdateAsignatura(FormMessageMixin, UpdateView):
+    model = Asignatura
+    form_class = AsignaturaUpdateForm
+    success_url = reverse_lazy('coordinador:asignaturas')
+    template_name = 'coordinador/asignatura/actualizar.asignatura.template.html'
+    form_valid_message = 'ASIGNATURA ACTUALIZADO CON EXITO'
+    form_invalid_message = "ERROR: ERROR AL ACTUALIZAR ASIGNATURA"
+
+        
 

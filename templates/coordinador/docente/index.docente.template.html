@@ -77,6 +77,9 @@
             <div class="content-btn-agregar">
                 <span class="btn-agregar" id="btn-agregar" href="" data-toggle="modal" data-target="#exampleModalCenter"><i class="icon-btn fas fa-plus" ></i>AGREGAR DOCENTE</span>
             </div>
+            <div class="content-search">
+                <input class="input-buscar" id="searchTerm" type="text" onkeyup="convertirMayuscula(this); doSearch(); " placeholder="BUSCAR..."><i class="icon-buscar fas fa-search"></i>
+            </div>
         </div>
         <div class="docentes-list-perfil">
             {% if object_list %}
@@ -168,8 +171,44 @@
                 telefonoLimpiar.classList.add('box-shadow')
                 correoLimpiar.value = '';
                 correoLimpiar.classList.add('box-shadow')
-            });        
+            });       
+            
+            function doSearch()
+            {
+                var tableReg = document.getElementById('table');
+                var searchText = document.getElementById('searchTerm').value.toUpperCase();
+                var cellsOfRow="";
+                var found=false;
+                var compareWith="";
+     
+                // Recorremos todas las filas con contenido de la tabla
+                for (var i = 1; i < tableReg.rows.length; i++)
+                {
+                    cellsOfRow = tableReg.rows[i].getElementsByTagName('td');
+                    found = false;
+                    // Recorremos todas las celdas
+                    for (var j = 0; j < cellsOfRow.length && !found; j++)
+                    {
+                        compareWith = cellsOfRow[j].innerHTML.toUpperCase();
+                        // Buscamos el texto en el contenido de la celda
+                        if (searchText.length == 0 || (compareWith.indexOf(searchText) > -1))
+                        {
+                            found = true;
+                        }
+                    }
+                    if(found)
+                    {
+                        tableReg.rows[i].style.display = '';
+                    } else {
+                        // si no ha encontrado ninguna coincidencia, esconde la
+                        // fila de la tabla
+                        tableReg.rows[i].style.display = 'none';
+                    }
+                }
+            }
         </script>
+
+        
         
         
 

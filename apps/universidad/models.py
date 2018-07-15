@@ -31,7 +31,6 @@ class Periodo(models.Model):
 
 class Semestre(models.Model):
     sem_codigo = models.CharField(max_length=6, primary_key=True)
-    carrera = models.ForeignKey(Carrera, on_delete=models.CASCADE)
     sem_nombre = models.CharField(max_length=30)
     sem_estado = models.BooleanField(default=True)
 

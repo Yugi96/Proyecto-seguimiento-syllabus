@@ -104,7 +104,7 @@ class DocenteUpdateForm(forms.ModelForm):
 class AsignaturaForm(forms.ModelForm):
     def __init__(self,*args,**kwargs):
         super (AsignaturaForm,self ).__init__(*args,**kwargs)
-        self.fields['semestre'].queryset = Semestre.objects.filter(sem_estado=True, carrera='CA0001')
+        self.fields['semestre'].queryset = Semestre.objects.filter(sem_estado=True)
 
     class Meta:
         model = Asignatura
@@ -129,18 +129,61 @@ class AsignaturaForm(forms.ModelForm):
             'asi_codigo' : forms.TextInput(attrs={
                 'class' : 'input-campo', 
                 'id' : 'asi_codigo', 
-                'maxlength' : '10',
-                'minlength' : '10', 
-                'onkeypress' : 'return soloNumeros(event);',
-                'autocomplete' : 'off',
                 'required' : 'true',
+                'onkeyup' : 'convertirMayuscula(this);'
             }),
             'semestre' : forms.Select(attrs={
-                'class' : 'input-campo', 
+                'class' : 'custom-select', 
                 'id' : 'semestre',
             }),
             'carrera' : forms.Select(attrs={
+                'class' : 'custom-select', 
+                'id' : 'carrera',
+            }),
+            'asi_nombre' : forms.TextInput(attrs={
                 'class' : 'input-campo', 
+                'id' : 'asi_nombres',
+                'onkeypress' : 'return soloLetras(event);',
+                'onkeyup' : 'convertirMayuscula(this);'
+            }),
+            'asi_num_creditos' : forms.TextInput(attrs={
+                'class' : 'input-campo',
+                'onkeypress' : 'return soloNumeros(event);',
+                'id' : 'asi_num_creditos',
+            }),
+        }
+
+class AsignaturaUpdateForm(forms.ModelForm):
+    def __init__(self,*args,**kwargs):
+        super (AsignaturaUpdateForm,self ).__init__(*args,**kwargs)
+        self.fields['semestre'].queryset = Semestre.objects.filter(sem_estado=True)
+
+    class Meta:
+        model = Asignatura
+
+        fields = [
+            'carrera',
+            'semestre',
+            'asi_nombre',
+            'asi_num_creditos',
+            'asi_estado',
+        ]
+
+        labels = {
+            'carrera' : 'CARRERA',
+            'semestre' : 'SEMESTRE',
+            'asi_nombre' : 'NOMBRE',
+            'asi_num_creditos' : 'NUM. CREDITOS',
+            'asi_estado' : 'ESTADO',
+        }
+
+        widgets = {
+            'semestre' : forms.Select(attrs={
+                'class' : 'custom-select', 
+                'id' : 'semestre',
+            }),
+            'carrera' : forms.Select(attrs={
+                'class' : 'custom-select', 
                 'id' : 'semestre',
             }),
             'asi_nombre' : forms.TextInput(attrs={
@@ -149,9 +192,16 @@ class AsignaturaForm(forms.ModelForm):
                 'onkeypress' : 'return soloLetras(event);',
                 'onkeyup' : 'convertirMayuscula(this);'
             }),
-            'asi_num_creditos' : forms.NumberInput(attrs={
-                'class' : 'input-campo', 
+            'asi_num_creditos' : forms.TextInput(attrs={
+                'class' : 'input-campo',
+                'onkeypress' : 'return soloNumeros(event);',
                 'id' : 'asi_num_creditos',
+            }),
+            'asi_estado' : forms.CheckboxInput(attrs={
+                'data-toggle' : 'popover',
+                'title' : 'DAR DE BAJA',
+                'data-trigger' : 'focus',
+                'data-content' : 'AL DAR DE BAJA A UNA ASIGNATURA, ESTE NO SE MOSTRARÁ EN LA LISTA PRINCIPAL. PUEDE ACCEDER A LAS ASIGNATURAS INACTIVOS EN LA OPCIÓN HISTORIA DEL MENÚ LATERAL',
             }),
         }
         
