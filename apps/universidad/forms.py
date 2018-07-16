@@ -96,6 +96,7 @@ class DocenteUpdateForm(forms.ModelForm):
             'doc_estado' : forms.CheckboxInput(attrs={
                 'data-toggle' : 'popover',
                 'title' : 'DAR DE BAJA',
+                'class' : 'campo-check',
                 'data-trigger' : 'focus',
                 'data-content' : 'AL DAR DE BAJA A UN DOCENTE, ESTE NO SE MOSTRARÁ EN LA LISTA PRINCIPAL. PUEDE ACCEDER A LOS DOCENTES INACTIVOS EN LA OPCIÓN HISTORIA DEL MENÚ LATERAL',
                 })
@@ -200,6 +201,7 @@ class AsignaturaUpdateForm(forms.ModelForm):
             'asi_estado' : forms.CheckboxInput(attrs={
                 'data-toggle' : 'popover',
                 'title' : 'DAR DE BAJA',
+                'class' : 'campo-check',
                 'data-trigger' : 'focus',
                 'data-content' : 'AL DAR DE BAJA A UNA ASIGNATURA, ESTE NO SE MOSTRARÁ EN LA LISTA PRINCIPAL. PUEDE ACCEDER A LAS ASIGNATURAS INACTIVOS EN LA OPCIÓN HISTORIA DEL MENÚ LATERAL',
             }),

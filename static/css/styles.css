@@ -537,7 +537,7 @@ body {
 }
 
 /* Dar de baja stilo */
-input[type="checkbox"] {
+.campo-check {
     position: relative;
     width: 140px;
     height: 40px;
@@ -551,11 +551,11 @@ input[type="checkbox"] {
     transition: .5s;
 }
 
-input:checked[type="checkbox"] {
+.campo-check:checked {
     background: #6AC259;
 }
 
-input[type="checkbox"]:before {
+.campo-check:before {
     content: '';
     position: absolute;
     width: 40px;
@@ -569,7 +569,7 @@ input[type="checkbox"]:before {
     transition: .5s;
 }
 
-input[type="checkbox"]:after {
+.campo-check:after {
     content: 'INACTIVO';
     position: absolute;
     top: 50%;
@@ -581,11 +581,11 @@ input[type="checkbox"]:after {
     color: #fff;
 }
 
-input:checked[type="checkbox"]:before {
+.campo-check:checked:before {
     left: 100px;
 }
 
-input:checked[type="checkbox"]:after {
+.campo-check:checked:after {
     content:'ACTIVO';
     position: absolute;
     top: 50%;
@@ -596,6 +596,7 @@ input:checked[type="checkbox"]:after {
     font-weight: bold;
     color: #fff;
 }
+
 
 /* MENSAJE DE NO HAY REGISTROS */
 .content-vacio {
@@ -710,5 +711,87 @@ input:checked[type="checkbox"]:after {
     display: flex;
     justify-content: center;
     align-items: center;
+}
 
+/* Mensajeria */
+.campo-check-mul {
+    width: 80%;
+    overflow: auto;
+    height: 70px;
+    /* background: #000; */
+    border-radius: 5px;
+    border: 1px solid #BCBCBC;
+    margin-left: 3px;
+    padding: 5px 20px;
+    margin-bottom: 0;
+}
+
+.campo-check-mul li {
+    list-style: none;
+}
+
+.campo-check-mul li label {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.campo-check-mul li input {
+    width: 10px;
+    height: 10px;
+    margin-right: 10px;
+
+}
+
+.campo-remitente {
+    width: 100%;
+    display: flex;
+}
+
+.select-remitente {
+    width: 80%;
+}
+
+.remitente-label,
+.destinatario-label {
+    width: 20%;
+}
+
+.campo-destinatario {
+    width: 100%;
+    display: flex;
+    margin-top: 5px;
+}
+
+.group-fila-asunto {
+    width: 100%;
+}
+
+.asunto {
+    width: 20%;
+}
+
+.asunto-campo {
+    width: 80%;
+    margin-left: 3px;
+}
+
+.campo-asunto {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.campo-mensaje {
+    width: 100%;
+    margin-top: 10px;
+}
+
+.mensaje-content {
+    width: 45%;
+}
+
+.mensaje-envio {
+    width: 100%;
 }

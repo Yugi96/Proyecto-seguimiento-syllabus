@@ -1,0 +1,170 @@
+{% extends 'base/base.app.coordinador.template.html'%}
+{% load staticfiles %}
+{% block title %}
+    COORDINADOR
+{% endblock title %}
+
+{% block modal %}
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+      <div class="modal-content modal-docente-content ">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalCenterTitle">ENVIAR MENSAJE</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <form method="post">
+            {% csrf_token %}
+            <div class="modal-body">
+                <div class="modal-docente">
+                        <div class="campo-remitente">
+                                <label for="{{ form.usuario_remitente.name }}" class="label-campo remitente-label">{{ form.usuario_remitente.label }}</label>
+                                {{ form.usuario_remitente }}
+                            </div>
+                            <div class=" campo-destinatario">
+                                    <label for="{{ form.usuario_destinatario.name }}" class="label-campo destinatario-label">{{ form.usuario_destinatario.label }}</label>
+                                    {{ form.usuario_destinatario }}
+                                </div>
+                        <div class="campo-asunto">
+                            <label for="{{ form.men_asunto.name }}" class="label-campo asunto">{{ form.men_asunto.label }}</label>
+                            {{ form.men_asunto }}
+                        </div>
+                        <div class="campo-mensaje">
+                            {{ form.men_mensaje }}
+                        </div>
+                    
+                </div> 
+            </div>
+            <div class="modal-footer">
+                <button class="btn-agregar" type="submit"><i class="icon-btn far fa-envelope"></i></i>ENVIAR</button>
+                <button class="btn-cerrar"  data-dismiss="modal" id="btn-cerrar"><i class="icon-btn fas fa-times"></i>CANCELAR</button>
+            </div>
+        </form>
+      </div>
+    </div>
+</div>
+{% endblock modal %}
+
+
+{% block content %}
+    {% if messages %}
+    {% for message in messages %}
+        <div class="message-{{ message.tags }} alert alert-warning alert-dismissible fade show content-error" role="alert">
+            {{ message }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    {% endfor %}
+    {% endif %}
+    <div class="content-docentes">
+        <div class="docentes-top">
+            <div class="content-btn-agregar">
+                <span class="btn-agregar" id="btn-agregar" href="" data-toggle="modal" data-target="#exampleModalCenter"><i class="icon-btn far fa-envelope"></i></i>ENVIAR MENSAJE</span>
+            </div>
+            <div class="content-search">
+                <input class="input-buscar" id="searchTerm" type="text" onkeyup="convertirMayuscula(this); doSearch(); " placeholder="BUSCAR..."><i class="icon-buscar fas fa-search"></i>
+            </div>
+        </div>
+        <div class="docentes-list-perfil">
+            {% if object_list %}
+            <div class="docentes-list mensaje-envio">
+                    <table class="table" id="datos">
+                            <thead class="bg-primary table-head-pro">
+                                <tr class="row-pro">
+                                    <th scope="col">#</th>
+                                    <th scope="col">ASUNTO</th>
+                                    <th scope="col">FECHA</th>
+                                    <th class="text-center" scope="col">ACCIÓN</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                    {% for mensaje in object_list %}
+                                        <tr>
+                                            <th scope="row">{{ forloop.counter }}</th>
+                                            <td>{{ mensaje.men_asunto }}</td>
+                                            <td>{{ mensaje.men_fecha }}</td>
+                                            <td class="text-center">
+                                                <a class="btn-editar btn-asignatura" href=""></i>VER</a>
+                                            </td>
+                                        </tr>
+                                    {% endfor %} 
+                            </tbody>
+                        </table>
+            </div>
+
+            {% else %}
+                <div class="content-vacio">
+                    <img class="no-hay-img" src="{% static 'img/no-hay.png' %}" alt="">
+                    <h2 class="title-no-hay">NO TIENES MENSAJES.</h2>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <script>
+            var cedulaLimpiar =  document.getElementById('doc_cedula');
+            var nombresLimpiar =  document.getElementById('doc_nombres');
+            var apellidosLimpiar =  document.getElementById('doc_apellidos');
+            var telefonoLimpiar =  document.getElementById('doc_telefono');
+            var correoLimpiar =  document.getElementById('doc_correo');
+            var btnCerrar = document.getElementById('btn-cerrar');
+            var btnAgregar = document.getElementById('btn-agregar');
+        
+            btnCerrar.addEventListener('click', ()=>{
+                cedulaLimpiar.value = '';
+                cedulaLimpiar.classList.add('box-shadow')
+                nombresLimpiar.value = '';
+                nombresLimpiar.classList.add('box-shadow')
+                apellidosLimpiar.value = '';
+                apellidosLimpiar.classList.add('box-shadow')
+                telefonoLimpiar.value = '';
+                telefonoLimpiar.classList.add('box-shadow')
+                correoLimpiar.value = '';
+                correoLimpiar.classList.add('box-shadow')
+            });       
+            
+            function doSearch()
+            {
+                var tableReg = document.getElementById('table');
+                var searchText = document.getElementById('searchTerm').value.toUpperCase();
+                var cellsOfRow="";
+                var found=false;
+                var compareWith="";
+     
+                // Recorremos todas las filas con contenido de la tabla
+                for (var i = 1; i < tableReg.rows.length; i++)
+                {
+                    cellsOfRow = tableReg.rows[i].getElementsByTagName('td');
+                    found = false;
+                    // Recorremos todas las celdas
+                    for (var j = 0; j < cellsOfRow.length && !found; j++)
+                    {
+                        compareWith = cellsOfRow[j].innerHTML.toUpperCase();
+                        // Buscamos el texto en el contenido de la celda
+                        if (searchText.length == 0 || (compareWith.indexOf(searchText) > -1))
+                        {
+                            found = true;
+                        }
+                    }
+                    if(found)
+                    {
+                        tableReg.rows[i].style.display = '';
+                    } else {
+                        // si no ha encontrado ninguna coincidencia, esconde la
+                        // fila de la tabla
+                        tableReg.rows[i].style.display = 'none';
+                    }
+                }
+            }
+        </script>
+
+        
+        
+        
+
+{% endblock content %}
+
+
+
