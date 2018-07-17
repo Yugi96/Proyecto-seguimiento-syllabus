@@ -795,3 +795,146 @@ body {
 .mensaje-envio {
     width: 100%;
 }
+
+
+/* Peridos */
+
+.container-peridos {
+    justify-content: space-around;
+    flex-wrap: wrap;
+    align-content: space-around;
+}
+
+.periodo-content,
+.cursos-content,
+.docente-asignatura-content {
+}
+
+.periodo-content {
+    width: 45%;
+    height: 50%;
+    border: 1px solid #BCBCBC;
+    border-left: none;
+    border-bottom: none;
+}
+
+.cursos-content {
+    width: 100%;
+    height: 50%;
+}
+
+.docente-asignatura-content {
+    
+    width: 55%;
+    height: 50%;
+}
+
+.title-label {
+    font-size: 2em;
+    padding-bottom: 20px;
+    color: #fff;
+    font-weight: bolder;
+}
+
+.periodo-title {
+    height: 60%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    align-content: center;
+    background: url('../img/fondo-periodo.jpg');
+    /* background-position: center; */
+    background-size: cover;
+    position: relative;
+    z-index: 0;
+}
+
+.periodo-title::before {
+    content: '';
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: rgba(0, 0, 0, .4);
+    z-index: -10;
+}
+
+.periodo-fechas {
+    width: 100%;
+    display: flex;
+    justify-content: space-around;    
+}
+
+.fechas-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 20px;
+}
+
+.content-periodo-descripcion {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    align-content: space-between;
+    width: 100%;
+    height: 40%;
+}
+
+.fecha-title {
+    font-size: .9em;
+    font-weight: bold;
+}
+
+.fecha-valor {
+    font-size: .9em;
+}
+
+.content-buttom-ad {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding-right: 10px;
+    padding-bottom: 10px;
+}
+
+.btn-periodo {
+    font-size: .7em;
+    padding: 10px 15px;
+    margin-left: 10px;
+    text-decoration: none;
+    color: #4495FF;
+    transition: .3s all ease;
+    font-weight: bold;
+}
+
+.blanco {
+    color: #fff;
+}
+
+.verde {
+    color: #6AC259;   
+}
+
+.rojo {
+    color: #F25D5D;
+}
+
+
+
+.btn-periodo:hover{
+    text-decoration: none;
+    color: #6AC259;
+    transform: scale(1.1)
+}
+
+.blanco:hover {
+    color: #fff;
+}
+
+.no-img-docente {
+    width: 100px;
+    height: 100px;
+}

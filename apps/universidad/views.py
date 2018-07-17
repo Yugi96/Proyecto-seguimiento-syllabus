@@ -2,13 +2,13 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib import messages
-from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView, TemplateView
 from django.urls import reverse_lazy
 from django.http import HttpResponse
 from django.core import serializers
 
-from .models import Docente, Asignatura, Semestre
-from .forms import DocenteForm, DocenteUpdateForm, AsignaturaForm, AsignaturaUpdateForm
+from .models import Docente, Asignatura, Semestre, Periodo, Curso, Asignatura_Docente
+from .forms import DocenteForm, DocenteUpdateForm, AsignaturaForm, AsignaturaUpdateForm, PeriodoForm
 # Create your views here.
 
 @login_required
@@ -83,5 +83,20 @@ class UpdateAsignatura(FormMessageMixin, UpdateView):
     form_valid_message = 'ASIGNATURA ACTUALIZADO CON EXITO'
     form_invalid_message = "ERROR: ERROR AL ACTUALIZAR ASIGNATURA"
 
-        
+class PeriodoView(FormMessageMixin, CreateView):
+    form_class = PeriodoForm
+    success_url = reverse_lazy('coordinador:periodos')
+    template_name = 'coordinador/periodo/index.periodo.template.html'
+    form_valid_message = 'PERIODO AGREGADO CON EXITO'
+    form_invalid_message = "ERROR: NO SE PUDO INGRESAR EL PERIODO"
 
+    # def get_context_data(self, **kwargs):
+    #     kwargs['object_list'] = Periodo.objects.filter(per_estado=True)
+    #     return super(PeriodoView, self).get_context_data(**kwargs)
+    
+    def get_context_data(self, **kwargs):
+         context = super(PeriodoView, self).get_context_data(**kwargs)
+         context['periodos_list'] = Periodo.objects.filter(per_estado=True)
+         context['cursos_list'] = Curso.objects.filter(cur_estado=True).order_by('alumno')
+         context['docentes_asingaturas_list'] = Asignatura_Docente.objects.all()
+         return context

@@ -20,8 +20,8 @@ class Carrera(models.Model):
         return self.car_nombre
 
 class Periodo(models.Model):
-    per_codigo = models.CharField(max_length=6, primary_key=True)
-    per_nombre = models.CharField(max_length=10)
+    # per_codigo = models.(primary_key=True, serialize=True)
+    per_nombre = models.CharField(max_length=10, unique=True)
     per_inicio = models.DateField()
     per_fin = models.DateField()
     per_estado = models.BooleanField(default=True)
@@ -42,6 +42,13 @@ class Alumno(models.Model):
     usuario = models.ForeignKey(User, on_delete=models.CASCADE)
     carrera = models.ForeignKey(Carrera, on_delete=models.CASCADE)
     alu_observacion = models.CharField(max_length=100, blank=True, null=True)
+
+    def __str__(self):
+        return "{} {}".format(self.usuario.first_name, self.usuario.last_name)
+
+    def getCarrera(self):
+        return "{}".format(self.carrera)
+
 
     class Meta:
 
@@ -66,7 +73,7 @@ class Asignatura(models.Model):
     asi_estado = models.BooleanField(default=True)
 
     def __str__(self):
-        return "{} | {} | {}".format(self.asi_nombre, self.semestre, self.semestre.carrera)
+        return "{} | {}".format(self.asi_nombre, self.semestre)
 
 class Docente(models.Model):
     doc_cedula = models.CharField(max_length=10, primary_key=True)

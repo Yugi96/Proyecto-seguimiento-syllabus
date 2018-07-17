@@ -1,6 +1,6 @@
 from django import forms
 
-from apps.universidad.models import Docente, Asignatura, Semestre
+from apps.universidad.models import Docente, Asignatura, Semestre, Periodo
 
 class DocenteForm(forms.ModelForm):
     
@@ -206,4 +206,37 @@ class AsignaturaUpdateForm(forms.ModelForm):
                 'data-content' : 'AL DAR DE BAJA A UNA ASIGNATURA, ESTE NO SE MOSTRARÁ EN LA LISTA PRINCIPAL. PUEDE ACCEDER A LAS ASIGNATURAS INACTIVOS EN LA OPCIÓN HISTORIA DEL MENÚ LATERAL',
             }),
         }
-        
+
+
+class PeriodoForm(forms.ModelForm):
+    class Meta:
+        model = Periodo
+
+        fields = [
+            'per_nombre',
+            'per_inicio',
+            'per_fin',
+        ]
+
+        labels = {
+            'per_nombre' : 'NOMBRE DE LA ETAPA',
+            'per_inicio' : 'INICIO DEL PERIODO',
+            'per_fin' : 'FIN DEL PERIODO',
+        }
+
+        widgets = {
+            'per_nombre' : forms.TextInput(attrs={
+                'class' : 'input-campo', 
+                'id' : 'per_nombre', 
+                'required' : 'true',
+                'onkeyup' : 'convertirMayuscula(this);'
+            }),
+            'per_inicio' : forms.DateInput(attrs={
+                'class' : 'form-control datepicker', 
+                'id' : 'per_inicio',
+            }),
+            'per_fin' : forms.DateInput(attrs={
+                'class' : 'form-control datepicker',
+                'id' : 'per_fin',
+            }),
+        }
