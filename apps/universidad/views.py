@@ -8,7 +8,7 @@ from django.http import HttpResponse
 from django.core import serializers
 
 from .models import Docente, Asignatura, Semestre, Periodo, Curso, Asignatura_Docente
-from .forms import DocenteForm, DocenteUpdateForm, AsignaturaForm, AsignaturaUpdateForm, PeriodoForm
+from .forms import DocenteForm, DocenteUpdateForm, AsignaturaForm, AsignaturaUpdateForm, PeriodoForm, AsignaturaDocenteForm, AsignaturaDocenteUpdateForm
 # Create your views here.
 
 @login_required
@@ -89,14 +89,27 @@ class PeriodoView(FormMessageMixin, CreateView):
     template_name = 'coordinador/periodo/index.periodo.template.html'
     form_valid_message = 'PERIODO AGREGADO CON EXITO'
     form_invalid_message = "ERROR: NO SE PUDO INGRESAR EL PERIODO"
-
-    # def get_context_data(self, **kwargs):
-    #     kwargs['object_list'] = Periodo.objects.filter(per_estado=True)
-    #     return super(PeriodoView, self).get_context_data(**kwargs)
     
     def get_context_data(self, **kwargs):
-         context = super(PeriodoView, self).get_context_data(**kwargs)
-         context['periodos_list'] = Periodo.objects.filter(per_estado=True)
-         context['cursos_list'] = Curso.objects.filter(cur_estado=True).order_by('alumno')
-         context['docentes_asingaturas_list'] = Asignatura_Docente.objects.all()
-         return context
+        context = super(PeriodoView, self).get_context_data(**kwargs)
+        context['periodos_list'] = Periodo.objects.filter(per_estado=True)
+        if len(context['periodos_list']) != 0:
+            context['cursos_list'] = Curso.objects.filter(cur_estado=True, periodo_id = context['periodos_list'][0].id ).order_by('alumno')
+        if len(context['periodos_list']) != 0:
+            context['docentes_asingaturas_list'] = Asignatura_Docente.objects.filter(asi_doc_estado=True, asi_doc_eliminado=False, periodo_id = context['periodos_list'][0].id ).order_by('docente')
+        return context
+
+class AsignaturaDocenteView(FormMessageMixin, CreateView):
+    form_class = AsignaturaDocenteForm
+    success_url = reverse_lazy('coordinador:periodos')
+    template_name = 'coordinador/periodo/agregar_docente.periodo.template.html'
+    form_valid_message = 'ASIGNATURAS AGREGADAS CON EXITO'
+    form_invalid_message = "ERROR: NO SE PUDO AGREGAR EL REGISTRO"
+
+class AsignaturaDocenteUpdateView(FormMessageMixin, UpdateView):
+    model = Asignatura_Docente
+    form_class = AsignaturaDocenteUpdateForm
+    success_url = reverse_lazy('coordinador:periodos')
+    template_name = 'coordinador/periodo/editar_docente.periodo.template.html'
+    form_valid_message = 'ASIGNATURAS ACTUALIZADA CON EXITO'
+    form_invalid_message = "ERROR: NO SE PUDO ACTUALIZAR EL REGISTRO"

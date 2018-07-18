@@ -20,7 +20,6 @@ class Carrera(models.Model):
         return self.car_nombre
 
 class Periodo(models.Model):
-    # per_codigo = models.(primary_key=True, serialize=True)
     per_nombre = models.CharField(max_length=10, unique=True)
     per_inicio = models.DateField()
     per_fin = models.DateField()
@@ -60,7 +59,7 @@ class Alumno(models.Model):
 class Curso(models.Model):
     alumno = models.ForeignKey(Alumno, on_delete=models.CASCADE)
     semestre = models.ForeignKey(Semestre, on_delete=models.CASCADE)
-    periodo = models.ForeignKey(Periodo, on_delete=models.CASCADE)
+    periodo = models.ForeignKey(Periodo, on_delete=models.CASCADE,default="")
     cur_paralelo = models.CharField(max_length=5)
     cur_estado = models.BooleanField(default=True)
 
@@ -73,7 +72,7 @@ class Asignatura(models.Model):
     asi_estado = models.BooleanField(default=True)
 
     def __str__(self):
-        return "{} | {}".format(self.asi_nombre, self.semestre)
+        return "{} - {}".format(self.asi_nombre, self.semestre)
 
 class Docente(models.Model):
     doc_cedula = models.CharField(max_length=10, primary_key=True)
@@ -82,16 +81,16 @@ class Docente(models.Model):
     doc_telefono = models.CharField(max_length=10)
     doc_correo = models.EmailField(max_length=50)
     doc_estado = models.BooleanField(default=True)
-    asignaturas = models.ManyToManyField(Asignatura, through='Asignatura_Docente', through_fields=('docente', 'asignatura'),)
 
     def __str__(self):
         return "{} {}".format(self.doc_nombres, self.doc_apellidos)
 
 class Asignatura_Docente(models.Model):
     docente = models.ForeignKey(Docente, on_delete=models.CASCADE)
-    asignatura = models.ForeignKey(Asignatura, on_delete=models.CASCADE)
-    periodo = models.ForeignKey(Periodo, on_delete=models.CASCADE)
+    asignatura = models.ManyToManyField(Asignatura)
+    periodo = models.ForeignKey(Periodo, on_delete=models.CASCADE, default="")
     asi_doc_estado = models.BooleanField(default=True)
+    asi_doc_eliminado = models.BooleanField(default=False)
 
     def __str__(self):
         return "{} | {} ".format(self.docente, self.asignatura)

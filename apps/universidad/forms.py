@@ -1,6 +1,6 @@
 from django import forms
 
-from apps.universidad.models import Docente, Asignatura, Semestre, Periodo
+from apps.universidad.models import Docente, Asignatura, Semestre, Periodo, Asignatura_Docente
 
 class DocenteForm(forms.ModelForm):
     
@@ -232,11 +232,86 @@ class PeriodoForm(forms.ModelForm):
                 'onkeyup' : 'convertirMayuscula(this);'
             }),
             'per_inicio' : forms.DateInput(attrs={
-                'class' : 'form-control datepicker', 
+                'class' : 'form-control datepicker input-campo', 
                 'id' : 'per_inicio',
             }),
             'per_fin' : forms.DateInput(attrs={
-                'class' : 'form-control datepicker',
+                'class' : 'form-control datepicker input-campo',
                 'id' : 'per_fin',
             }),
+        }
+
+class AsignaturaDocenteForm(forms.ModelForm):
+    def __init__(self,*args,**kwargs):
+        super (AsignaturaDocenteForm,self ).__init__(*args,**kwargs)
+        docentesList = Asignatura_Docente.objects.filter(asi_doc_estado=True, asi_doc_eliminado=False)
+        noMostrarDocentes = []
+        for docente in docentesList:
+            noMostrarDocentes.append(docente.docente_id)
+        self.fields['docente'].queryset = Docente.objects.filter(doc_estado=True).exclude(doc_cedula__in=noMostrarDocentes)
+        self.fields['asignatura'].queryset = Asignatura.objects.filter(asi_estado=True)
+        self.fields['periodo'].queryset = Periodo.objects.filter(per_estado=True)
+
+    class Meta:
+        model = Asignatura_Docente
+
+        fields = [
+            'docente',
+            'asignatura',
+            'periodo',
+        ]
+
+        labels = {
+            'docente' : 'DOCENTE',
+            'asignatura' : 'ASIGNATURAS',
+            'periodo' : 'PERIODO',
+        }
+
+        widgets = {
+            'docente' : forms.Select(attrs={
+                'class' : 'custom-select', 
+                'id' : 'per_nombre', 
+                'required' : 'true',
+                'onkeyup' : 'convertirMayuscula(this);'
+            }),
+            'asignatura' : forms.CheckboxSelectMultiple(attrs={
+                'class' : 'form-control campo-check-mul h-100 ', 
+                'id' : 'per_inicio',
+            }),
+            'periodo' : forms.Select(attrs={
+                'class' : 'form-control custom-select',
+                'id' : 'per_fin',
+            }),
+        }
+
+class AsignaturaDocenteUpdateForm(forms.ModelForm):
+    def __init__(self,*args,**kwargs):
+        super (AsignaturaDocenteUpdateForm,self ).__init__(*args,**kwargs)
+        self.fields['asignatura'].queryset = Asignatura.objects.filter(asi_estado=True)
+
+    class Meta:
+        model = Asignatura_Docente
+
+        fields = [
+            'asignatura',
+            'asi_doc_eliminado'
+        ]
+
+        labels = {
+            'asignatura' : 'ASIGNATURAS',
+            'asi_doc_eliminado' : 'QUITAR'
+        }
+
+        widgets = {
+            'asignatura' : forms.CheckboxSelectMultiple(attrs={
+                'class' : 'form-control campo-check-mul h-100 ', 
+                'id' : 'per_inicio',
+            }),
+            'asi_doc_eliminado' : forms.CheckboxInput(attrs={
+                'data-toggle' : 'popover',
+                'title' : 'DAR DE BAJA',
+                'class' : 'campo-check',
+                'data-trigger' : 'focus',
+                'data-content' : 'AL DAR DE BAJA A UN DOCENTE, ESTE NO SE MOSTRARÁ EN LA LISTA PRINCIPAL. PUEDE ACCEDER A LOS DOCENTES INACTIVOS EN LA OPCIÓN HISTORIA DEL MENÚ LATERAL',
+            })
         }

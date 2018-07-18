@@ -19,34 +19,22 @@
                 {% csrf_token %}
                 <div class="modal-body">
                     <div class="modal-docente">
-                        <div class="group-fila-cna">
-                            <div class="group-campo campo-asi-codigo">
+                        <div class="group-fila-cna jc-center">
+                            <div class="group-campo w-20 ml-10">
                                 <label for="{{ form.per_nombre.name }}" class="label-campo">{{ form.per_nombre.label }}</label>
                                 {{ form.per_nombre }}
                             </div>
-                            <div class="group-campo campo-asi-carrera">
-                                    <label for="{{ form.per_inicio.name }}" class="label-campo">{{ form.per_inicio.label }}</label>
-                                    <div class="input-group date">
-                                        {{ form.per_inicio }}<span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
-                                    </div>
+                            <div class="group-campo w-30 ml-10">
+                                <label for="{{ form.per_inicio.name }}" class="label-campo">{{ form.per_inicio.label }}</label>
+                                <div class="input-group date">
+                                    {{ form.per_inicio }}
                                 </div>
-                                <div class="group-campo campo-asi-semestre">
-                                        <label for="{{ form.per_fin.name }}" class="label-campo">{{ form.per_fin.label }}</label>
-                                        {{ form.per_fin }}
-                                    </div>
+                            </div>
+                            <div class="group-campo w-30 ml-10">
+                                <label for="{{ form.per_fin.name }}" class="label-campo">{{ form.per_fin.label }}</label>
+                                {{ form.per_fin }}
+                            </div>
                         </div>
-                        <!-- <div class="group-fila-tc">
-                            
-                            <div class="group-campo campo-asi-nombre">
-                                <label for="{{ form.asi_nombre.name }}" class="label-campo">{{ form.asi_nombre.label }}</label>
-                                {{ form.asi_nombre }}
-                            </div>
-                            <div class="group-campo campo-asi-num-creditos">
-                                <label for="{{ form.asi_num_creditos.name }}" class="label-campo">{{ form.asi_num_creditos.label }}</label>
-                                {{ form.asi_num_creditos }}
-                            </div>
-                        </div> -->
-                        
                     </div> 
                 </div>
                 <div class="modal-footer">
@@ -76,18 +64,25 @@
     {% endif %}
     <div class="content-docentes">
         <div class="docentes-top">
-            <div class="content-btn-agregar">
-                <span class="btn-agregar" id="btn-agregar" href="" data-toggle="modal" data-target="#exampleModalCenter"><i class="icon-btn fas fa-plus" ></i>AGREGAR PERIODO</span>
-            </div>
+            {% if not periodos_list  %}
+                <div class="content-btn-agregar">
+                    <span class="btn-agregar" id="btn-agregar" href="" data-toggle="modal" data-target="#exampleModalCenter"><i class="icon-btn fas fa-plus" ></i>AGREGAR PERIODO</span>
+                </div>
+            {% else %}
+                <div class="content-buttom-ad fl-start">
+                    <a class="btn-agregar bg-dark" href=""><i class="icon-btn fas fa-plus" ></i>AGREGAR ESTUDIANTE</a>
+                    <a class="btn-agregar bg-dark margin-left" href="{% url 'coordinador:periodos_docentes_agregar' %}"><i class="icon-btn fas fa-plus" ></i>ASIGNAR MATERIA A DOCENTE</a>
+                </div>
+            {% endif %}
         </div>
         <div class="docentes-list-perfil container-peridos">
             {% if periodos_list %}
                 <div class="periodo-content">
                     <div class="periodo-title">
                         <span class="title-label">{{ periodos_list.0.per_nombre }}</span>
-                        <div class="content-buttom-ad">
-                                <a class="btn-editar btn-periodo blanco" href="">EDITAR</a>
-                                <a class="btn-cerrar btn-periodo blanco" href="">TERMINAR PERIODO</a>
+                        <div class="content-buttom-et">
+                                <a class="btn-editar btn-periodo blanco" href=""><i class="icon-btn fas fa-pencil-alt"></i>EDITAR</a>
+                                <a class="btn-cerrar btn-periodo blanco" href=""><i class="icon-btn fas fa-times"></i>TERMINAR PERIODO</a>
                         </div>
                     </div>
                     <div class="content-periodo-descripcion">
@@ -101,16 +96,14 @@
                                 <span class="fecha-valor">{{ periodos_list.0.per_fin|date:'d F Y'|upper }}</span>
                             </div>
                         </div>
-                        <div class="content-buttom-ad">
-                            <a class="btn-periodo" href="">AGREGAR ESTUDIANTE</a>
-                            <a class="btn-periodo" href="">ASIGNAR MATERIA A DOCENTE</a>
-                        </div>
                     </div>
                 </div>
             {% else %}
-                <div class="content-vacio">
-                    <img class="no-hay-img" src="{% static 'img/no-hay.png' %}" alt="">
-                    <h2 class="title-no-hay">NO HAY PERIODOS ACTIVOS.</h2>
+                <div class="periodo-content border">
+                    <div class="content-vacio">
+                        <img class="no-hay-img no-img-docente" src="{% static 'img/no-hay.png' %}" alt="">
+                        <h2 class="title-no-hay">NO HAY PERIODOS ACTIVOS.</h2>
+                    </div>
                 </div>
             {% endif %}
 
@@ -122,9 +115,6 @@
                         <th scope="col"></th>
                         <th scope="col">#</th>
                         <th scope="col">DOCENTE</th>
-                        <!-- <th scope="col">CARRERA</th> -->
-                        <!-- <th class="text-center" scope="col">SEMESTRES</th>
-                        <th class="text-center" scope="col">PARALELO</th> -->
                         <th class="text-center" scope="col">ACCION</th>
                         <th scope="col"></th>
                         </tr>
@@ -135,12 +125,9 @@
                                 <td></td>
                                 <th scope="row">{{ forloop.counter }}</th>
                                 <td>{{docente.docente}}</td>
-                                <!-- <td>{{docente.alumno.getCarrera}}</td> -->
-                                <!-- <td class="text-center">{{docente.semestre}}</td>
-                                <td class="text-center">{{docente.cur_paralelo}}</td> -->
                                 <td class="text-center">
-                                    <a class="btn-editar btn-asignatura" href=""></i>EDITAR</a>
-                                    <a class="btn-editar btn-asignatura" href=""></i>VISUALIZAR</a>
+                                    <a class="btn-editar btn-asignatura bg-primary" href="{% url 'coordinador:periodos_docentes_editar' docente.id %}"></i>MOSTRAR</a>
+                                    <!-- <a class="btn-cerrar btn-asignatura" href=""></i>ELIMINAR</a> -->
                                 </td>
                                 <td></td
                             </tr>
@@ -150,7 +137,7 @@
             </div>
             {% else %}
                 <div class="docente-asignatura-content">
-                    <div class="content-vacio">
+                    <div class="content-vacio border">
                         <img class="no-hay-img no-img-docente" src="{% static 'img/no-hay.png' %}" alt="">
                         <h2 class="title-no-hay">NO HAY DOCENTES EN EL PERIODO.</h2>
                     </div>
@@ -158,42 +145,44 @@
             {% endif %}
 
             {% if cursos_list %}
-            <div class="cursos-content">
-                <table class="table">
-                    <thead class="bg-primary blanco">
-                        <tr>
-                            <th scope="col"></th>
-                            <th scope="col">#</th>
-                            <th scope="col">ESTUDIANTE</th>
-                            <th scope="col">CARRERA</th>
-                            <th class="text-center" scope="col">SEMESTRES</th>
-                            <th class="text-center" scope="col">PARALELO</th>
-                            <th class="text-center" scope="col">ACCION</th>
-                            <th scope="col"></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for curso in cursos_list %}
+                <div class="cursos-content">
+                    <table class="table">
+                        <thead class="bg-primary blanco">
                             <tr>
-                                <td></td>
-                                <th scope="row">{{ forloop.counter }}</th>
-                                <td>{{curso.alumno}}</td>
-                                <td>{{curso.alumno.getCarrera}}</td>
-                                <td class="text-center">{{curso.semestre}}</td>
-                                <td class="text-center">{{curso.cur_paralelo}}</td>
-                                <td class="text-center">
-                                    <a class="btn-editar btn-asignatura" href=""></i>EDITAR</a>
-                                </td>
-                                <td></td
+                                <th scope="col"></th>
+                                <th scope="col">#</th>
+                                <th scope="col">ESTUDIANTE</th>
+                                <th scope="col">CARRERA</th>
+                                <th class="text-center" scope="col">SEMESTRES</th>
+                                <th class="text-center" scope="col">PARALELO</th>
+                                <th class="text-center" scope="col">ACCION</th>
+                                <th scope="col"></th>
                             </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+                        </thead>
+                        <tbody>
+                            {% for curso in cursos_list %}
+                                <tr>
+                                    <td></td>
+                                    <th scope="row">{{ forloop.counter }}</th>
+                                    <td>{{curso.alumno}}</td>
+                                    <td>{{curso.alumno.getCarrera}}</td>
+                                    <td class="text-center">{{curso.semestre}}</td>
+                                    <td class="text-center">{{curso.cur_paralelo}}</td>
+                                    <td class="text-center">
+                                        <a class="btn-editar btn-asignatura" href=""></i>EDITAR</a>
+                                    </td>
+                                    <td></td
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
             {% else %}
-                <div class="content-vacio">
-                    <img class="no-hay-img" src="{% static 'img/no-hay.png' %}" alt="">
-                    <h2 class="title-no-hay">NO HAY ESTUDIANTES EN EL PERIODO.</h2>
+                <div class="cursos-content border">
+                    <div class="content-vacio">
+                        <img class="no-hay-img no-img-docente" src="{% static 'img/no-hay.png' %}" alt="">
+                        <h2 class="title-no-hay">NO HAY ESTUDIANTES EN EL PERIODO.</h2>
+                    </div>
                 </div>
             {% endif %}
         </div>

@@ -87,6 +87,7 @@
                 <table class="table" id="datos">
                     <thead class="bg-primary table-head-pro">
                         <tr class="row-pro">
+                            <th scope="col"></th>
                             <th scope="col">#</th>
                             <th scope="col">CÓDIGO</th>
                             <th scope="col">NOMBRE</th>
@@ -94,12 +95,14 @@
                             <th class="text-center" scope="col">SEMESTRE</th>
                             <th class="text-center" scope="col">NUM. CREDITOS</th>
                             <th class="text-center" scope="col">ACCIÓN</th>
+                            <th scope="col"></th>
                         </tr>
                     </thead>
                     <tbody>
                         
                             {% for asignatura in object_list %}
                                 <tr>
+                                    <td></td>
                                     <th scope="row">{{ forloop.counter }}</th>
                                     <td>{{ asignatura.asi_codigo }}</td>
                                     <td>{{ asignatura.asi_nombre }}</td>
@@ -107,8 +110,9 @@
                                     <td class="text-center">{{ asignatura.semestre }}</td>
                                     <td class="text-center">{{ asignatura.asi_num_creditos }}</td>
                                     <td class="text-center">
-                                        <a class="btn-editar btn-asignatura" href="{% url 'coordinador:asignaturas_editar' asignatura.asi_codigo %}"></i>EDITAR</a>
+                                        <a class="btn-editar btn-asignatura" href="{% url 'coordinador:asignaturas_editar' asignatura.asi_codigo %}">EDITAR</a>
                                     </td>
+                                    <td></td>
                                 </tr>
                             {% endfor %} 
                         
