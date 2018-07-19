@@ -37,10 +37,10 @@ class Semestre(models.Model):
         return self.sem_nombre
 
 class Alumno(models.Model):
-    alu_cedula = models.CharField(max_length=10, primary_key=True)
     usuario = models.ForeignKey(User, on_delete=models.CASCADE)
     carrera = models.ForeignKey(Carrera, on_delete=models.CASCADE)
     alu_observacion = models.CharField(max_length=100, blank=True, null=True)
+    alu_estado = models.BooleanField(default=True)
 
     def __str__(self):
         return "{} {}".format(self.usuario.first_name, self.usuario.last_name)

@@ -1,15 +1,26 @@
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.hashers import make_password
+from django.contrib.auth.models import User, Permission
 from django.contrib import messages
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView, TemplateView
 from django.urls import reverse_lazy
-from django.http import HttpResponse
+from django.http import HttpResponseRedirect
 from django.core import serializers
 
-from .models import Docente, Asignatura, Semestre, Periodo, Curso, Asignatura_Docente
-from .forms import DocenteForm, DocenteUpdateForm, AsignaturaForm, AsignaturaUpdateForm, PeriodoForm, AsignaturaDocenteForm, AsignaturaDocenteUpdateForm
-# Create your views here.
+from .models import Docente, Asignatura, Semestre, Periodo, Curso, Asignatura_Docente, Alumno, Curso
+
+# Import Docentes
+from .forms import DocenteForm, DocenteUpdateForm 
+# Import Asignaturas
+from .forms import AsignaturaForm, AsignaturaUpdateForm
+# Import Estudiante Curso
+from .forms import AlumnoForm, CursoForm, UserForm
+# Import Periodo
+from .forms import PeriodoForm
+# Import Asignatura Docente
+from .forms import AsignaturaDocenteForm, AsignaturaDocenteUpdateForm
 
 @login_required
 def home(request):
@@ -113,3 +124,40 @@ class AsignaturaDocenteUpdateView(FormMessageMixin, UpdateView):
     template_name = 'coordinador/periodo/editar_docente.periodo.template.html'
     form_valid_message = 'ASIGNATURAS ACTUALIZADA CON EXITO'
     form_invalid_message = "ERROR: NO SE PUDO ACTUALIZAR EL REGISTRO"
+
+
+class EstudianteView(FormMessageMixin, CreateView):
+    model = Alumno
+    form_class = AlumnoForm
+    second_form_class = UserForm
+    template_name = 'coordinador/estudiante/index.estudiante.template.html'
+    form_valid_message = 'ESTUDIANTE INGRESADO CON EXITO'
+    form_invalid_message = "ERROR: NO SE PUDO INGRESAR EL ESTUDIANTE"
+    success_url = reverse_lazy('coordinador:estudiantes')
+
+    def get_context_data(self, **kwargs):
+        context = super(EstudianteView, self).get_context_data(**kwargs)
+        context['estudiantes_list'] = Alumno.objects.filter(alu_estado=True)
+        if 'form' not in context:
+            context['form'] = self.form_class(self.request.GET)
+        if 'form2' not in context:
+            context['form2'] = self.second_form_class(self.request.GET)
+        return context
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object
+        form = self.form_class(request.POST)
+        form2 = self.second_form_class(request.POST)
+        if form.is_valid() and form2.is_valid():
+            permission = Permission.objects.get(codename='Estudiante')
+            alumno = form.save(commit=False)
+            user = form2.save(commit=False)
+            user.password = make_password('8v0Semestre2019')
+            user.is_active = False
+            user.save()
+            user.user_permissions.add(permission)
+            alumno.usuario = user
+            alumno.save()
+            return self.form_valid(form, **kwargs)
+        else:
+            return self.form_invalid(form, **kwargs)

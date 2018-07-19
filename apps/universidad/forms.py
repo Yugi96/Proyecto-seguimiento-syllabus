@@ -1,6 +1,8 @@
 from django import forms
+from django.contrib.auth.models import User, Permission
+from django.contrib.auth.forms import UserCreationForm
 
-from apps.universidad.models import Docente, Asignatura, Semestre, Periodo, Asignatura_Docente
+from apps.universidad.models import Docente, Asignatura, Semestre, Periodo, Asignatura_Docente, Alumno, Curso, Carrera
 
 class DocenteForm(forms.ModelForm):
     
@@ -207,7 +209,6 @@ class AsignaturaUpdateForm(forms.ModelForm):
             }),
         }
 
-
 class PeriodoForm(forms.ModelForm):
     class Meta:
         model = Periodo
@@ -272,7 +273,6 @@ class AsignaturaDocenteForm(forms.ModelForm):
                 'class' : 'custom-select', 
                 'id' : 'per_nombre', 
                 'required' : 'true',
-                'onkeyup' : 'convertirMayuscula(this);'
             }),
             'asignatura' : forms.CheckboxSelectMultiple(attrs={
                 'class' : 'form-control campo-check-mul h-100 ', 
@@ -315,3 +315,117 @@ class AsignaturaDocenteUpdateForm(forms.ModelForm):
                 'data-content' : 'AL DAR DE BAJA A UN DOCENTE, ESTE NO SE MOSTRARÁ EN LA LISTA PRINCIPAL. PUEDE ACCEDER A LOS DOCENTES INACTIVOS EN LA OPCIÓN HISTORIA DEL MENÚ LATERAL',
             })
         }
+
+class AlumnoForm(forms.ModelForm):
+    def __init__(self,*args,**kwargs):
+        super (AlumnoForm,self ).__init__(*args,**kwargs)
+        self.fields['carrera'].queryset = Carrera.objects.filter(car_estado=True)
+
+    class Meta:
+        model = Alumno
+
+        fields = [
+            'carrera',
+        ]
+
+        labels = {
+            'carrera' : 'CARRERA',
+        }
+
+        widgets = {
+            'carrera' : forms.Select(attrs={
+                'class' : 'custom-select', 
+                # 'id' : 'per_nombre', 
+                'required' : 'true',
+            }),
+        }
+
+class CursoForm(forms.ModelForm):
+    def __init__(self,*args,**kwargs):
+        super (CursoForm,self ).__init__(*args,**kwargs)
+        self.fields['periodo'].queryset = Periodo.objects.filter(per_estado=True)
+    class Meta:
+        model = Curso
+
+        fields = [
+            'semestre',
+            'periodo',
+            'cur_paralelo',
+        ]
+
+        labels = {
+            'semestre' : 'SEMESTRE',
+            'periodo' : 'PERIODO',
+            'cur_paralelo' : 'PARALELO',
+        }
+
+        widgets = {
+            'semestre' : forms.Select(attrs={
+                'class' : 'custom-select', 
+                # 'id' : 'per_nombre', 
+                'required' : 'true',
+            }),
+            'periodo' : forms.Select(attrs={
+                'class' : 'custom-select', 
+                # 'id' : 'per_nombre', 
+                'required' : 'true',
+            }),
+            'cur_paralelo' : forms.TextInput(attrs={
+                'class' : 'input-campo', 
+                # 'id' : 'doc_nombres',
+                # 'onkeypress' : 'return soloLetras(event);',
+                'onkeyup' : 'convertirMayuscula(this);'
+            }),
+        }
+
+class UserForm(forms.ModelForm):
+    # def __init__(self,*args,**kwargs):
+    #     super (UserForm,self ).__init__(*args,**kwargs)
+    #     self.fields['user_permissions'].queryset = Permission.objects.filter(codename='Estudiante')
+
+    class Meta:
+        model = User
+
+        fields = [
+            'username',
+            'first_name',
+            'last_name',
+            'email',
+        ]
+
+        labels = {
+            'username' : 'CEDULA',
+            'first_name' : 'NOMBRES',
+            'last_name' : 'APELLIDOS',
+            'email' : 'CORREO INSTITUCIONAL',
+        }
+
+        widgets = {
+            'username' : forms.TextInput(attrs={
+                'class' : 'input-campo', 
+                # 'id' : 'doc_cedula', 
+                'maxlength' : '10',
+                'minlength' : '10', 
+                'onkeypress' : 'return soloNumeros(event);',
+                'autocomplete' : 'off',
+                'required' : 'true',
+                }),
+            'first_name' : forms.TextInput(attrs={
+                'class' : 'input-campo', 
+                # 'id' : 'doc_nombres',
+                'onkeypress' : 'return soloLetras(event);',
+                'onkeyup' : 'convertirMayuscula(this);'
+                }),
+            'last_name' : forms.TextInput(attrs={
+                'class' : 'input-campo', 
+                # 'id' : 'doc_apellidos',
+                'onkeypress' : 'return soloLetras(event);',
+                'onkeyup' : 'convertirMayuscula(this);'
+                }),
+            'email' : forms.EmailInput(attrs={
+                'class' : 'input-campo', 
+                # 'id' : 'doc_correo'
+                }),
+        }
+
+        
