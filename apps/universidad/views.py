@@ -16,7 +16,7 @@ from .forms import DocenteForm, DocenteUpdateForm
 # Import Asignaturas
 from .forms import AsignaturaForm, AsignaturaUpdateForm
 # Import Estudiante Curso
-from .forms import AlumnoForm, CursoForm, UserForm
+from .forms import AlumnoForm, CursoForm, UserForm, UserUpdateForm, AlumnoUpdateForm
 # Import Periodo
 from .forms import PeriodoForm
 # Import Asignatura Docente
@@ -137,7 +137,7 @@ class EstudianteView(FormMessageMixin, CreateView):
 
     def get_context_data(self, **kwargs):
         context = super(EstudianteView, self).get_context_data(**kwargs)
-        context['estudiantes_list'] = Alumno.objects.filter(alu_estado=True)
+        context['estudiantes_list'] = Alumno.objects.filter(alu_estado=True).order_by('usuario__first_name', 'usuario__last_name')
         if 'form' not in context:
             context['form'] = self.form_class(self.request.GET)
         if 'form2' not in context:
@@ -161,3 +161,40 @@ class EstudianteView(FormMessageMixin, CreateView):
             return self.form_valid(form, **kwargs)
         else:
             return self.form_invalid(form, **kwargs)
+
+class EstudianteUpdateView(FormMessageMixin, UpdateView):
+    model = Alumno
+    second_model = User
+    template_name = 'coordinador/estudiante/actualizar.estudiante.template.html'
+    form_class = AlumnoUpdateForm
+    second_form_class = UserUpdateForm
+    form_valid_message = 'ESTUDIANTE ACTUALIZADO CON EXITO'
+    form_invalid_message = "ERROR: NO SE PUDO ACTUALIZAR EL ESTUDIANTE"
+    success_url = reverse_lazy('coordinador:estudiantes')
+
+    def get_context_data(self, **kwargs):
+        context = super(EstudianteUpdateView, self).get_context_data(**kwargs)
+        pk = self.kwargs.get('pk', 0)
+        alumno = self.model.objects.get(id=pk)
+        usuario = self.second_model.objects.get(id=alumno.usuario_id)
+        if 'form' not in context:
+            context['form'] = self.form_class()
+        if 'form2' not in context:
+            context['form2'] = self.second_form_class(instance=usuario)
+        context['id'] = pk
+        return context
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object
+        id_alumno = kwargs['pk']
+        alumno = self.model.objects.get(id=id_alumno)
+        usuario = self.second_model.objects.get(id=alumno.usuario_id)
+        form = self.form_class(request.POST, instance=alumno)
+        form2 = self.second_form_class(request.POST, instance=usuario)
+        if form.is_valid() and form2.is_valid():
+            form.save()
+            form2.save()
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
+        

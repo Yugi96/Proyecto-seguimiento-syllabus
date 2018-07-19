@@ -338,6 +338,40 @@ class AlumnoForm(forms.ModelForm):
                 # 'id' : 'per_nombre', 
                 'required' : 'true',
             }),
+            
+        }
+
+class AlumnoUpdateForm(forms.ModelForm):
+    def __init__(self,*args,**kwargs):
+        super (AlumnoUpdateForm,self ).__init__(*args,**kwargs)
+        self.fields['carrera'].queryset = Carrera.objects.filter(car_estado=True)
+
+    class Meta:
+        model = Alumno
+
+        fields = [
+            'carrera',
+            'alu_estado',
+        ]
+
+        labels = {
+            'carrera' : 'CARRERA',
+            'alu_estado' : 'ESTADO',
+        }
+
+        widgets = {
+            'carrera' : forms.Select(attrs={
+                'class' : 'custom-select', 
+                # 'id' : 'per_nombre', 
+                'required' : 'true',
+            }),
+            'alu_estado' : forms.CheckboxInput(attrs={
+                'data-toggle' : 'popover',
+                'title' : 'DAR DE BAJA',
+                'class' : 'campo-check',
+                'data-trigger' : 'focus',
+                'data-content' : 'AL DAR DE BAJA A UN ESTUDIANTE, ESTE NO SE MOSTRARÁ EN LA LISTA PRINCIPAL. PUEDE ACCEDER A LOS ESTUDIANTES INACTIVOS EN LA OPCIÓN HISTORIA DEL MENÚ LATERAL',
+            }),
         }
 
 class CursoForm(forms.ModelForm):
@@ -379,9 +413,6 @@ class CursoForm(forms.ModelForm):
         }
 
 class UserForm(forms.ModelForm):
-    # def __init__(self,*args,**kwargs):
-    #     super (UserForm,self ).__init__(*args,**kwargs)
-    #     self.fields['user_permissions'].queryset = Permission.objects.filter(codename='Estudiante')
 
     class Meta:
         model = User
@@ -403,7 +434,7 @@ class UserForm(forms.ModelForm):
         widgets = {
             'username' : forms.TextInput(attrs={
                 'class' : 'input-campo', 
-                # 'id' : 'doc_cedula', 
+                'id' : 'alu_cedula', 
                 'maxlength' : '10',
                 'minlength' : '10', 
                 'onkeypress' : 'return soloNumeros(event);',
@@ -412,20 +443,56 @@ class UserForm(forms.ModelForm):
                 }),
             'first_name' : forms.TextInput(attrs={
                 'class' : 'input-campo', 
-                # 'id' : 'doc_nombres',
+                'id' : 'alu_nombres',
                 'onkeypress' : 'return soloLetras(event);',
                 'onkeyup' : 'convertirMayuscula(this);'
                 }),
             'last_name' : forms.TextInput(attrs={
                 'class' : 'input-campo', 
-                # 'id' : 'doc_apellidos',
+                'id' : 'alu_apellidos',
                 'onkeypress' : 'return soloLetras(event);',
                 'onkeyup' : 'convertirMayuscula(this);'
                 }),
             'email' : forms.EmailInput(attrs={
                 'class' : 'input-campo', 
-                # 'id' : 'doc_correo'
+                'id' : 'alu_correo'
                 }),
         }
 
-        
+class UserUpdateForm(forms.ModelForm):
+
+    class Meta:
+        model = User
+
+        fields = [
+            'first_name',
+            'last_name',
+            'email',
+        ]
+
+        labels = {
+            'first_name' : 'NOMBRES',
+            'last_name' : 'APELLIDOS',
+            'email' : 'CORREO INSTITUCIONAL',
+        }
+
+        widgets = {
+            'first_name' : forms.TextInput(attrs={
+                'class' : 'input-campo', 
+                'id' : 'alu_nombres',
+                'onkeypress' : 'return soloLetras(event);',
+                'onkeyup' : 'convertirMayuscula(this);'
+                }),
+            'last_name' : forms.TextInput(attrs={
+                'class' : 'input-campo', 
+                'id' : 'alu_apellidos',
+                'onkeypress' : 'return soloLetras(event);',
+                'onkeyup' : 'convertirMayuscula(this);'
+                }),
+            'email' : forms.EmailInput(attrs={
+                'class' : 'input-campo', 
+                'id' : 'alu_correo'
+                }),
+        }
+
+

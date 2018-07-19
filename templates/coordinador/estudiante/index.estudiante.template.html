@@ -87,43 +87,48 @@
         </div>
         <div class="docentes-list-perfil">
             {% if estudiantes_list %}
-                <div class="docentes-list">
-                    <table class="table-docente" id="table">
-                        <thead class="docente-header">
+                <div class="docentes-list  w-65">
+                    <table class="table" id="table">
+                        <thead class="bg-primary blanco">
                             <tr>
+                                <th></th>
                                 <th class="celdas-ocultas">Cedula</th>
                                 <th class="celdas-ocultas">Nombres</th>
                                 <th class="celdas-ocultas">Apellidos</th>
-                                <th class="celdas-ocultas">Telefono</th>
+                                <th class="celdas-ocultas">Carrera</th>
                                 <th class="celdas-ocultas">Correo</th>
-                                <th class="celdas-ocultas">Estado</th>
                                 <th class="column-cont">#</th>
-                                <th class="header-title">APELLIDOS Y NOMBRES</th>
+                                <th class="">APELLIDOS Y NOMBRES</th>
+                                <th class="">CARRERA</th>
+                                <th></th>
                             </tr>
                         </thead>
-                        <tbody class="docente-body">
+                        <tbody class="">
                             
-                                <!-- {% for docente in estudiantes_list %}
-                                    <tr class="docente-row" id="docente-row">
-                                        <td class="celdas-ocultas">{{ docente.doc_cedula }}</td>
-                                        <td class="celdas-ocultas">{{ docente.doc_nombres }}</td>
-                                        <td class="celdas-ocultas">{{ docente.doc_apellidos }}</td>
-                                        <td class="celdas-ocultas">{{ docente.doc_telefono }}</td>
-                                        <td class="celdas-ocultas">{{ docente.doc_correo }}</td>
-                                        <td class="celdas-ocultas">{{ docente.doc_estado }}</td>
+                                {% for estudiante in estudiantes_list %}
+                                    <tr class="" id="docente-row">
+                                        <td></td>
+                                        <td class="celdas-ocultas">{{ estudiante.id }}</td>
+                                        <td class="celdas-ocultas">{{ estudiante.usuario.username }}</td>
+                                        <td class="celdas-ocultas">{{ estudiante.usuario.first_name }}</td>
+                                        <td class="celdas-ocultas">{{ estudiante.usuario.last_name }}</td>
+                                        <td class="celdas-ocultas">{{ estudiante.carrera }}</td>
+                                        <td class="celdas-ocultas">{{ estudiante.usuario.email }}</td>
                                         <td class="column-cont">{{ forloop.counter }}</td>
-                                        <td>{{ docente.doc_apellidos }} {{ docente.doc_nombres }}</td>
+                                        <td>{{ estudiante.usuario.first_name }} {{ estudiante.usuario.last_name }}</td>
+                                        <td>{{ estudiante.carrera }}</td>
+                                        <td></td>
                                     </tr>
-                                {% endfor %}  -->
+                                {% endfor %} 
                             
                             
                         </tbody>
                     </table>
                 </div>
-                <div class="docentes-perfil">
+                <div class="docentes-perfil w-35">
                     <div class="perfil-username">
                         <div class="perfil-img">
-                            <img class="img-docente" src="{% static 'img/docente-perfil.png' %}" alt="">
+                            <img class="img-docente" src="{% static 'img/estudiante-perfil.png' %}" alt="">
                         </div>
                         <div class="content-username">
                             <p id="apellidos" class="username-text"></p>
@@ -133,18 +138,18 @@
                     <div class="perfil-informacion">
                         <div class="campos-informacion">
                             <p class="informacion-campo">CEDULA</p>
+                            <p id="id" class="campo-docente"></p>
                             <p id="cedula" class="campo-docente"></p>
                             <p class="informacion-campo">CORREO</p>
                             <p id="correo" class="campo-docente"></p>
-                            <p class="informacion-campo">TELEFONO</p>
-                            <p id="telefono" class="campo-docente"></p>
+                            <p class="informacion-campo">CARRERA</p>
+                            <p id="carrera" class="campo-docente"></p>
                         </div>
                         <div class="content-btn">
                             <a class="btn-editar" id="editar-btn"><i class="icon-btn fas fa-pencil-alt"></i>EDITAR</a>
                         </div>
                     </div>
                 </div>
-                <script src="{% static 'js/table-select.js' %}"></script>
 
             {% else %}
                 <div class="content-vacio">
@@ -156,11 +161,10 @@
     </div>
 
     <script>
-            var cedulaLimpiar =  document.getElementById('doc_cedula');
-            var nombresLimpiar =  document.getElementById('doc_nombres');
-            var apellidosLimpiar =  document.getElementById('doc_apellidos');
-            var telefonoLimpiar =  document.getElementById('doc_telefono');
-            var correoLimpiar =  document.getElementById('doc_correo');
+            var cedulaLimpiar =  document.getElementById('alu_cedula');
+            var nombresLimpiar =  document.getElementById('alu_nombres');
+            var apellidosLimpiar =  document.getElementById('alu_apellidos');
+            var correoLimpiar =  document.getElementById('alu_correo');
             var btnCerrar = document.getElementById('btn-cerrar');
             var btnAgregar = document.getElementById('btn-agregar');
         
@@ -171,8 +175,6 @@
                 nombresLimpiar.classList.add('box-shadow')
                 apellidosLimpiar.value = '';
                 apellidosLimpiar.classList.add('box-shadow')
-                telefonoLimpiar.value = '';
-                telefonoLimpiar.classList.add('box-shadow')
                 correoLimpiar.value = '';
                 correoLimpiar.classList.add('box-shadow')
             });       
@@ -210,6 +212,41 @@
                     }
                 }
             }
+
+            function selectedRow(){
+                var index;
+                var table = document.getElementById("table");
+                document.getElementById("id").textContent = table.rows[1].cells[1].innerHTML;
+                document.getElementById("cedula").textContent = table.rows[1].cells[2].innerHTML;
+                document.getElementById("nombres").textContent = table.rows[1].cells[3].innerHTML;
+                document.getElementById("apellidos").textContent = table.rows[1].cells[4].innerHTML;
+                document.getElementById("carrera").textContent = table.rows[1].cells[5].innerHTML;
+                document.getElementById("correo").textContent = table.rows[1].cells[6].innerHTML;
+                var btnEditar = document.getElementById('editar-btn');
+                table.rows[1].classList.toggle('hover-row')
+                btnEditar.href="editar/"+ table.rows[1].cells[1].innerHTML +"/";
+                for(var i = 1; i < table.rows.length; i++){
+                    table.rows[i].onclick = function(){
+                        document.getElementById("id").textContent = this.cells[1].innerHTML;
+                        document.getElementById("cedula").textContent = this.cells[2].innerHTML;
+                        document.getElementById("nombres").textContent = this.cells[3].innerHTML;
+                        document.getElementById("apellidos").textContent = this.cells[4].innerHTML;
+                        document.getElementById("carrera").textContent = this.cells[5].innerHTML;
+                        document.getElementById("correo").textContent = this.cells[6].innerHTML;
+                        btnEditar.href="editar/"+ this.cells[1].innerHTML +"/";
+                        if(typeof index !== "undefined"){
+                           table.rows[index].classList.toggle("hover-row");
+                        }
+                        table.rows[1].classList.remove('hover-row')
+                        // get the selected row index
+                        index = this.rowIndex;
+                        // add class selected to the row
+                        this.classList.toggle("hover-row");
+                     };
+                }
+            }
+            selectedRow();
+
         </script>
 
         

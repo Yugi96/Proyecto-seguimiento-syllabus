@@ -3,7 +3,8 @@ from django.urls import path, re_path
 from django.contrib.auth.decorators import login_required, permission_required
 from apps.universidad.views import homeCoordinador, UploadFileView, UpdateDocente, \
                                     UploadFileViewAsignatura, UpdateAsignatura, PeriodoView, \
-                                    AsignaturaDocenteView, AsignaturaDocenteUpdateView, EstudianteView
+                                    AsignaturaDocenteView, AsignaturaDocenteUpdateView, EstudianteView, \
+                                    EstudianteUpdateView
 from apps.usuario.views import ListaMensajesView
 
 app_name = 'coordinador'
@@ -15,6 +16,7 @@ urlpatterns = [
     re_path('^docentes/editar/(?P<pk>\d+)/', permission_required('universidad.Coordinador')(UpdateDocente.as_view()), name='docente_editar'),
     
     re_path('^estudiantes/$', permission_required('universidad.Coordinador')(EstudianteView.as_view()), name='estudiantes'),
+    re_path('^estudiantes/editar/(?P<pk>\d+)/', permission_required('universidad.Coordinador')(EstudianteUpdateView.as_view()), name='estudiante_editar'),
     
     re_path('^asignaturas/$', permission_required('universidad.Coordinador')(UploadFileViewAsignatura.as_view()), name='asignaturas'),
     re_path('^asignaturas/editar/(?P<pk>.+?)/', permission_required('universidad.Coordinador')(UpdateAsignatura.as_view()), name='asignaturas_editar'),

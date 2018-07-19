@@ -957,6 +957,14 @@ body {
     width: 29%;
 }
 
+.w-35 {
+    width: 35%;
+}
+
+.w-65 {
+    width: 65%;
+}
+
 .w-20 {
     width: 19%;
 }
@@ -1003,4 +1011,9 @@ body {
 
 .margin-left {
     margin-left: 20px;
+}
+
+#id {
+    visibility: hidden;
+    position: absolute;
 }
