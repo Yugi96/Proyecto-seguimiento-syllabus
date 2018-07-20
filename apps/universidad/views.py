@@ -16,7 +16,7 @@ from .forms import DocenteForm, DocenteUpdateForm
 # Import Asignaturas
 from .forms import AsignaturaForm, AsignaturaUpdateForm
 # Import Estudiante Curso
-from .forms import AlumnoForm, CursoForm, UserForm, UserUpdateForm, AlumnoUpdateForm
+from .forms import AlumnoForm, CursoForm, UserForm, UserUpdateForm, AlumnoUpdateForm, CursoUpdateForm
 # Import Periodo
 from .forms import PeriodoForm
 # Import Asignatura Docente
@@ -105,10 +105,22 @@ class PeriodoView(FormMessageMixin, CreateView):
         context = super(PeriodoView, self).get_context_data(**kwargs)
         context['periodos_list'] = Periodo.objects.filter(per_estado=True)
         if len(context['periodos_list']) != 0:
-            context['cursos_list'] = Curso.objects.filter(cur_estado=True, periodo_id = context['periodos_list'][0].id ).order_by('alumno')
-        if len(context['periodos_list']) != 0:
+            context['cursos_list'] = Curso.objects.filter(cur_estado=True, cur_eliminado=False, periodo_id = context['periodos_list'][0].id ).order_by('alumno')
             context['docentes_asingaturas_list'] = Asignatura_Docente.objects.filter(asi_doc_estado=True, asi_doc_eliminado=False, periodo_id = context['periodos_list'][0].id ).order_by('docente')
         return context
+    
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object
+        form = self.form_class(request.POST)
+        periodoInicio = request.POST["per_inicio"]
+        periodoFin = request.POST["per_fin"]
+        if periodoFin <= periodoInicio:
+            return self.form_invalid(form, **kwargs)
+        if form.is_valid():
+            form.save()
+            return self.form_valid(form, **kwargs)
+        else:
+            return self.form_invalid(form, **kwargs)
 
 class AsignaturaDocenteView(FormMessageMixin, CreateView):
     form_class = AsignaturaDocenteForm
@@ -124,6 +136,62 @@ class AsignaturaDocenteUpdateView(FormMessageMixin, UpdateView):
     template_name = 'coordinador/periodo/editar_docente.periodo.template.html'
     form_valid_message = 'ASIGNATURAS ACTUALIZADA CON EXITO'
     form_invalid_message = "ERROR: NO SE PUDO ACTUALIZAR EL REGISTRO"
+
+class CursoView(FormMessageMixin, CreateView):
+    form_class = CursoForm
+    success_url = reverse_lazy('coordinador:periodos')
+    template_name = 'coordinador/periodo/agregar_curso.periodo.template.html'
+    form_valid_message = 'ESTUDIANTE AGREGADO CON EXITO'
+    form_invalid_message = "ERROR: YA EXISTE UN ESTUDIANTE EN EL CURSO"
+    
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object
+        form = self.form_class(request.POST)
+        cursosList = Curso.objects.filter(cur_estado=True, cur_eliminado=False)
+        alumnoCarrera = Alumno.objects.filter(id=request.POST['alumno'])
+        user = User.objects.get(id=alumnoCarrera[0].usuario_id)
+        cursoNuevo = "{} | {} | {} | {}".format(request.POST['semestre'], request.POST['periodo'], request.POST['cur_paralelo'], alumnoCarrera[0].carrera_id)
+        for cursoList in cursosList:
+            cursoCadena = "{} | {} | {} | {}".format(cursoList.semestre_id, cursoList.periodo_id, cursoList.cur_paralelo, cursoList.alumno.carrera_id)   
+            if cursoCadena == cursoNuevo:
+                return self.form_invalid(form, **kwargs)
+        if form.is_valid():
+            form.save()
+            user.is_active = True
+            user.save()
+            return self.form_valid(form, **kwargs)
+        else:
+            return self.form_invalid(form, **kwargs)
+
+class CursoUpdateView(FormMessageMixin, UpdateView):
+    model = Curso
+    form_class = CursoUpdateForm
+    success_url = reverse_lazy('coordinador:periodos')
+    template_name = 'coordinador/periodo/editar_curso.periodo.template.html'
+    form_valid_message = 'ESTUDIANTE ACTUALIZADA CON EXITO'
+    form_invalid_message = "ERROR: YA EXISTE UN ESTUDIANTE EN EL CURSO"
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object
+        id_curso = kwargs['pk']
+        curso = self.model.objects.get(id=id_curso)
+        form = self.form_class(request.POST, instance=curso)
+        cursosList = Curso.objects.filter(cur_estado=True, cur_eliminado=False).exclude(alumno_id = curso.alumno_id)
+        alumnoCarrera = Alumno.objects.filter(id=curso.alumno_id)
+        user = User.objects.get(id=alumnoCarrera[0].usuario_id)
+        cursoNuevo = "{} | {} | {} | {}".format(request.POST['semestre'], curso.periodo_id, request.POST['cur_paralelo'], alumnoCarrera[0].carrera_id)
+        for cursoList in cursosList:
+            cursoCadena = "{} | {} | {} | {}".format(cursoList.semestre_id, cursoList.periodo_id, cursoList.cur_paralelo, cursoList.alumno.carrera_id)   
+            if cursoCadena == cursoNuevo:
+                return self.form_invalid(form)
+        if request.POST["cur_eliminado"] == "on":
+            user.is_active = False
+            user.save()
+        if form.is_valid():
+            form.save()
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
 
 
 class EstudianteView(FormMessageMixin, CreateView):
@@ -152,7 +220,7 @@ class EstudianteView(FormMessageMixin, CreateView):
             permission = Permission.objects.get(codename='Estudiante')
             alumno = form.save(commit=False)
             user = form2.save(commit=False)
-            user.password = make_password('8v0Semestre2019')
+            user.password = make_password('8v0Semestre2018')
             user.is_active = False
             user.save()
             user.user_permissions.add(permission)
@@ -192,8 +260,13 @@ class EstudianteUpdateView(FormMessageMixin, UpdateView):
         form = self.form_class(request.POST, instance=alumno)
         form2 = self.second_form_class(request.POST, instance=usuario)
         if form.is_valid() and form2.is_valid():
-            form.save()
-            form2.save()
+            estudiante = form.save()
+            if estudiante.alu_estado == False:
+                usuario.is_active = False
+                usuario.save()
+                form2.save()
+            else:
+                form2.save()
             return self.form_valid(form)
         else:
             return self.form_invalid(form)

@@ -70,7 +70,7 @@
                 </div>
             {% else %}
                 <div class="content-buttom-ad fl-start">
-                    <a class="btn-agregar bg-dark" href=""><i class="icon-btn fas fa-plus" ></i>AGREGAR ESTUDIANTE</a>
+                    <a class="btn-agregar bg-dark" href="{% url 'coordinador:periodos_curso_agregar' %}"><i class="icon-btn fas fa-plus" ></i>AGREGAR ESTUDIANTE</a>
                     <a class="btn-agregar bg-dark margin-left" href="{% url 'coordinador:periodos_docentes_agregar' %}"><i class="icon-btn fas fa-plus" ></i>ASIGNAR MATERIA A DOCENTE</a>
                 </div>
             {% endif %}
@@ -108,7 +108,7 @@
             {% endif %}
 
             {% if docentes_asingaturas_list %}
-            <div class="docente-asignatura-content">
+            <div class="docente-asignatura-content table-wrapper-scroll-y">
                 <table class="table">
                     <thead class="bg-primary blanco">
                         <tr>
@@ -145,8 +145,8 @@
             {% endif %}
 
             {% if cursos_list %}
-                <div class="cursos-content">
-                    <table class="table">
+                <div class="cursos-content table-wrapper-scroll-y">
+                    <table class="table table-striped">
                         <thead class="bg-primary blanco">
                             <tr>
                                 <th scope="col"></th>
@@ -169,7 +169,7 @@
                                     <td class="text-center">{{curso.semestre}}</td>
                                     <td class="text-center">{{curso.cur_paralelo}}</td>
                                     <td class="text-center">
-                                        <a class="btn-editar btn-asignatura" href=""></i>EDITAR</a>
+                                        <a class="btn-editar btn-asignatura" href="{% url 'coordinador:periodos_curso_editar' curso.id %}"></i>EDITAR</a>
                                     </td>
                                     <td></td
                                 </tr>
@@ -211,8 +211,15 @@
 <script src="{% static 'lib/bootstrap-datepicker/js/bootstrap-datepicker.min.js'%}"></script>
 <script src="{% static 'lib/bootstrap-datepicker/locales/bootstrap-datepicker.es.min.js'%}"></script>
 <script>
+        var now = new Date();
+        var start = new Date(now.getFullYear(), 0, 0);
+        var diff = now - start;
+        var oneDay = 1000 * 60 * 60 * 24;
+        var day = Math.floor(diff / oneDay);
+        var startdate = "-"+day+"d";
         $('.datepicker').datepicker({
             format: "dd/mm/yyyy",
+            startDate: startdate,
             language: "es"
         });
 </script>

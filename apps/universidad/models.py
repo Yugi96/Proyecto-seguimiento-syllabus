@@ -62,6 +62,10 @@ class Curso(models.Model):
     periodo = models.ForeignKey(Periodo, on_delete=models.CASCADE,default="")
     cur_paralelo = models.CharField(max_length=5)
     cur_estado = models.BooleanField(default=True)
+    cur_eliminado = models.BooleanField(default=False)
+
+    # class Meta:
+    #     unique_together = ("semestre", "periodo", "cur_paralelo",)
 
 class Asignatura(models.Model):
     asi_codigo = models.CharField(max_length=20, primary_key=True)

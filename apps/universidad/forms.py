@@ -249,8 +249,8 @@ class AsignaturaDocenteForm(forms.ModelForm):
         noMostrarDocentes = []
         for docente in docentesList:
             noMostrarDocentes.append(docente.docente_id)
-        self.fields['docente'].queryset = Docente.objects.filter(doc_estado=True).exclude(doc_cedula__in=noMostrarDocentes)
-        self.fields['asignatura'].queryset = Asignatura.objects.filter(asi_estado=True)
+        self.fields['docente'].queryset = Docente.objects.filter(doc_estado=True).exclude(doc_cedula__in=noMostrarDocentes).order_by('doc_nombres', 'doc_apellidos')
+        self.fields['asignatura'].queryset = Asignatura.objects.filter(asi_estado=True).order_by('asi_nombre')
         self.fields['periodo'].queryset = Periodo.objects.filter(per_estado=True)
 
     class Meta:
@@ -287,7 +287,7 @@ class AsignaturaDocenteForm(forms.ModelForm):
 class AsignaturaDocenteUpdateForm(forms.ModelForm):
     def __init__(self,*args,**kwargs):
         super (AsignaturaDocenteUpdateForm,self ).__init__(*args,**kwargs)
-        self.fields['asignatura'].queryset = Asignatura.objects.filter(asi_estado=True)
+        self.fields['asignatura'].queryset = Asignatura.objects.filter(asi_estado=True).order_by('asi_nombre')
 
     class Meta:
         model = Asignatura_Docente
@@ -308,11 +308,7 @@ class AsignaturaDocenteUpdateForm(forms.ModelForm):
                 'id' : 'per_inicio',
             }),
             'asi_doc_eliminado' : forms.CheckboxInput(attrs={
-                'data-toggle' : 'popover',
-                'title' : 'DAR DE BAJA',
                 'class' : 'campo-check',
-                'data-trigger' : 'focus',
-                'data-content' : 'AL DAR DE BAJA A UN DOCENTE, ESTE NO SE MOSTRARÁ EN LA LISTA PRINCIPAL. PUEDE ACCEDER A LOS DOCENTES INACTIVOS EN LA OPCIÓN HISTORIA DEL MENÚ LATERAL',
             })
         }
 
@@ -375,25 +371,41 @@ class AlumnoUpdateForm(forms.ModelForm):
         }
 
 class CursoForm(forms.ModelForm):
+    
     def __init__(self,*args,**kwargs):
         super (CursoForm,self ).__init__(*args,**kwargs)
+        alumnosList = Curso.objects.filter(cur_estado=True, cur_eliminado=False)
+        noMostrarAlumnos = []
+        for alumno in alumnosList:
+            noMostrarAlumnos.append(alumno.alumno_id)
+        self.fields['alumno'].queryset = Alumno.objects.filter(alu_estado=True).exclude(id__in=noMostrarAlumnos)
+        self.fields['semestre'].queryset = Semestre.objects.filter(sem_estado=True)
         self.fields['periodo'].queryset = Periodo.objects.filter(per_estado=True)
+
+
     class Meta:
         model = Curso
 
         fields = [
+            'alumno',
             'semestre',
             'periodo',
             'cur_paralelo',
         ]
 
         labels = {
+            'alumno' : 'ALUMNO',
             'semestre' : 'SEMESTRE',
             'periodo' : 'PERIODO',
             'cur_paralelo' : 'PARALELO',
         }
 
         widgets = {
+            'alumno' : forms.Select(attrs={
+                'class' : 'custom-select', 
+                # 'id' : 'per_nombre', 
+                'required' : 'true',
+            }),
             'semestre' : forms.Select(attrs={
                 'class' : 'custom-select', 
                 # 'id' : 'per_nombre', 
@@ -410,6 +422,44 @@ class CursoForm(forms.ModelForm):
                 # 'onkeypress' : 'return soloLetras(event);',
                 'onkeyup' : 'convertirMayuscula(this);'
             }),
+        }
+
+class CursoUpdateForm(forms.ModelForm):
+    
+    def __init__(self,*args,**kwargs):
+        super (CursoUpdateForm,self ).__init__(*args,**kwargs)
+        self.fields['semestre'].queryset = Semestre.objects.filter(sem_estado=True)
+
+    class Meta:
+        model = Curso
+
+        fields = [
+            'semestre',
+            'cur_paralelo',
+            'cur_eliminado'
+        ]
+
+        labels = {
+            'semestre' : 'SEMESTRE',
+            'cur_paralelo' : 'PARALELO',
+            'cur_eliminado' : 'QUITAR',
+        }
+
+        widgets = {
+            'semestre' : forms.Select(attrs={
+                'class' : 'custom-select', 
+                # 'id' : 'per_nombre', 
+                'required' : 'true',
+            }),
+            'cur_paralelo' : forms.TextInput(attrs={
+                'class' : 'input-campo', 
+                # 'id' : 'doc_nombres',
+                # 'onkeypress' : 'return soloLetras(event);',
+                'onkeyup' : 'convertirMayuscula(this);'
+            }),
+            'cur_eliminado' : forms.CheckboxInput(attrs={
+                'class' : 'campo-check',
+            })
         }
 
 class UserForm(forms.ModelForm):
