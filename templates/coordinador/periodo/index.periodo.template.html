@@ -81,8 +81,8 @@
                     <div class="periodo-title">
                         <span class="title-label">{{ periodos_list.0.per_nombre }}</span>
                         <div class="content-buttom-et">
-                                <a class="btn-editar btn-periodo blanco" href=""><i class="icon-btn fas fa-pencil-alt"></i>EDITAR</a>
-                                <a class="btn-cerrar btn-periodo blanco" href=""><i class="icon-btn fas fa-times"></i>TERMINAR PERIODO</a>
+                                <a class="btn-editar btn-periodo blanco" href="{% url 'coordinador:periodo_editar' periodos_list.0.id %}"><i class="icon-btn fas fa-pencil-alt"></i>EDITAR</a>
+                                <a class="btn-cerrar btn-periodo blanco" href="{% url 'coordinador:periodo_terminar' periodos_list.0.id %}"><i class="icon-btn fas fa-times"></i>TERMINAR PERIODO</a>
                         </div>
                     </div>
                     <div class="content-periodo-descripcion">

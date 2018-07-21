@@ -1,0 +1,73 @@
+{% extends 'base/base.app.coordinador.template.html'%}
+{% load staticfiles %}
+{% block title %}
+    COORDINADOR
+{% endblock title %}
+
+{% block estudiantes-activo %}
+    active-menu-item
+{% endblock estudiantes-activo %}
+
+{% block content %}
+    {% if messages %}
+    {% for message in messages %}
+        <div class="message-{{ message.tags }} alert alert-warning alert-dismissible fade show content-error" role="alert">
+            {{ message }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    {% endfor %}
+    {% endif %}
+    <div class="content-docentes-editar">
+        <form method="post" class="w-100">
+            {% csrf_token %}
+            <div class="docentes-editar-top modal-header">
+                <h5 class="modal-title">TERMINAR PERIODO</h5>
+                <div class="group-dar-baja">
+                    {{ form.per_estado }}
+                </div>
+            </div>
+            <div class="modal-body">
+                <div class="modal-docente">
+                    <div class="group-fila-cna jc-center ">
+                        <div class="group-campo w-100 ml-10 text-just ">
+                            <h4 class="title-mensaje">CONSIDERACIONES</h4>
+                            <p class="p-mensaje"><i class="fas fa-check check-mensaje"></i>LAS ASIGNATURAS QUE CADA DOCENTE IMPARTE EN EL PERIODO SERÁN TERMINADAS.</p>
+                            <p class="p-mensaje"><i class="fas fa-check check-mensaje"></i>LOS ESTUDIANTES DE CADA CURSO SERÁN DESHABILITADOS Y SE LES QUITARA EL PERMISO DEL SISTEMA.</p>
+                            <p class="p-mensaje"><i class="fas fa-check check-mensaje"></i>LOS PERIODOS TERMINADOS NO SE PODRÁN RESTABLECER.</p>
+                            <p class="p-mensaje"><i class="fas fa-check check-mensaje"></i>LOS PERIODOS TERMINADOS PODRÁN SER VISUALIZADOS EN OPCIÓN HISTORIAL DEL MENÚ LATERAL.</p>
+                        </div>
+                    </div>
+                </div> 
+            </div>
+            <div class="modal-footer">
+                <button class="btn-agregar" type="submit" id="btnSubmit"><i class="icon-btn fas fa-save"></i>GUARDAR CAMBIOS</button>
+                <a href="{% url 'coordinador:periodos' %}" class="btn-cerrar" id="btn-cerrar"><i class="icon-btn fas fa-times"></i>CANCELAR</a>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        (function(){
+            var perEstado = document.getElementById('id_per_estado');
+            var btnSubmit = document.getElementById('btnSubmit')
+
+            if (perEstado.checked == true) {
+                btnSubmit.style.display = 'None';
+            } else {
+                btnSubmit.style.display = 'block';
+            }
+
+            perEstado.addEventListener('change', ()=>{
+                if (perEstado.checked == true) {
+                    btnSubmit.style.display = 'None';
+                } else {
+                    btnSubmit.style.display = 'block';
+                }
+            });
+        })();  
+    </script>
+
+{% endblock content %}
+

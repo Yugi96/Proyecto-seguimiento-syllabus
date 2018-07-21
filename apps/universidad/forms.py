@@ -242,6 +242,25 @@ class PeriodoForm(forms.ModelForm):
             }),
         }
 
+class TerminarPeriodoForm(forms.ModelForm):
+    class Meta:
+        model = Periodo
+
+        fields = [
+            'per_estado',
+        ]
+
+        labels = {
+            'per_estado' : 'TERMINAR PERIODO',
+        }
+
+        widgets = {
+            'per_estado' : forms.CheckboxInput(attrs={
+                'class' : 'campo-check',
+                'id' : 'id_per_estado'
+            })
+        }
+
 class AsignaturaDocenteForm(forms.ModelForm):
     def __init__(self,*args,**kwargs):
         super (AsignaturaDocenteForm,self ).__init__(*args,**kwargs)

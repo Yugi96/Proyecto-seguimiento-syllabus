@@ -9,6 +9,8 @@ from django.urls import reverse_lazy
 from django.http import HttpResponseRedirect
 from django.core import serializers
 
+from datetime import datetime
+
 from .models import Docente, Asignatura, Semestre, Periodo, Curso, Asignatura_Docente, Alumno, Curso
 
 # Import Docentes
@@ -18,7 +20,7 @@ from .forms import AsignaturaForm, AsignaturaUpdateForm
 # Import Estudiante Curso
 from .forms import AlumnoForm, CursoForm, UserForm, UserUpdateForm, AlumnoUpdateForm, CursoUpdateForm
 # Import Periodo
-from .forms import PeriodoForm
+from .forms import PeriodoForm, TerminarPeriodoForm
 # Import Asignatura Docente
 from .forms import AsignaturaDocenteForm, AsignaturaDocenteUpdateForm
 
@@ -44,8 +46,6 @@ class FormMessageMixin(object):
     @property
     def form_valid_message(self):
         return NotImplemented
-
-    # form_invalid_message = 'ERROR: EL NÚMERO DE CÉDULA YA EXISTE'
 
     def form_valid(self, form):
         messages.success(self.request, self.form_valid_message)
@@ -99,7 +99,6 @@ class PeriodoView(FormMessageMixin, CreateView):
     success_url = reverse_lazy('coordinador:periodos')
     template_name = 'coordinador/periodo/index.periodo.template.html'
     form_valid_message = 'PERIODO AGREGADO CON EXITO'
-    form_invalid_message = "ERROR: NO SE PUDO INGRESAR EL PERIODO"
     
     def get_context_data(self, **kwargs):
         context = super(PeriodoView, self).get_context_data(**kwargs)
@@ -114,13 +113,78 @@ class PeriodoView(FormMessageMixin, CreateView):
         form = self.form_class(request.POST)
         periodoInicio = request.POST["per_inicio"]
         periodoFin = request.POST["per_fin"]
-        if periodoFin <= periodoInicio:
-            return self.form_invalid(form, **kwargs)
+        periodoInicio = datetime.strptime(periodoInicio, '%d/%m/%Y')
+        periodoFin = datetime.strptime(periodoFin, '%d/%m/%Y')
+        if periodoInicio >= periodoFin:
+            form_invalid_message = "ERROR: LA FECHA DE INICIO DEBE SER MENOR A LA DE FIN."
+            return self.form_invalid(form, form_invalid_message)
         if form.is_valid():
             form.save()
             return self.form_valid(form, **kwargs)
         else:
-            return self.form_invalid(form, **kwargs)
+            return self.form_invalid(form, "ERROR: PERIODO EXISTENTE")
+    
+    def form_invalid(self, form, form_invalid_message):
+        messages.error(self.request, form_invalid_message)
+        return super(PeriodoView, self).form_invalid(form)
+
+class PeriodoUpdateView(UpdateView):
+    model = Periodo
+    form_class = PeriodoForm
+    success_url = reverse_lazy('coordinador:periodos')
+    template_name = 'coordinador/periodo/actualizar.periodo.template.html'
+    form_valid_message = 'PERIODO ACTUALIZADO CON EXITO'
+    
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object
+        id_periodo = kwargs['pk']
+        periodo = self.model.objects.get(id=id_periodo)
+        form = self.form_class(request.POST, instance=periodo)
+        periodoInicio = request.POST["per_inicio"]
+        periodoFin = request.POST["per_fin"]
+        periodoInicio = datetime.strptime(periodoInicio, '%d/%m/%Y')
+        periodoFin = datetime.strptime(periodoFin, '%d/%m/%Y')
+        if periodoInicio >= periodoFin:
+            form_invalid_message = "ERROR: LA FECHA DE INICIO DEBE SER MENOR A LA DE FIN."
+            return self.form_invalid(form, form_invalid_message)
+        if form.is_valid():
+            form.save()
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form, "ERROR: NO SE PUDO INGRESAR EL PERIODO")
+    
+    def form_invalid(self, form, form_invalid_message):
+        messages.error(self.request, form_invalid_message)
+        return super(PeriodoUpdateView, self).form_invalid(form)
+
+class TerminarPeriodoView(FormMessageMixin, UpdateView):
+    model = Periodo
+    form_class = TerminarPeriodoForm
+    success_url = reverse_lazy('coordinador:periodos')
+    template_name = 'coordinador/periodo/terminar.periodo.template.html'
+    form_valid_message = 'PERIODO CULMINADO'
+    form_invalid_message = "ERROR: NO SE PUDO CULMINAR EL PERIODO"
+    
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object
+        id_periodo = kwargs['pk']
+        periodo = self.model.objects.get(id=id_periodo)
+        form = self.form_class(request.POST, instance=periodo)
+        if form.is_valid():
+            docentes = Asignatura_Docente.objects.filter(periodo_id=id_periodo)
+            cursos = Curso.objects.filter(periodo_id=id_periodo)
+            for docente in docentes:
+                docente.asi_doc_estado = False
+                docente.save()
+            for curso in cursos:
+                curso.alumno.usuario.is_active = False
+                curso.alumno.usuario.save()
+                curso.cur_estado = False
+                curso.save()
+            form.save()
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
 
 class AsignaturaDocenteView(FormMessageMixin, CreateView):
     form_class = AsignaturaDocenteForm
