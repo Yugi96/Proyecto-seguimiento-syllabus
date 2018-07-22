@@ -1064,3 +1064,126 @@ body {
 .asignatura-docente {
     font-size: .7em;
 }
+
+/* Seguimiento estilos */
+
+.card-header {
+    cursor: pointer;
+}
+
+.card-body-content {
+    margin: 10px 10px;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid #dee2e6;
+}
+
+.card-body-top {
+    width: 100%;
+}
+
+.seguimiento-btn-agregar {
+    transform: scale(.8);
+}
+
+.seguimiento-btn-agregar:hover {
+    transform: scale(.9);
+}
+
+.table-bordered{ 
+    margin: 0;
+}
+
+.seguimiento-content-btn {
+    margin: 0;
+}
+
+.table > tbody > tr > td {
+    vertical-align: middle;
+    padding: 5px 20px;
+}
+
+.table > thead > tr > th {
+    vertical-align: middle;
+    padding: 5px 20px;
+}
+
+.input-seg_asignatura {
+    border: none;
+    width: 100%;
+}
+
+.input-seg_asignatura:disabled {
+    background: transparent;
+    color: #2D2F36;
+    
+}
+
+.content-input-seguimiento {
+    display: flex;
+    flex-wrap: wrap;
+   
+}
+
+.seg_porcentaje-content {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.informacion-periodo {
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0;
+}
+
+.porcentaje-icon {
+    margin-left: 20px;
+    font-weight: bold;
+}
+
+.w-50 {
+    width: 50%;
+}
+
+.mr-20 {
+    margin-right: 20px;
+}
+
+.btn-acciones {
+    display: inline-block;
+    padding: 5px 15px;
+    background: #000;
+    color: #fff;
+}
+
+.content-acciones {
+    display: flex;
+    justify-content: center;
+}
+
+.btn-acciones-editar {
+    background: #F25D5D;
+    border-radius: 0 5px 5px 0;
+}
+
+.btn-acciones-eliminar {
+    border-radius: 5px 0 0 5px;
+    background: #F8A618;
+}
+
+.btn-acciones:hover {
+    color: #fff; 
+}
+
+.btn-acciones-editar:hover {
+    background: rgb(207, 83, 83);
+}
+
+.btn-acciones-eliminar:hover {
+    background: rgb(218, 146, 22);
+}
+
+.mt-20{
+    margin-top: 20px;
+}

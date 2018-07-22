@@ -78,6 +78,9 @@ class Asignatura(models.Model):
     def __str__(self):
         return "{} - {}".format(self.asi_nombre, self.semestre)
 
+    def nombreAsignatura(self):
+        return "{}".format(self.asi_nombre)
+
 class Docente(models.Model):
     doc_cedula = models.CharField(max_length=10, primary_key=True)
     doc_nombres = models.CharField(max_length=50)

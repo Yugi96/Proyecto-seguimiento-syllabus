@@ -5,6 +5,70 @@
 {% endblock title %}
 
 {% block modal %}
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content modal-docente-content ">
+            <form method="post">
+                {% csrf_token %}
+                <div class="modal-header">
+                    <div class="content-input-seguimiento">
+                        <input type="text" name="seg_asignatura" readonly="readonly" name="seg_seguimiento" class="modal-title input-seg_asignatura" id="asignatura" >
+                        <input type="text" name="seg_docente" readonly="readonly" name="seg_docente" class="input-seg_asignatura" id="docente" >
+                    </div>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="modal-docente">
+                        <div class="group-fila-cna">
+                            <div class="group-campo campo-cedula">
+                                <input type="text" name="seg_periodo" class="input-campo" id="periodo" style="display:none;">
+                            </div>
+                            <div class="group-campo campo-nombre-apellido">
+                                <input type="text" name="seg_semestre" class="input-campo" id="semestre" style="display:none;">
+                            </div>
+                            <div class="group-campo campo-nombre-apellido">
+                                <input type="text" name="seg_paralelo" class="input-campo" id="paralelo" style="display:none;">
+                            </div>
+                        </div>
+                        <div class="group-fila-cna jc-center">
+                            <div class="group-campo w-20 mr-20">
+                                <label for="{{ form.seg_fecha.name }}" class="label-campo">{{ form.seg_fecha.label }}</label>
+                                <div class="input-group date">
+                                    {{ form.seg_fecha }}
+                                </div>
+                            </div>
+                            <div class="group-campo w-20 ml-10">
+                                <label for="{{ form.seg_porcentaje_real.name }}" class="label-campo">{{ form.seg_porcentaje_real.label }}</label>
+                                <div class="seg_porcentaje-content">
+                                    {{ form.seg_porcentaje_real }}
+                                    <span class="porcentaje-icon">%</span>
+                                </div>
+                            </div>
+                            <div class="group-campo w-20 ml-10">
+                                <label for="{{ form.seg_porcentaje_ideal.name }}" class="label-campo">{{ form.seg_porcentaje_ideal.label }}</label>
+                                <div class="seg_porcentaje-content">
+                                    {{ form.seg_porcentaje_ideal }}
+                                    <span class="porcentaje-icon">%</span>
+                                </div>
+                            </div>
+                            
+                        </div>
+                        <div class="campo-mensaje">
+                            {{ form.seg_observaciones }}
+                        </div>
+                    </div> 
+                </div>
+                <div class="modal-footer">
+                    <button class="btn-agregar" type="submit"><i class="icon-btn fas fa-save"></i>GUARDAR</button>
+                    <button class="btn-cerrar"  data-dismiss="modal" id="btn-cerrar"><i class="icon-btn fas fa-times"></i>CANCELAR</button>
+                </div>
+            </form>
+        </div>
+        </div>
+    </div>
 {% endblock modal %}
 
 
@@ -26,19 +90,108 @@
 {% endif %}
     <div class="content-docentes">
         <div class="content-seguimiento">
+            <div class="informacion-periodo">
+                <span id="label-periodo"><strong>PERIODO:</strong> <span>{{curso_list.periodo}}</span></span>
+                <span id="label-semestre"><strong>SEMESTRE:</strong> <span>{{curso_list.semestre}}</span></span>
+                <span id="label-paralelo"><strong>PERALELO:</strong> <span>{{curso_list.cur_paralelo}}</span></span>
+            </div>
             <div class="accordion" id="accordionExample">
-                <div class="card w-100">
-                    <div class="card-header bg-primary text-center" id="headingOne" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                        <h5 class="mb-0 blanco asignatura-title">EMPRENDIMIENTO</h5>
-                        <h6 class="mb-0 blanco asignatura-docente">REDROVAN CASTILLO FAUSTO FABIAN</h6>
-                    </div>
-                    <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
-                    <div class="card-body">
-                        Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
-                    </div>
-                    </div>
-                </div>
+                {% for asignatura_docente in asignatura_docente_list %}
+                    {% for asignatura in asignatura_docente.asignatura.all %}
+                        {% if asignatura in asignaturas_list %}
+                            <div class="card w-100">
+                                <div class="card-header bg-primary text-center" id="heading{{ forloop.parentloop.counter }}" data-toggle="collapse" data-target="#collapse{{ forloop.parentloop.counter }}" aria-expanded="true" aria-controls="collapse{{ asignatura.forloop.parentloop.counter }}">
+                                    <h5 class="mb-0 blanco asignatura-title">{{ asignatura.asi_nombre }}</h5>
+                                    <h6 class="mb-0 blanco asignatura-docente">{{ asignatura_docente.docente }}</h6>
+                                </div>
+                                <div id="collapse{{ forloop.parentloop.counter }}" class="collapse {% if forloop.parentloop.counter == 1 %} show {% endif %}" aria-labelledby="heading{{ asignatura.forloop.parentloop.counter }}" data-parent="#accordionExample">
+                                <div class="card-body">
+                                    <div class="card-body-top">
+                                        <div class="content-btn-agregar seguimiento-content-btn">
+                                            <span class="btn-agregar seguimiento-btn-agregar" data-toggle="modal" data-target="#exampleModalCenter"><i class="icon-btn fas fa-plus" ></i>AGREGAR</span>
+                                        </div>
+                                    </div>
+                                    <div class="card-body-content">
+                                        <table class="table table-bordered">
+                                            <thead>
+                                                <tr>
+                                                <th class="text-center" scope="col">#</th>
+                                                <th scope="col">FECHA</th>
+                                                <th class="text-center" scope="col">PORCENTAJE <br> REAL</th>
+                                                <th class="text-center" scope="col">PORCENTAJE <br> IDEAL</th>
+                                                <th scope="col">OBSERVACIONES</th>
+                                                <th class="text-center" scope="col">ACCIONES</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for seguimiento in seguimiento_list %}
+                                                    {% if seguimiento.asignatura.asi_nombre == asignatura.asi_nombre %}
+                                                        <tr>
+                                                            <th class="text-center" scope="row">{{forloop.counter}}</th>
+                                                            <td>{{seguimiento.seg_fecha |date:'d/m/Y' }}</td>
+                                                            <td class="text-center">{{seguimiento.seg_porcentaje_real}} %</td>
+                                                            <td class="text-center">{{seguimiento.seg_porcentaje_ideal}} %</td>
+                                                            <td>{{seguimiento.seg_observaciones}}</td>
+                                                            <td class="text-center">
+                                                                <div class="content-acciones">
+                                                                    <a class="btn-acciones btn-acciones-eliminar" href="{% url 'estudiante:seguimientos_editar' seguimiento.id %}"><i class="fas fa-pencil-alt"></i></a>
+                                                                    <a class="btn-acciones btn-acciones-editar" href="{% url 'estudiante:seguimientos_eliminar' seguimiento.id %}"><i class="fas fa-trash-alt"></i></a>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    {% endif %}                                                    
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                {% endfor %}
             </div>
         </div>
     </div>
+
+    <script>
+        var btnAgregarList = document.getElementsByClassName('seguimiento-btn-agregar');
+        var cardHeader = document.getElementsByClassName('card-header');
+        var asignatura = document.getElementById('asignatura');
+        var docente = document.getElementById('docente');
+        var periodo = document.getElementById('periodo');
+        var semestre = document.getElementById('semestre');
+        var paralelo = document.getElementById('paralelo');
+        var labelPeriodo = document.getElementById('label-periodo');
+        var labelSemestre = document.getElementById('label-semestre');
+        var labelParalelo = document.getElementById('label-paralelo');
+        
+        for(let i=0; i < btnAgregarList.length; i++){
+            btnAgregarList[i].addEventListener("click", ()=>{
+               asignatura.value = cardHeader[i].children[0].textContent;
+               docente.value = cardHeader[i].children[1].textContent;
+               periodo.value = labelPeriodo.children[1].textContent;
+               semestre.value = labelSemestre.children[1].textContent;
+               paralelo.value = labelParalelo.children[1].textContent;
+            });
+        }
+    </script>
 {% endblock content %}
+
+{% block scripts-opcionales %}
+<script src="{% static 'lib/bootstrap-datepicker/js/bootstrap-datepicker.min.js'%}"></script>
+<script src="{% static 'lib/bootstrap-datepicker/locales/bootstrap-datepicker.es.min.js'%}"></script>
+<script>
+        var now = new Date();
+        var start = new Date(now.getFullYear(), 0, 0);
+        var diff = now - start;
+        var oneDay = 1000 * 60 * 60 * 24;
+        var day = Math.floor(diff / oneDay);
+        var startdate = "-"+day+"d";
+        $('.datepicker').datepicker({
+            format: "dd/mm/yyyy",
+            startDate: startdate,
+            language: "es"
+        });
+</script>
+{% endblock scripts-opcionales %}
