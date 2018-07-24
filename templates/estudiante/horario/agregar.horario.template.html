@@ -1,0 +1,137 @@
+{% extends 'base/base.app.coordinador.template.html'%}
+{% load staticfiles %}
+{% block title %}
+    HORARIO
+{% endblock title %}
+
+{% block horarios-activo %}
+    active-menu-item
+{% endblock horarios-activo %}
+
+{% block content %}
+    {% if messages %}
+    {% for message in messages %}
+        <div class="message-{{ message.tags }} alert alert-warning alert-dismissible fade show content-error" role="alert">
+            {{ message }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    {% endfor %}
+    {% endif %}
+            {% for asignatura_docente in asignatura_docente_list %}
+                <div class="js-docentes" style="display:none;">
+                    <span>{{ asignatura_docente.docente }}</span>
+                    <div>
+                    {% for asignatura in asignatura_docente.asignatura.all %}
+                        {% if asignatura in asignaturas_list %}
+                            <div class="js-docentes-asignaturas">
+                                <span>{{ asignatura.asi_nombre }}</span>
+                                <span>{{ asignatura.asi_num_creditos }}</span>
+                            </div>
+                            {% endif %}
+                    {% endfor %}
+                    </div>
+                </div>
+            {% endfor %}   
+    <div class="content-docentes container-horario">
+        <div class="content-horario-top">
+            <div class="content-horario-top-asignatura">
+                <div class="content-horario-asignatura">
+                    <div class="group-campo w-100">
+                        <label for="" class="label-campo">ASIGNATURA</label>
+                        <select name="asignatura-horario" class="custom-select" id="asignatura-horario" required="">
+                            <option value="" selected="">---------</option>
+                        </select>
+                    </div>
+                    <div class="group-campo w-100">
+                        <label for="" class="label-campo">DOCENTE</label>
+                        <select name="docente-horario" class="custom-select" id="docente-horario" required="">
+                            <option value="" selected="">---------</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="content-horario-dias">
+                    <div class="group-campo w-100 text-center">
+                        <label for="" class="label-campo">NUM. CREDITOS</label>
+                        <p class="num-creditos-asignatura">0</p>
+                    </div>
+                    <span class="btn-dias">DIAS</span>
+                </div>
+            </div>
+            <div class="content-horario-top-dias">
+                <table class="table table-borderless">
+                    <thead class="bg-primary blanco">
+                        <tr>
+                            <th scope="col">DIAS</th>
+                            <th scope="col" class="text-center">NUM. HORAS</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>LUNES</td>
+                            <td class="text-center">2</td>
+                        </tr>
+                        <tr>
+                            <td>MIERCOLES</td>
+                            <td class="text-center">2</td>
+                        </tr>
+                        <tr>
+                            <td>VIERNES</td>
+                            <td class="text-center">2</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="content-horario-top-botones">
+                <span class="btn-agregar btn-content"><i class="icon-btn p-0 fas fa-plus" ></i></span>
+                <span class="btn-cerrar btn-content "><i class="icon-btn p-0 fas fa-times"></i></span>
+            </div>
+        </div>
+        <div class="content-horario-body">
+            <div class="content-horario-body-dias header-lunes">
+                <div class="content-horario-body-dias-header">LUNES</div>
+                <div class="content-horario-body-dias-rows">
+                     
+                </div>
+            </div>
+            <div class="content-horario-body-dias header-martes">
+                <div class="content-horario-body-dias-header">MARTES</div>
+                <div class="content-horario-body-dias-rows"></div>
+            </div>
+            <div class="content-horario-body-dias header-miercoles">
+                <div class="content-horario-body-dias-header">MIERCOLES</div>
+                <div class="content-horario-body-dias-rows"></div>
+            </div>
+            <div class="content-horario-body-dias header-jueves">
+                <div class="content-horario-body-dias-header">JUEVES</div>
+                <div class="content-horario-body-dias-rows"></div>
+            </div>
+            <div class="content-horario-body-dias header-viernes">
+                <div class="content-horario-body-dias-header">VIERNES</div>
+                <div class="content-horario-body-dias-rows"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var docentes = document.getElementsByClassName('js-docentes');
+        var docentesList = {}
+        for(let i=0; i < docentes.length; i++){
+            var listAsignaturas = []
+            for(let k=0; k < docentes[i].children[1].children.length; k++){
+                var asignaturas = {}
+                asignaturas.nombre = docentes[i].children[1].children[k].children[0].textContent
+                asignaturas.num_creditos = docentes[i].children[1].children[k].children[1].textContent
+                listAsignaturas.push(asignaturas)
+            }
+            docentesList[docentes[i].children[0].textContent] = listAsignaturas
+        }
+
+        console.log(docentesList)
+
+
+
+    </script>
+    
+{% endblock content %}

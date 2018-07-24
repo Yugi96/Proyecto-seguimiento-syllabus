@@ -269,7 +269,7 @@ class AsignaturaDocenteForm(forms.ModelForm):
         for docente in docentesList:
             noMostrarDocentes.append(docente.docente_id)
         self.fields['docente'].queryset = Docente.objects.filter(doc_estado=True).exclude(doc_cedula__in=noMostrarDocentes).order_by('doc_nombres', 'doc_apellidos')
-        self.fields['asignatura'].queryset = Asignatura.objects.filter(asi_estado=True).order_by('asi_nombre')
+        self.fields['asignatura'].queryset = Asignatura.objects.filter(asi_estado=True).order_by('semestre')
         self.fields['periodo'].queryset = Periodo.objects.filter(per_estado=True)
 
     class Meta:
@@ -294,8 +294,8 @@ class AsignaturaDocenteForm(forms.ModelForm):
                 'required' : 'true',
             }),
             'asignatura' : forms.CheckboxSelectMultiple(attrs={
-                'class' : 'form-control campo-check-mul h-100 ', 
-                'id' : 'per_inicio',
+                'class' : 'form-control campo-check-mul', 
+                'id' : 'asig_docentes',
             }),
             'periodo' : forms.Select(attrs={
                 'class' : 'form-control custom-select',
@@ -306,7 +306,7 @@ class AsignaturaDocenteForm(forms.ModelForm):
 class AsignaturaDocenteUpdateForm(forms.ModelForm):
     def __init__(self,*args,**kwargs):
         super (AsignaturaDocenteUpdateForm,self ).__init__(*args,**kwargs)
-        self.fields['asignatura'].queryset = Asignatura.objects.filter(asi_estado=True).order_by('asi_nombre')
+        self.fields['asignatura'].queryset = Asignatura.objects.filter(asi_estado=True).order_by('semestre')
 
     class Meta:
         model = Asignatura_Docente
@@ -323,8 +323,8 @@ class AsignaturaDocenteUpdateForm(forms.ModelForm):
 
         widgets = {
             'asignatura' : forms.CheckboxSelectMultiple(attrs={
-                'class' : 'form-control campo-check-mul h-100 ', 
-                'id' : 'per_inicio',
+                'class' : 'form-control campo-check-mul', 
+                'id' : 'asig_docentes',
             }),
             'asi_doc_eliminado' : forms.CheckboxInput(attrs={
                 'class' : 'campo-check',

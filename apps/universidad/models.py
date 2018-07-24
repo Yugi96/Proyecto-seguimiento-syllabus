@@ -76,7 +76,7 @@ class Asignatura(models.Model):
     asi_estado = models.BooleanField(default=True)
 
     def __str__(self):
-        return "{} - {}".format(self.asi_nombre, self.semestre)
+        return "{} - {}".format(self.semestre, self.asi_nombre)
 
     def nombreAsignatura(self):
         return "{}".format(self.asi_nombre)

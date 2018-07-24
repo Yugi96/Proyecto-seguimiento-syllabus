@@ -1,11 +1,14 @@
 from django.shortcuts import render, redirect
+
+from django.db.models import OuterRef, Subquery
+
 from django.db import IntegrityError
 from django.urls import reverse
 from django.contrib import messages
 from django.views.generic import ListView, CreateView, UpdateView, TemplateView, DeleteView
 from django.urls import reverse_lazy
 from django.http import HttpResponseRedirect
-from .models import Seguimiento
+from .models import Seguimiento, Horario
 from apps.universidad.models import Asignatura_Docente, Curso, Alumno, Asignatura, Semestre, Periodo, Docente
 from .forms import SeguimientoForm
 
@@ -113,3 +116,34 @@ class SeguimientoUpdateView(FormMessageMixin ,UpdateView):
     def form_invalid(self, form, form_invalid_message):
         messages.error(self.request, form_invalid_message)
         return super(SeguimientoUpdateView, self).form_invalid(form)
+
+class CursosHorariosListView(ListView):
+    model = Horario
+    template_name = 'estudiante/horario/index.horario.template.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(CursosHorariosListView, self).get_context_data(**kwargs)
+        curso_id = self.kwargs['pk']
+        curso = Curso.objects.get(id=curso_id)
+        context['horario_list'] = Horario.objects.filter(hor_estado=True, semestre_id=curso.semestre_id, periodo_id=curso.periodo_id, hor_paralelo=curso.cur_paralelo)
+        context['curso_list'] = curso
+        return context
+
+class HorarioCreateView(ListView):
+    model = Horario
+    template_name = 'estudiante/horario/agregar.horario.template.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(HorarioCreateView, self).get_context_data(**kwargs)
+        curso_id = self.kwargs['pk']
+        curso = Curso.objects.get(id=curso_id)
+        asignaturas = Asignatura.objects.filter(semestre_id=curso.semestre_id, carrera_id=curso.alumno.carrera_id, asi_estado=True)
+        asignaturas_docentes = Asignatura_Docente.objects.filter(
+            periodo_id=curso.periodo_id, 
+            asi_doc_estado=True, 
+            asi_doc_eliminado=False,
+        ).filter(asignatura__semestre = curso.semestre_id).distinct()
+        context['curso_list'] = curso
+        context['asignatura_docente_list'] = asignaturas_docentes
+        context['asignaturas_list'] = asignaturas
+        return context

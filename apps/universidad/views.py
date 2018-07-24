@@ -83,7 +83,7 @@ class UploadFileViewAsignatura(FormMessageMixin, CreateView):
     form_invalid_message = "ERROR: LA ASIGNATURA YA EXISTE"
 
     def get_context_data(self, **kwargs):
-        kwargs['object_list'] = Asignatura.objects.filter(asi_estado=True).order_by('asi_nombre')
+        kwargs['object_list'] = Asignatura.objects.filter(asi_estado=True).order_by('carrera','semestre')
         return super(UploadFileViewAsignatura, self).get_context_data(**kwargs)
 
 class UpdateAsignatura(FormMessageMixin, UpdateView):
@@ -248,7 +248,8 @@ class CursoUpdateView(FormMessageMixin, UpdateView):
             cursoCadena = "{} | {} | {} | {}".format(cursoList.semestre_id, cursoList.periodo_id, cursoList.cur_paralelo, cursoList.alumno.carrera_id)   
             if cursoCadena == cursoNuevo:
                 return self.form_invalid(form)
-        if request.POST["cur_eliminado"] == "on":
+        esEliminado = request.POST.get("cur_eliminado", False)
+        if esEliminado == "on":
             user.is_active = False
             user.save()
         if form.is_valid():
