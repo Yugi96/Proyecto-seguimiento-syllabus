@@ -4,134 +4,519 @@
     HORARIO
 {% endblock title %}
 
-{% block horarios-activo %}
+{% block periodos-activo %}
     active-menu-item
-{% endblock horarios-activo %}
+{% endblock periodos-activo %}
 
-{% block content %}
-    {% if messages %}
-    {% for message in messages %}
-        <div class="message-{{ message.tags }} alert alert-warning alert-dismissible fade show content-error" role="alert">
-            {{ message }}
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
-    {% endfor %}
-    {% endif %}
-            {% for asignatura_docente in asignatura_docente_list %}
-                <div class="js-docentes" style="display:none;">
-                    <span>{{ asignatura_docente.docente }}</span>
-                    <div>
-                    {% for asignatura in asignatura_docente.asignatura.all %}
-                        {% if asignatura in asignaturas_list %}
-                            <div class="js-docentes-asignaturas">
-                                <span>{{ asignatura.asi_nombre }}</span>
-                                <span>{{ asignatura.asi_num_creditos }}</span>
-                            </div>
-                            {% endif %}
-                    {% endfor %}
+{% block modal %}
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+            <div class="modal-header">
+                <div class="header-modal-dias">
+                    <div class="content-num-creditos-modal">
+                        <span class="num-creditos-modal" id="modal-num-creditos"></span>
+                        <span class="num-creditos-modal">CREDITOS</span>
+                    </div>
+                    <div class="title-modal-header">
+                        <h5 class="modal-asignatura" id="modal-asignatura"></h5>
+                        <p class="modal-docente" id="modal-docente"></p>
                     </div>
                 </div>
-            {% endfor %}   
+                <div class="content-num-dias-semana">
+                    <span for="{{ form.alu_estado.name }}" class="label-dar-baja text-center">NUM. DIAS A LA<br>SEMANA</span>
+                    <input type="text" class="input-campo input-dias" onkeypress='return soloNumeros(event);' id="modal-num-dias" value="0">
+                </div>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="modal-body">
+                
+            </div>
+            <div class="modal-footer">
+                <button class="btn-agregar" id="btn-agregar-dias"><i class="icon-btn fas fa-plus"></i>AGREGAR</button>
+                <button class="btn-cerrar"  data-dismiss="modal" id="btn-cerrar"><i class="icon-btn fas fa-times"></i>CANCELAR</button>
+            </div>
+            </div>
+        </div>
+    </div>
+{% endblock modal %}
+
+{% block content %}
+
+    <div id="content-mensajes"></div>
+    {% if messages %}
+        {% for message in messages %}
+            <div class="message-{{ message.tags }} alert alert-warning alert-dismissible fade show content-error" role="alert">
+                {{ message }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        {% endfor %}
+    {% endif %}
+        {% for asignatura_docente in asignatura_docente_list %}
+            <div class="js-docentes" style="display:none;">
+                <span>{{ asignatura_docente.docente }}</span>
+                <div>
+                {% for asignatura in asignatura_docente.asignatura.all %}
+                    {% if asignatura in asignaturas_list %}
+                        <div class="js-docentes-asignaturas">
+                            <span>{{ asignatura.asi_nombre }}</span>
+                            <span>{{ asignatura.asi_num_creditos }}</span>
+                        </div>
+                        {% endif %}
+                {% endfor %}
+                </div>
+            </div>
+        {% endfor %}   
     <div class="content-docentes container-horario">
         <div class="content-horario-top">
             <div class="content-horario-top-asignatura">
                 <div class="content-horario-asignatura">
                     <div class="group-campo w-100">
-                        <label for="" class="label-campo">ASIGNATURA</label>
-                        <select name="asignatura-horario" class="custom-select" id="asignatura-horario" required="">
-                            <option value="" selected="">---------</option>
+                        <label for="" class="label-campo">DOCENTE</label>
+                        <select name="docente-horario" class="custom-select" id="select-docentes" required="">
+                            <option value="vacio">---------</option>
                         </select>
                     </div>
                     <div class="group-campo w-100">
-                        <label for="" class="label-campo">DOCENTE</label>
-                        <select name="docente-horario" class="custom-select" id="docente-horario" required="">
-                            <option value="" selected="">---------</option>
+                        <label for="" class="label-campo">ASIGNATURA</label>
+                        <select name="asignatura-horario" class="custom-select" id="select-asignaturas" required="">
+                            <option value="vacio">---------</option>
                         </select>
                     </div>
                 </div>
                 <div class="content-horario-dias">
                     <div class="group-campo w-100 text-center">
                         <label for="" class="label-campo">NUM. CREDITOS</label>
-                        <p class="num-creditos-asignatura">0</p>
+                        <p class="num-creditos-asignatura" id="num-creditos">0</p>
                     </div>
-                    <span class="btn-dias">DIAS</span>
+                    <span id="btn-dias" class="btn-dias" >DIAS</span>
                 </div>
             </div>
             <div class="content-horario-top-dias">
-                <table class="table table-borderless">
-                    <thead class="bg-primary blanco">
-                        <tr>
-                            <th scope="col">DIAS</th>
-                            <th scope="col" class="text-center">NUM. HORAS</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>LUNES</td>
-                            <td class="text-center">2</td>
-                        </tr>
-                        <tr>
-                            <td>MIERCOLES</td>
-                            <td class="text-center">2</td>
-                        </tr>
-                        <tr>
-                            <td>VIERNES</td>
-                            <td class="text-center">2</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class="content-horario-top-botones">
-                <span class="btn-agregar btn-content"><i class="icon-btn p-0 fas fa-plus" ></i></span>
-                <span class="btn-cerrar btn-content "><i class="icon-btn p-0 fas fa-times"></i></span>
+                <div class="dias-asignados-row header text-center">
+                    <span class="asignatura-dias-asignados w-100">DIAS ASIGNADOS</span>
+                </div>
+                <div class="dias-asignados-rows" id="dias-asignados-rows">
+                </div>
             </div>
         </div>
         <div class="content-horario-body">
             <div class="content-horario-body-dias header-lunes">
                 <div class="content-horario-body-dias-header">LUNES</div>
-                <div class="content-horario-body-dias-rows">
-                     
-                </div>
+                <div class="content-horario-body-dias-rows" id="dia-LUNES"></div>
             </div>
             <div class="content-horario-body-dias header-martes">
                 <div class="content-horario-body-dias-header">MARTES</div>
-                <div class="content-horario-body-dias-rows"></div>
+                <div class="content-horario-body-dias-rows" id="dia-MARTES"></div>
             </div>
             <div class="content-horario-body-dias header-miercoles">
                 <div class="content-horario-body-dias-header">MIERCOLES</div>
-                <div class="content-horario-body-dias-rows"></div>
+                <div class="content-horario-body-dias-rows" id="dia-MIERCOLES"></div>
             </div>
             <div class="content-horario-body-dias header-jueves">
                 <div class="content-horario-body-dias-header">JUEVES</div>
-                <div class="content-horario-body-dias-rows"></div>
+                <div class="content-horario-body-dias-rows" id="dia-JUEVES"></div>
             </div>
             <div class="content-horario-body-dias header-viernes">
                 <div class="content-horario-body-dias-header">VIERNES</div>
-                <div class="content-horario-body-dias-rows"></div>
+                <div class="content-horario-body-dias-rows" id="dia-VIERNES"></div>
             </div>
+        </div>
+        <div class="content-botones-formulario">
+            <form action="" method="post" id="formHorario">
+                {% csrf_token %}
+                {{form.sentencia}}
+            </form>
+            <button class="btn-agregar mr-20" type="submit" id="btn-submit"><i class="icon-btn fas fa-plus "></i>AGREGAR</button>
+            <a class="btn-cerrar" href="{% url 'coordinador:periodos' %}" data-dismiss="modal" id="btn-cerrar"><i class="icon-btn fas fa-times"></i>CANCELAR</a>
         </div>
     </div>
 
-    <script>
-        var docentes = document.getElementsByClassName('js-docentes');
-        var docentesList = {}
-        for(let i=0; i < docentes.length; i++){
-            var listAsignaturas = []
-            for(let k=0; k < docentes[i].children[1].children.length; k++){
-                var asignaturas = {}
-                asignaturas.nombre = docentes[i].children[1].children[k].children[0].textContent
-                asignaturas.num_creditos = docentes[i].children[1].children[k].children[1].textContent
-                listAsignaturas.push(asignaturas)
-            }
-            docentesList[docentes[i].children[0].textContent] = listAsignaturas
-        }
-
-        console.log(docentesList)
-
-
-
-    </script>
+    
     
 {% endblock content %}
+{% block scripts-opcionales %}
+    <script>
+        document.getElementById("id_sentencia").style.display = "none";
+        var asignaturasComparar = [];
+        function leerDatabase(){
+            var docentesContent = document.getElementsByClassName('js-docentes');
+            var docentes = {};
+            var selectDocentes = document.getElementById("select-docentes");
+            var selectAsignaturas = document.getElementById("select-asignaturas");
+            var numCreditos = document.getElementById("num-creditos");
+
+            for(let i=0; i < docentesContent.length; i++){
+                var listAsignaturas = [];
+                for(let k=0; k < docentesContent[i].children[1].children.length; k++){
+                    var asignaturas = {};
+                    asignaturasComparar.push(docentesContent[i].children[1].children[k].children[0].textContent);
+                    asignaturas[docentesContent[i].children[1].children[k].children[0].textContent] = docentesContent[i].children[1].children[k].children[1].textContent;
+                    listAsignaturas.push(asignaturas);
+                }
+                docentes[docentesContent[i].children[0].textContent] = listAsignaturas;
+            }
+
+            for (const docente in docentes) {
+                opcionDocente = document.createElement("option");
+                opcionDocente.setAttribute("value", docente);
+                opcionDocente.textContent = docente;
+                selectDocentes.appendChild(opcionDocente);
+            }
+
+            selectDocentes.addEventListener("change", ()=> {
+                numCreditos.textContent = "0";
+                optionSelect = selectDocentes.options[selectDocentes.selectedIndex].value;
+                selectAsignaturas.innerHTML = "";
+                if (docentes.hasOwnProperty(optionSelect)) {
+                    const asignatura = docentes[optionSelect];
+                    opcionAsignatura = document.createElement("option");
+                    opcionAsignatura.setAttribute("value", "vacio");
+                    opcionAsignatura.textContent = "---------";
+                    selectAsignaturas.appendChild(opcionAsignatura);
+                    for (let i = 0; i < asignatura.length; i++) {
+                        opcionAsignatura = document.createElement("option");
+                        opcionAsignatura.setAttribute("value", Object.keys(asignatura[i]));
+                        opcionAsignatura.textContent = Object.keys(asignatura[i]);
+                        selectAsignaturas.appendChild(opcionAsignatura);
+                    }
+                    selectAsignaturas.addEventListener("change", ()=>{
+                        optionSelectAsignatura = selectAsignaturas.options[selectAsignaturas.selectedIndex].value;
+                        optionSelect = selectDocentes.options[selectDocentes.selectedIndex].value;
+                        const asignatura = docentes[optionSelect];
+                        for (let i = 0; i < asignatura.length; i++) {
+                            if (asignatura[i].hasOwnProperty(optionSelectAsignatura)) {
+                                numCreditos.textContent =  asignatura[i][optionSelectAsignatura];
+                            } else if(optionSelectAsignatura == "vacio") {
+                                numCreditos.textContent = "0";
+                            }
+                        }
+                    });
+                } else {
+                    opcionAsignatura = document.createElement("option");
+                    opcionAsignatura.setAttribute("value", "vacio");
+                    opcionAsignatura.textContent = "---------";
+                    selectAsignaturas.appendChild(opcionAsignatura);
+                }
+            });
+        }
+        
+        function crearMensajes(mensaje, tipo){
+               // success
+                //error
+            document.getElementById('content-mensajes').innerHTML = "";
+            contentMensaje = document.createElement("div");
+            contentMensaje.setAttribute("class", "message-"+ tipo +" alert alert-warning alert-dismissible fade show content-error z-index")
+            contentMensaje.setAttribute("role", "alert")
+            contentMensaje.innerHTML = mensaje + '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>';
+            document.getElementById('content-mensajes').appendChild(contentMensaje);
+        }
+
+        function diasModal(btnDias){
+            var numCreditosModal = document.getElementById('modal-num-creditos');
+            var asignaturaModal = document.getElementById('modal-asignatura');
+            var docenteModal = document.getElementById('modal-docente');
+            var numCreditos = document.getElementById("num-creditos");
+            var selectDocentes = document.getElementById("select-docentes");
+            var selectAsignaturas = document.getElementById("select-asignaturas");
+
+            if(numCreditos.textContent == "0"){
+                crearMensajes("ERROR: NO HA SELECCIONADO UNA ASIGNATURA", "error");
+                btnDias.removeAttribute('data-toggle');
+                btnDias.removeAttribute('data-target');
+            } else if(asignaturasAgregadas.indexOf(selectAsignaturas.options[selectAsignaturas.selectedIndex].value) != -1){
+                crearMensajes("ERROR: LA ASIGNATURA YA FUE AGREGADA", "error");
+                btnDias.removeAttribute('data-toggle');
+                btnDias.removeAttribute('data-target');
+            } else {
+                btnDias.setAttribute('data-toggle', "modal");
+                btnDias.setAttribute('data-target', "#exampleModalCenter");
+                numCreditosModal.textContent = numCreditos.textContent;
+                asignaturaModal.textContent = selectAsignaturas.options[selectAsignaturas.selectedIndex].value;
+                docenteModal.textContent = selectDocentes.options[selectDocentes.selectedIndex].value;
+                limpiar();
+            }
+
+        }
+
+        function crearDias(){
+            dias = ["LUNES", "MARTES", "MIERCOLES", "JUEVES", "VIERNES"];
+
+            contentDias = document.createElement('div');
+            contentDias.setAttribute("class","dia-content-modal");
+
+            labelDia = document.createElement('span');
+            labelDia.setAttribute("class","label-dia");
+            labelDia.textContent = "DIA";
+
+            selectDias = document.createElement('select');
+            selectDias.setAttribute("class","custom-select dias-select")
+            selectDias.setAttribute("id","modal-dias");
+            for(let i=0 ; i<5 ; i++){
+                optionDia = document.createElement('option');
+                optionDia.setAttribute("value", dias[i]);
+                optionDia.textContent = dias[i];
+                selectDias.appendChild(optionDia);
+            }
+
+            contentNumHoras = document.createElement('div');
+            contentNumHoras.setAttribute("class","content-num-horas");
+            labelNumHoras = document.createElement('span');
+            labelNumHoras.setAttribute("class","label-dar-baja text-center");
+            labelNumHoras.innerHTML = "NUM.<br>HORAS";
+            inputNumHoras = document.createElement('input');
+            inputNumHoras.setAttribute("class","input-campo input-dias");
+            inputNumHoras.setAttribute("value","0");
+            inputNumHoras.setAttribute("type","text");
+            inputNumHoras.setAttribute("onkeypress","return soloNumeros(event);");
+            inputNumHoras.setAttribute("id","modal-num-horas");
+
+            contentNumHoras.appendChild(labelNumHoras);
+            contentNumHoras.appendChild(inputNumHoras);
+
+            contentDias.appendChild(labelDia);
+            contentDias.appendChild(selectDias);
+            contentDias.appendChild(contentNumHoras);
+            return contentDias;
+        }
+
+        function limpiar(){
+            var modalNumDias = document.getElementById('modal-num-dias');
+            var modalBody = document.getElementById('modal-body');
+            modalBody.innerHTML = "";
+            modalNumDias.value = "0";
+        }
+        
+        function addRowHorario(asignatura, docente, numHoras){
+            rowHorario = document.createElement("div");
+            rowHorario.setAttribute("class", "horario-asignatura-row")
+
+            cellAsignatura = document.createElement("div");
+            cellAsignatura.setAttribute("class", "asignatura-cell text-center hor-"+asignatura.split(' ').join(""));
+            cellAsignatura.textContent = asignatura;
+
+            cellDocente = document.createElement("div");
+            cellDocente.setAttribute("class", "docentes-cell text-center");
+            cellDocente.textContent = docente;
+            
+            cellHoras = document.createElement("div");
+            cellHoras.setAttribute("class", "horas-cell");
+            numHorasLabel = document.createElement("span");
+            numHorasLabel.setAttribute("class", "num-hora");
+            numHorasLabel.textContent = numHoras;
+            labelHoras = document.createElement("span");
+            labelHoras.textContent = "HORAS"
+            cellHoras.appendChild(numHorasLabel);
+            cellHoras.appendChild(labelHoras);
+
+            rowHorario.appendChild(cellAsignatura)
+            rowHorario.appendChild(cellDocente)
+            rowHorario.appendChild(cellHoras)
+
+            return rowHorario;
+        }
+
+        function crearRowsAsignatuasAsignadas(asignatura){
+
+            rowAsignatura = document.createElement('div');
+            rowAsignatura.setAttribute("class", "dias-asignados-row");
+            rowAsignatura.setAttribute("class", "dias-asignados-row");
+            rowAsignatura.setAttribute("id", "asi-"+asignatura.split(' ').join(""));
+
+            asignaturasNombre = document.createElement('span');
+            asignaturasNombre.setAttribute("class", "asignatura-dias-asignados");
+            asignaturasNombre.textContent = asignatura;
+            
+            asignaturasEliminar = document.createElement('span');
+            asignaturasEliminar.setAttribute("class", "eliminar-dias-asignados text-center");
+            asignaturasEliminar.innerHTML = '<i class="fas fa-trash-alt"></i>';
+
+            rowAsignatura.appendChild(asignaturasNombre);
+            rowAsignatura.appendChild(asignaturasEliminar);
+
+            asignaturasEliminar.addEventListener('click', ()=>{
+                var asignaturasHorario = document.getElementsByClassName("hor-"+asignatura.split(' ').join(""));
+                var asignaturasAgregadaEliminar = document.getElementById("asi-"+asignatura.split(' ').join(""));
+                for(let i=asignaturasHorario.length-1; i>=0; i--){
+                    asignaturasHorario[i].parentElement.remove();
+                }
+                var pos = asignaturasAgregadas.indexOf('asignatura');
+                asignaturasAgregadas.splice(pos, 1)
+                asignaturasAgregadaEliminar.remove();
+            });
+
+            return rowAsignatura;
+        }
+        
+        var btnDias = document.getElementById("btn-dias");
+        var modalNumDias = document.getElementById('modal-num-dias');
+        var btnAgregar = document.getElementById('btn-agregar-dias');
+        var btnSubmit = document.getElementById('btn-submit');
+        var btnCancelar = document.getElementById('btn-cerrar');
+        var asignaturasAgregadas = [];
+        
+        leerDatabase();
+        btnDias.addEventListener('click', ()=>{
+            diasModal(btnDias);
+        });
+        modalNumDias.addEventListener('keyup', (e)=>{
+            var numCreditosModal = document.getElementById('modal-num-creditos');
+            var modalBody = document.getElementById('modal-body');
+            if(e.which == 13){
+                if(modalNumDias.value == "" || modalNumDias.value == 0) {
+                    modalBody.innerHTML = "";
+                    crearMensajes("ERROR: INGRESE UN NUMERO MAYOR A 0", "error");
+                } else if(parseInt(modalNumDias.value) > parseInt(numCreditosModal.textContent)){
+                    crearMensajes("ERROR: EL NUMERO INGRESADO DEBE SER MENOR AL NUMERO DE CREDITOS", "error");
+                } else {
+                    modalBody.innerHTML = "";
+                    for(let i=0; i < modalNumDias.value; i++) {
+                        modalBody.appendChild(crearDias());
+                    }
+                }
+            }
+        });
+        btnCancelar.addEventListener('click', ()=>{
+            limpiar();
+        });
+        btnAgregar.addEventListener('click', ()=>{
+            var modalBody = document.getElementById("modal-body");
+            var asignaturaModal = document.getElementById('modal-asignatura');
+            var docenteModal = document.getElementById('modal-docente');
+            var numCreditosModal = document.getElementById('modal-num-creditos').textContent;
+            horarioDocente = docenteModal.textContent;
+            horarioAsignatura = asignaturaModal.textContent;
+            var horario = [];
+            var numHoras = [];
+
+            if(modalBody.children.length == 0){
+                crearMensajes("ERROR: INGRESE LOS DIAS", "error");
+            } else {
+                for(let i=0; i<modalBody.children.length; i++){
+                    var horarioDia = [];
+                    var dia = modalBody.children[i].children[1].options[modalBody.children[i].children[1].selectedIndex].value;
+                    var horas = modalBody.children[i].children[2].children[1].value
+                    numHoras.push(parseInt(horas));
+                    horarioDia.push(horarioAsignatura);
+                    horarioDia.push(horarioDocente);
+                    horarioDia.push(dia);
+                    horarioDia.push(horas);
+                    horario.push(horarioDia);
+                }
+                
+                suma = numHoras.reduce((a, b)=>{
+                    return a + b
+                })
+                
+                var esIgual = false;
+                if(suma != parseInt(numCreditosModal)){
+                    crearMensajes("ERROR: LA SUMA DE HORAS DEBE SER IGUAL AL NUMERO DE CREDITOS", "error");
+                } else {
+                    for(let i=0; i<horario.length; i++){
+                        for(let k=i+1; k<horario.length; k++){
+                            if(horario[i][2] == horario[k][2]){
+                                esIgual = true;
+                                break;
+                            }
+                        }
+                    }
+                    if(esIgual){
+                        crearMensajes("ERROR: DIAS IGUALES", "error");
+                    } else {
+                        asignaturasAgregadas.push(horarioAsignatura)
+                        for(let i=0; i < horario.length; i++){
+                            var rowDia = addRowHorario(horario[i][0], horario[i][1], horario[i][3]);
+                            var diaHorario = document.getElementById("dia-"+horario[i][2]);
+                            diaHorario.appendChild(rowDia);
+                        }
+                        var asignaturasAsignadas = document.getElementById("dias-asignados-rows");
+                        asignaturasAsignadas.innerHTML = "";
+                        for(let i=0; i<asignaturasAgregadas.length; i++){
+                            asignaturasAsignadas.appendChild(crearRowsAsignatuasAsignadas(asignaturasAgregadas[i]));
+                        }
+                        limpiar();
+                        $('#exampleModalCenter').modal('hide');
+                    }
+                }     
+            }
+            
+            
+        })
+        btnSubmit.addEventListener("click", ()=>{
+            if(new Set(asignaturasComparar).size != asignaturasAgregadas.length){
+                crearMensajes("ERROR: DEBE INGRESAR TODOS LAS ASIGNATURAS", "error");
+            } else {
+                var formHorario = document.getElementById('formHorario');
+                var sentencia = "";
+                var lunes = document.getElementById('dia-LUNES');
+                var martes = document.getElementById('dia-MARTES');
+                var miercoles = document.getElementById('dia-MIERCOLES');
+                var jueves = document.getElementById('dia-JUEVES');
+                var viernes = document.getElementById('dia-VIERNES');
+                //lunes
+                for(let i=0; i < lunes.children.length; i++){
+                    var asignaturaSubmit = lunes.children[i].children[0].textContent;
+                    var docenteSubmit = lunes.children[i].children[1].textContent;
+                    var periodoSutmit = '{{curso_list.periodo}}';
+                    var semestreSutmit = '{{curso_list.semestre}}';
+                    var paraleloSutmit = '{{curso_list.cur_paralelo}}';
+                    var diaSutmit = 'LUNES';
+                    var horasSutmit = lunes.children[i].children[2].children[0].textContent; 
+                    sentencia = sentencia + (asignaturaSubmit +","+ docenteSubmit +","+ periodoSutmit +","+ semestreSutmit +","+ paraleloSutmit + ","+ diaSutmit +","+ horasSutmit +";");
+                }
+                //martes
+                for(let i=0; i < martes.children.length; i++){
+                    var asignaturaSubmit = martes.children[i].children[0].textContent;
+                    var docenteSubmit = martes.children[i].children[1].textContent;
+                    var periodoSutmit = '{{curso_list.periodo}}';
+                    var semestreSutmit = '{{curso_list.semestre}}';
+                    var paraleloSutmit = '{{curso_list.cur_paralelo}}';
+                    var diaSutmit = 'MARTES';
+                    var horasSutmit = martes.children[i].children[2].children[0].textContent; 
+                    sentencia = sentencia + (asignaturaSubmit +","+ docenteSubmit +","+ periodoSutmit +","+ semestreSutmit +","+ paraleloSutmit + ","+ diaSutmit +","+ horasSutmit +";");
+                }
+                //miercoles
+                for(let i=0; i < miercoles.children.length; i++){
+                    var asignaturaSubmit = miercoles.children[i].children[0].textContent;
+                    var docenteSubmit = miercoles.children[i].children[1].textContent;
+                    var periodoSutmit = '{{curso_list.periodo}}';
+                    var semestreSutmit = '{{curso_list.semestre}}';
+                    var paraleloSutmit = '{{curso_list.cur_paralelo}}';
+                    var diaSutmit = 'MIERCOLES';
+                    var horasSutmit = miercoles.children[i].children[2].children[0].textContent; 
+                    sentencia = sentencia + (asignaturaSubmit +","+ docenteSubmit +","+ periodoSutmit +","+ semestreSutmit +","+ paraleloSutmit + ","+ diaSutmit +","+ horasSutmit +";");
+                }
+                //jueves
+                for(let i=0; i < jueves.children.length; i++){
+                    var asignaturaSubmit = jueves.children[i].children[0].textContent;
+                    var docenteSubmit = jueves.children[i].children[1].textContent;
+                    var periodoSutmit = '{{curso_list.periodo}}';
+                    var semestreSutmit = '{{curso_list.semestre}}';
+                    var paraleloSutmit = '{{curso_list.cur_paralelo}}';
+                    var diaSutmit = 'JUEVES';
+                    var horasSutmit = jueves.children[i].children[2].children[0].textContent; 
+                    sentencia = sentencia + (asignaturaSubmit +","+ docenteSubmit +","+ periodoSutmit +","+ semestreSutmit +","+ paraleloSutmit + ","+ diaSutmit +","+ horasSutmit +";");
+                }
+                //viernes
+                for(let i=0; i < viernes.children.length; i++){
+                    var asignaturaSubmit = viernes.children[i].children[0].textContent;
+                    var docenteSubmit = viernes.children[i].children[1].textContent;
+                    var periodoSutmit = '{{curso_list.periodo}}';
+                    var semestreSutmit = '{{curso_list.semestre}}';
+                    var paraleloSutmit = '{{curso_list.cur_paralelo}}';
+                    var diaSutmit = 'VIERNES';
+                    var horasSutmit = viernes.children[i].children[2].children[0].textContent; 
+                    sentencia = sentencia + (asignaturaSubmit +","+ docenteSubmit +","+ periodoSutmit +","+ semestreSutmit +","+ paraleloSutmit + ","+ diaSutmit +","+ horasSutmit +";");
+                }
+
+                document.getElementById("id_sentencia").value = sentencia;
+                formHorario.submit();
+            }
+        });
+    </script>
+{% endblock scripts-opcionales %}

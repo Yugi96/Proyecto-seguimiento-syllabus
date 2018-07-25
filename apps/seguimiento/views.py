@@ -5,12 +5,12 @@ from django.db.models import OuterRef, Subquery
 from django.db import IntegrityError
 from django.urls import reverse
 from django.contrib import messages
-from django.views.generic import ListView, CreateView, UpdateView, TemplateView, DeleteView
+from django.views.generic import ListView, CreateView, UpdateView, TemplateView, DeleteView, FormView
 from django.urls import reverse_lazy
 from django.http import HttpResponseRedirect
 from .models import Seguimiento, Horario
 from apps.universidad.models import Asignatura_Docente, Curso, Alumno, Asignatura, Semestre, Periodo, Docente
-from .forms import SeguimientoForm
+from .forms import SeguimientoForm, HorarioForm
 
 
 # Create your views here.
@@ -129,10 +129,13 @@ class CursosHorariosListView(ListView):
         context['curso_list'] = curso
         return context
 
-class HorarioCreateView(ListView):
-    model = Horario
+class HorarioCreateView(FormMessageMixin, FormView):
+    form_class = HorarioForm
+    success_url = reverse_lazy('coordinador:periodos')
     template_name = 'estudiante/horario/agregar.horario.template.html'
-
+    form_valid_message = 'REGISTRO ACTUALIZADO CON EXITO'
+    form_invalid_message = "ERROR: FECHA YA EXISTENTE"
+    
     def get_context_data(self, **kwargs):
         context = super(HorarioCreateView, self).get_context_data(**kwargs)
         curso_id = self.kwargs['pk']
@@ -147,3 +150,33 @@ class HorarioCreateView(ListView):
         context['asignatura_docente_list'] = asignaturas_docentes
         context['asignaturas_list'] = asignaturas
         return context
+
+    def form_valid(self, form):
+        sentencia = self.request.POST['sentencia']
+        rows = sentencia.split(";")
+        for row in rows:
+            horarioObject = row.split(",")
+            if len(horarioObject) != 1:
+                asignaturaHorario = Asignatura.objects.get(asi_nombre=horarioObject[0])
+                nombresDocenteListHorario = horarioObject[1].split(" ")
+                nombres = nombresDocenteListHorario[0] + " "+ nombresDocenteListHorario[1]
+                apellidos = nombresDocenteListHorario[2] + " "+ nombresDocenteListHorario[3]
+                docenteHorario = Docente.objects.get(doc_nombres=nombres, doc_apellidos=apellidos)
+                periodoHorario = Periodo.objects.get(per_nombre=horarioObject[2])
+                semestreHorario = Semestre.objects.get(sem_nombre=horarioObject[3])
+                paraleloHorario = horarioObject[4]
+                diaHorario = horarioObject[5]
+                horasHorario = horarioObject[6]
+                
+                horarioRow = Horario(
+                    asignatura=asignaturaHorario,
+                    docente=docenteHorario,
+                    periodo=periodoHorario,
+                    semestre=semestreHorario,
+                    hor_paralelo=paraleloHorario,
+                    hor_dia=diaHorario,
+                    hor_horas=horasHorario
+                )
+                horarioRow.save()  
+        
+        return super(HorarioCreateView, self).form_valid(form)

@@ -59,3 +59,10 @@ class SeguimientoForm(forms.ModelForm):
                 'id' : 'per_inicio',
             }),
         }
+
+
+class HorarioForm(forms.Form):
+    sentencia = forms.CharField(max_length=2000,
+        widget=forms.Textarea())
+
+

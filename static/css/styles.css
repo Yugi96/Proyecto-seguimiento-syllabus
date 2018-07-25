@@ -1219,7 +1219,7 @@ body {
 
 .content-horario-body {
     width: 100%;
-    height: 70%;
+    height: 60%;
     background: transparent;
     display: flex;
     justify-content: space-between;
@@ -1235,8 +1235,17 @@ body {
     overflow: hidden;
 }
 
+.content-botones-formulario {
+    height: 10%;
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    padding: 7px 10px;
+    align-items: center;
+}
+
 .content-horario-top-asignatura {
-    width: 55%;
+    width: 58%;
     background: #fff;
     border-radius: 5px;
     box-shadow: 0 3px 8px 1px rgba(0, 0, 0, .2);
@@ -1244,12 +1253,15 @@ body {
 }
 
 .content-horario-top-dias {
-    width: 33%;
+    width: 40%;
     box-shadow: 0 3px 8px 1px rgba(0, 0, 0, .2);
     background: #fff;
-    display: flex;
     overflow: hidden;
     border-radius: 5px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    align-content: flex-start;
 }
 
 .content-horario-body-dias-header {
@@ -1300,6 +1312,12 @@ body {
     justify-content: center;
     align-items: center;
     border-radius: 5px;
+    cursor: pointer;
+    transition: .3s ease all;
+}
+
+.btn-dias:hover {
+    transform: scale(1.1);
 }
 
 .num-creditos-asignatura {
@@ -1341,4 +1359,153 @@ body {
 
 .p-0 {
     padding: 0;
+}
+
+/* modal horarios estilo */
+.header-modal-dias {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    width: 80%;
+}
+
+.content-num-creditos-modal {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: #007bff;
+    border: 1px solid #007bff;
+    font-size: .6em;
+    padding: 10px;
+    font-weight: bold;
+    border-radius: 5px;
+}
+
+#modal-num-creditos {
+    font-size: 2em;
+}
+
+.title-modal-header { 
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-left: 10px;
+    align-items: flex-start;
+}
+
+.modal-docente {
+    margin: 0;
+}
+
+.modal-asignatura {
+    font-weight: bold;
+    margin: 0;
+}
+
+.content-num-dias-semana,
+.content-num-horas {
+    display: flex;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+}
+
+.content-num-horas {
+    width: 25%;
+}
+
+.input-dias {
+    width: 30%;
+}
+
+.dia-content-modal {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 5px 0;
+}
+
+.dias-select {
+    width: 50%;
+}
+
+.label-dia {
+    display: inline-block;
+    padding: 5px 20px;
+}
+
+.z-index {
+    z-index: 1000000;
+}
+
+/* Horario tabla estilos */
+.content-horario-body-dias-rows {
+    overflow: auto;
+}
+
+.horario-asignatura-row {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 5px;
+    border-bottom: 1px solid #9C9C9C;
+}
+
+.asignatura-cell {
+    font-size: .8em;
+    font-weight: bold;
+}
+
+.docentes-cell, .horas-cell {
+    font-size: .7em;
+}
+
+.num-hora {
+    font-size: 1.5em;
+    font-weight: bold;
+    padding-right: 5px;
+}
+
+.dias-asignados-row {
+    display: flex;
+    width: 100%;
+    height: 25%;
+    align-items: center;
+    padding: 5px 15px;
+    border-bottom: 1px solid #9C9C9C;
+    font-size: .8em;
+}
+
+.asignatura-dias-asignados {
+    width: 95%;
+}
+
+.eliminar-dias-asignados{
+    width: 5%;
+}
+
+.dias-asignados-rows {
+    width: 100%;
+    height: 80%;
+    overflow: auto;
+}
+
+.header {
+    background: #007bff;
+    color: #fff;
+    font-size: 1em;
+    font-weight: bold;
+    height: 20%;
+}
+
+.eliminar-dias-asignados {
+    color: #F25D5D;
+    cursor: pointer;
+    transition: .3s ease all;
+}
+
+.eliminar-dias-asignados:hover {
+    transform: scale(1.1);
 }
