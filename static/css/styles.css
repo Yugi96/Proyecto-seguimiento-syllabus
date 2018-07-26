@@ -957,6 +957,10 @@ body {
     height: 100px;
 }
 
+.w-10{
+    width: 9%;
+}
+
 .w-30 {
     width: 29%;
 }
@@ -1508,4 +1512,8 @@ body {
 
 .eliminar-dias-asignados:hover {
     transform: scale(1.1);
+}
+
+.transparent {
+    background: transparent;
 }

@@ -19,8 +19,8 @@
         </div>
     {% endfor %}
     {% endif %}
-    <div class="content-docentes">
-        <div class="docentes-top">
+    <div class="content-docentes transparent">
+        <div class="docentes-top bg-white">
             {% if not horario_list  %}
                 <div class="content-btn-agregar w-30">
                     <a class="btn-agregar" id="btn-agregar" href="{% url 'coordinador:periodos_curso_horario_crear' curso_list.id %}"><i class="icon-btn fas fa-plus" ></i>AGREGAR HORARIO</a>
@@ -32,11 +32,134 @@
                     <span id="label-paralelo"><strong>PERALELO:</strong> <span>{{curso_list.cur_paralelo}}</span></span>
                 </div>
             {% else %}
+                <div class="curso-info-horario w-100">
+                    <span id="label-periodo "><strong>PERIODO:</strong> <span>{{curso_list.periodo}}</span></span>
+                    <span id="label-periodo "><strong></strong> <span>{{curso_list.alumno.carrera}}</span></span>
+                    <span id="label-semestre"><strong></strong> <span>{{curso_list.semestre}}</span></span>
+                    <span id="label-paralelo"><strong>PERALELO:</strong> <span>{{curso_list.cur_paralelo}}</span></span>
+                </div>
             {% endif %}
         </div>
-        <div class="docentes-list-perfil container-peridos">
+        <div class="docentes-list-perfil container-peridos transparent">
             {% if horario_list %}
-                
+                <div class="content-horario-body h-100">
+                    <div class="content-horario-body-dias header-lunes">
+                        <div class="content-horario-body-dias-header">LUNES</div>
+                        <div class="content-horario-body-dias-rows" id="dia-LUNES">
+                            {% for horario in horario_list %}
+                                {% if horario.hor_dia == "LUNES" %}
+                                    <div class="horario-asignatura-row">
+                                        <div class="asignatura-cell text-center">
+                                            {{horario.asignatura.asi_nombre}}
+                                        </div>
+                                        <div class="docentes-cell text-center">
+                                            {{horario.docente}}
+                                        </div>
+                                        <div class="horas-cell">
+                                            <span class="num-hora">
+                                                {{horario.hor_horas}}
+                                            </span>
+                                            <span>HORAS</span>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                            </div>
+                        </div>
+                        <div class="content-horario-body-dias header-martes">
+                            <div class="content-horario-body-dias-header">MARTES</div>
+                            <div class="content-horario-body-dias-rows" id="dia-MARTES">
+                            {% for horario in horario_list %}
+                                {% if horario.hor_dia == "MARTES" %}
+                                    <div class="horario-asignatura-row">
+                                        <div class="asignatura-cell text-center">
+                                            {{horario.asignatura.asi_nombre}}
+                                        </div>
+                                        <div class="docentes-cell text-center">
+                                            {{horario.docente}}
+                                        </div>
+                                        <div class="horas-cell">
+                                            <span class="num-hora">
+                                                {{horario.hor_horas}}
+                                            </span>
+                                            <span>HORAS</span>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                            </div>
+                        </div>
+                        <div class="content-horario-body-dias header-miercoles">
+                            <div class="content-horario-body-dias-header">MIERCOLES</div>
+                            <div class="content-horario-body-dias-rows" id="dia-MIERCOLES">
+                            {% for horario in horario_list %}
+                                {% if horario.hor_dia == "MIERCOLES" %}
+                                    <div class="horario-asignatura-row">
+                                        <div class="asignatura-cell text-center">
+                                            {{horario.asignatura.asi_nombre}}
+                                        </div>
+                                        <div class="docentes-cell text-center">
+                                            {{horario.docente}}
+                                        </div>
+                                        <div class="horas-cell">
+                                            <span class="num-hora">
+                                                {{horario.hor_horas}}
+                                            </span>
+                                            <span>HORAS</span>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                            </div>
+                        </div>
+                        <div class="content-horario-body-dias header-jueves">
+                            <div class="content-horario-body-dias-header">JUEVES</div>
+                            <div class="content-horario-body-dias-rows" id="dia-JUEVES">
+                            {% for horario in horario_list %}
+                                {% if horario.hor_dia == "JUEVES" %}
+                                    <div class="horario-asignatura-row">
+                                        <div class="asignatura-cell text-center">
+                                            {{horario.asignatura.asi_nombre}}
+                                        </div>
+                                        <div class="docentes-cell text-center">
+                                            {{horario.docente}}
+                                        </div>
+                                        <div class="horas-cell">
+                                            <span class="num-hora">
+                                                {{horario.hor_horas}}
+                                            </span>
+                                            <span>HORAS</span>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                            </div>
+                        </div>
+                        <div class="content-horario-body-dias header-viernes">
+                            <div class="content-horario-body-dias-header">VIERNES</div>
+                            <div class="content-horario-body-dias-rows" id="dia-VIERNES">
+                            {% for horario in horario_list %}
+                                {% if horario.hor_dia == "VIERNES" %}
+                                    <div class="horario-asignatura-row">
+                                        <div class="asignatura-cell text-center">
+                                            {{horario.asignatura.asi_nombre}}
+                                        </div>
+                                        <div class="docentes-cell text-center">
+                                            {{horario.docente}}
+                                        </div>
+                                        <div class="horas-cell">
+                                            <span class="num-hora">
+                                                {{horario.hor_horas}}
+                                            </span>
+                                            <span>HORAS</span>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                            </div>
+                        </div>
+                    
+                </div>
             {% else %}
                 <div class="cursos-content border">
                     <div class="content-vacio">

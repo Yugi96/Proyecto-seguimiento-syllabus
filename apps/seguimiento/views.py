@@ -38,22 +38,27 @@ class SeguimientoListView(FormMessageMixin, CreateView):
         context = super(SeguimientoListView, self).get_context_data(**kwargs)
         alumno = Alumno.objects.get(usuario_id=self.request.user.id)
         curso = Curso.objects.get(cur_estado=True, alumno_id=alumno.id, cur_eliminado=False)
-        asignaturas = Asignatura.objects.filter(semestre_id=curso.semestre_id, carrera_id=alumno.carrera_id, asi_estado=True)
-        asignaturas_docentes = Asignatura_Docente.objects.filter(
+        context['horario_list'] = Horario.objects.filter(
+            hor_estado=True, 
+            semestre_id=curso.semestre_id, 
             periodo_id=curso.periodo_id, 
-            asi_doc_estado=True, 
-            asi_doc_eliminado=False,
-            asignatura__semestre = curso.semestre_id,
-        )
+            hor_paralelo=curso.cur_paralelo,
+            asignatura__carrera=curso.alumno.carrera_id
+        ).distinct('asignatura')
         seguimiento = Seguimiento.objects.filter(
             semestre_id=curso.semestre_id, 
             periodo_id=curso.periodo_id, 
             seg_estado=True, 
             seg_paralelo = curso.cur_paralelo
-            )
+        )
+        context['horario_completo'] = Horario.objects.filter(
+            hor_estado=True, 
+            semestre_id=curso.semestre_id, 
+            periodo_id=curso.periodo_id, 
+            hor_paralelo=curso.cur_paralelo,
+            asignatura__carrera=curso.alumno.carrera_id
+        )
         context['curso_list'] = curso
-        context['asignatura_docente_list'] = asignaturas_docentes
-        context['asignaturas_list'] = asignaturas
         context['seguimiento_list'] = seguimiento
         return context
     
@@ -125,7 +130,13 @@ class CursosHorariosListView(ListView):
         context = super(CursosHorariosListView, self).get_context_data(**kwargs)
         curso_id = self.kwargs['pk']
         curso = Curso.objects.get(id=curso_id)
-        context['horario_list'] = Horario.objects.filter(hor_estado=True, semestre_id=curso.semestre_id, periodo_id=curso.periodo_id, hor_paralelo=curso.cur_paralelo)
+        context['horario_list'] = Horario.objects.filter(
+            hor_estado=True, 
+            semestre_id=curso.semestre_id, 
+            periodo_id=curso.periodo_id, 
+            hor_paralelo=curso.cur_paralelo,
+            asignatura__carrera=curso.alumno.carrera_id
+        )
         context['curso_list'] = curso
         return context
 
@@ -140,12 +151,15 @@ class HorarioCreateView(FormMessageMixin, FormView):
         context = super(HorarioCreateView, self).get_context_data(**kwargs)
         curso_id = self.kwargs['pk']
         curso = Curso.objects.get(id=curso_id)
+        print(curso.alumno.carrera_id);
         asignaturas = Asignatura.objects.filter(semestre_id=curso.semestre_id, carrera_id=curso.alumno.carrera_id, asi_estado=True)
+        print(asignaturas)
         asignaturas_docentes = Asignatura_Docente.objects.filter(
             periodo_id=curso.periodo_id, 
             asi_doc_estado=True, 
             asi_doc_eliminado=False,
-        ).filter(asignatura__semestre = curso.semestre_id).distinct()
+        ).filter(asignatura__semestre = curso.semestre_id, asignatura__carrera=curso.alumno.carrera_id).distinct()
+        print(asignaturas_docentes)
         context['curso_list'] = curso
         context['asignatura_docente_list'] = asignaturas_docentes
         context['asignaturas_list'] = asignaturas

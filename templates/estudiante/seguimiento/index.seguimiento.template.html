@@ -34,7 +34,7 @@
                             </div>
                         </div>
                         <div class="group-fila-cna jc-center">
-                            <div class="group-campo w-20 mr-20">
+                            <div class="group-campo w-35 mr-20">
                                 <label for="{{ form.seg_fecha.name }}" class="label-campo">{{ form.seg_fecha.label }}</label>
                                 <div class="input-group date">
                                     {{ form.seg_fecha }}
@@ -53,6 +53,10 @@
                                     {{ form.seg_porcentaje_ideal }}
                                     <span class="porcentaje-icon">%</span>
                                 </div>
+                            </div>
+                            <div class="group-campo w-10 mr-20">
+                                <label for="{{ form.seg_semana.name }}" class="label-campo">{{ form.seg_semana.label }}</label>
+                                {{ form.seg_semana }}
                             </div>
                             
                         </div>
@@ -90,65 +94,61 @@
 {% endif %}
     <div class="content-docentes">
         <div class="content-seguimiento">
-            <div class="informacion-periodo"></div>
+            <div class="informacion-periodo">
                 <span id="label-periodo"><strong>PERIODO:</strong> <span>{{curso_list.periodo}}</span></span>
                 <span id="label-semestre"><strong>SEMESTRE:</strong> <span>{{curso_list.semestre}}</span></span>
                 <span id="label-paralelo"><strong>PERALELO:</strong> <span>{{curso_list.cur_paralelo}}</span></span>
             </div>
             <div class="accordion" id="accordionExample">
-                {% for asignatura_docente in asignatura_docente_list %}
-                    {% for asignatura in asignatura_docente.asignatura.all %}
-                        {% if asignatura in asignaturas_list %}
-                            <div class="card w-100">
-                                <div class="card-header bg-primary text-center" id="heading{{ forloop.parentloop.counter }}" data-toggle="collapse" data-target="#collapse{{ forloop.parentloop.counter }}" aria-expanded="true" aria-controls="collapse{{ asignatura.forloop.parentloop.counter }}">
-                                    <h5 class="mb-0 blanco asignatura-title">{{ asignatura.asi_nombre }}</h5>
-                                    <h6 class="mb-0 blanco asignatura-docente">{{ asignatura_docente.docente }}</h6>
-                                </div>
-                                <div id="collapse{{ forloop.parentloop.counter }}" class="collapse {% if forloop.parentloop.counter == 1 %} show {% endif %}" aria-labelledby="heading{{ asignatura.forloop.parentloop.counter }}" data-parent="#accordionExample">
-                                <div class="card-body">
-                                    <div class="card-body-top">
-                                        <div class="content-btn-agregar seguimiento-content-btn">
-                                            <span class="btn-agregar seguimiento-btn-agregar" data-toggle="modal" data-target="#exampleModalCenter"><i class="icon-btn fas fa-plus" ></i>AGREGAR</span>
-                                        </div>
-                                    </div>
-                                    <div class="card-body-content">
-                                        <table class="table table-bordered">
-                                            <thead>
-                                                <tr>
-                                                <th class="text-center" scope="col">#</th>
-                                                <th scope="col">FECHA</th>
-                                                <th class="text-center" scope="col">PORCENTAJE <br> REAL</th>
-                                                <th class="text-center" scope="col">PORCENTAJE <br> IDEAL</th>
-                                                <th scope="col">OBSERVACIONES</th>
-                                                <th class="text-center" scope="col">ACCIONES</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {% for seguimiento in seguimiento_list %}
-                                                    {% if seguimiento.asignatura.asi_nombre == asignatura.asi_nombre %}
-                                                        <tr>
-                                                            <th class="text-center" scope="row">{{forloop.counter}}</th>
-                                                            <td>{{seguimiento.seg_fecha |date:'d/m/Y' }}</td>
-                                                            <td class="text-center">{{seguimiento.seg_porcentaje_real}} %</td>
-                                                            <td class="text-center">{{seguimiento.seg_porcentaje_ideal}} %</td>
-                                                            <td>{{seguimiento.seg_observaciones}}</td>
-                                                            <td class="text-center">
-                                                                <div class="content-acciones">
-                                                                    <a class="btn-acciones btn-acciones-eliminar" href="{% url 'estudiante:seguimientos_editar' seguimiento.id %}"><i class="fas fa-pencil-alt"></i></a>
-                                                                    <a class="btn-acciones btn-acciones-editar" href="{% url 'estudiante:seguimientos_eliminar' seguimiento.id %}"><i class="fas fa-trash-alt"></i></a>
-                                                                </div>
-                                                            </td>
-                                                        </tr>
-                                                    {% endif %}                                                    
-                                                {% endfor %}
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
+                {% for horario in horario_list %}
+                    <div class="card w-100">
+                        <div class="card-header bg-primary text-center" id="heading{{ forloop.counter }}" data-toggle="collapse" data-target="#collapse{{ forloop.counter }}" aria-expanded="true" aria-controls="collapse{{ asignatura.forloop.counter }}">
+                            <h5 class="mb-0 blanco asignatura-title">{{ horario.asignatura.asi_nombre }}</h5>
+                            <h6 class="mb-0 blanco asignatura-docente">{{ horario.docente }}</h6>
+                        </div>
+                        <div id="collapse{{ forloop.counter }}" class="collapse {% if forloop.counter == 1 %} show {% endif %}" aria-labelledby="heading{{ asignatura.forloop.counter }}" data-parent="#accordionExample">
+                        <div class="card-body">
+                            <div class="card-body-top">
+                                <div class="content-btn-agregar seguimiento-content-btn">
+                                    <span class="btn-agregar seguimiento-btn-agregar" data-toggle="modal" data-target="#exampleModalCenter"><i class="icon-btn fas fa-plus" ></i>AGREGAR</span>
                                 </div>
                             </div>
-                        {% endif %}
-                    {% endfor %}
+                            <div class="card-body-content">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                        <th class="text-center" scope="col">#</th>
+                                        <th scope="col">FECHA</th>
+                                        <th class="text-center" scope="col">PORCENTAJE <br> REAL</th>
+                                        <th class="text-center" scope="col">PORCENTAJE <br> IDEAL</th>
+                                        <th scope="col">OBSERVACIONES</th>
+                                        <th class="text-center" scope="col">ACCIONES</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for seguimiento in seguimiento_list %}
+                                            {% if seguimiento.asignatura.asi_nombre == horario.asignatura.asi_nombre %}
+                                                <tr>
+                                                    <th class="text-center" scope="row">{{forloop.counter}}</th>
+                                                    <td>{{seguimiento.seg_fecha |date:'d/m/Y' }}</td>
+                                                    <td class="text-center">{{seguimiento.seg_porcentaje_real}} %</td>
+                                                    <td class="text-center">{{seguimiento.seg_porcentaje_ideal}} %</td>
+                                                    <td>{{seguimiento.seg_observaciones}}</td>
+                                                    <td class="text-center">
+                                                        <div class="content-acciones">
+                                                            <a class="btn-acciones btn-acciones-eliminar" href="{% url 'estudiante:seguimientos_editar' seguimiento.id %}"><i class="fas fa-pencil-alt"></i></a>
+                                                            <a class="btn-acciones btn-acciones-editar" href="{% url 'estudiante:seguimientos_eliminar' seguimiento.id %}"><i class="fas fa-trash-alt"></i></a>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            {% endif %}                                                    
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
                 {% endfor %}
             </div>
         </div>
@@ -168,11 +168,33 @@
         
         for(let i=0; i < btnAgregarList.length; i++){
             btnAgregarList[i].addEventListener("click", ()=>{
-               asignatura.value = cardHeader[i].children[0].textContent;
-               docente.value = cardHeader[i].children[1].textContent;
-               periodo.value = labelPeriodo.children[1].textContent;
-               semestre.value = labelSemestre.children[1].textContent;
-               paralelo.value = labelParalelo.children[1].textContent;
+                asignatura.value = cardHeader[i].children[0].textContent;
+                docente.value = cardHeader[i].children[1].textContent;
+                periodo.value = labelPeriodo.children[1].textContent;
+                semestre.value = labelSemestre.children[1].textContent;
+                paralelo.value = labelParalelo.children[1].textContent;
+                fechaSeguimiento.value = diaActual+"/"+mesActual+"/"+anioActual;
+                var fechaSeguimientoAux = fechaSeguimiento.value.split('/');
+                var dia = "";
+                
+                fechaSeguimientoDate = new Date(fechaSeguimientoAux[2]+"/"+fechaSeguimientoAux[1]+"/"+fechaSeguimientoAux[0]);
+                
+                dia = obtenerDiaString(fechaSeguimientoDate.getDay());
+
+                for(let i=0;i<horario[asignatura.value].length;i++){
+                    if(horario[asignatura.value][i][0] == dia){
+                        porcentajeIdealInput.value = ((parseFloat(horario[asignatura.value][i][1]) * 100) / parseFloat(horario[asignatura.value][i][2])).toFixed(1)
+                        break;
+                    } else {
+                        porcentajeIdealInput.value = "0";
+                    }
+                }
+                segNumSemana.value = fechaSeguimientoDate.getWeekNumber() - new Date(periodoInicio).getWeekNumber() + 1;
+                if (porcentajeIdealInput.value == "0"){
+                    observacionesInput.setAttribute('required', 'true');
+                } else {
+                    observacionesInput.removeAttribute('required');
+                }
             });
         }
     </script>
@@ -191,7 +213,115 @@
         $('.datepicker').datepicker({
             format: "dd/mm/yyyy",
             startDate: startdate,
-            language: "es"
+            language: "es",
+            daysOfWeekDisabled: "0,6",
+            daysOfWeekHighlighted: "1,2,3,4,5",
+            todayHighlight: true
         });
+</script>
+<script>
+    var horario = {};
+    var periodoInicio = "{{curso_list.periodo.per_inicio |date:'Y/m/d'}}";
+    var periodoFin = "{{curso_list.periodo.per_fin |date:'Y/m/d'}}";
+
+        {% for horario in horario_completo %}
+            horario["{{horario.asignatura.asi_nombre}}"] = [];
+        {% endfor %}
+        {% for horario in horario_completo %}
+            horario["{{horario.asignatura.asi_nombre}}"].push(["{{horario.hor_dia}}", "{{horario.hor_horas}}", "{{horario.asignatura.asi_num_creditos}}"]);
+        {% endfor %}
+
+    var fechaActual = new Date();
+    var fechaSeguimiento = document.getElementById('fecha-seguimiento');
+    var segNumSemana = document.getElementById('id-seg-semana');
+    var porcentajeIdealInput = document.getElementById('id_seg_porcentaje_ideal');
+    var observacionesInput = document.getElementById('id-seg-observaciones');
+    
+    diaActual = fechaActual.getDate();
+    mesActual = fechaActual.getMonth() + 1;
+    anioActual = fechaActual.getFullYear();
+
+    fechaSeguimiento.addEventListener('focus', ()=>{
+        var fechaSeguimientoAux = fechaSeguimiento.value.split('/');
+        var dia = "";
+        
+        fechaSeguimientoDate = new Date(fechaSeguimientoAux[2]+"/"+fechaSeguimientoAux[1]+"/"+fechaSeguimientoAux[0]);
+        
+        dia = obtenerDiaString(fechaSeguimientoDate.getDay());
+
+        for(let i=0;i<horario[asignatura.value].length;i++){
+            if(horario[asignatura.value][i][0] == dia){
+                porcentajeIdealInput.value = ((parseFloat(horario[asignatura.value][i][1]) * 100) / parseFloat(horario[asignatura.value][i][2])).toFixed(1)
+                break;
+            } else {
+                porcentajeIdealInput.value = "0";
+            }
+        }
+        segNumSemana.value = fechaSeguimientoDate.getWeekNumber() - new Date(periodoInicio).getWeekNumber() + 1;
+
+        if (porcentajeIdealInput.value == "0"){
+            observacionesInput.setAttribute('required', 'true');
+        } else {
+            observacionesInput.removeAttribute('required');
+        }
+    });
+    
+    fechaSeguimiento.addEventListener('blur', ()=>{
+        if(fechaSeguimiento.value == ""){
+            fechaSeguimiento.value = diaActual+"/"+mesActual+"/"+anioActual;
+        }
+        var fechaSeguimientoAux = fechaSeguimiento.value.split('/');
+        var dia = "";
+        
+        fechaSeguimientoDate = new Date(fechaSeguimientoAux[2]+"/"+fechaSeguimientoAux[1]+"/"+fechaSeguimientoAux[0]);
+        
+        dia = obtenerDiaString(fechaSeguimientoDate.getDay());
+
+        for(let i=0;i<horario[asignatura.value].length;i++){
+            if(horario[asignatura.value][i][0] == dia){
+                porcentajeIdealInput.value = ((parseFloat(horario[asignatura.value][i][1]) * 100) / parseFloat(horario[asignatura.value][i][2])).toFixed(1)
+                break;
+            } else {
+                porcentajeIdealInput.value = "0"
+            }
+        }
+        segNumSemana.value = fechaSeguimientoDate.getWeekNumber() - new Date(periodoInicio).getWeekNumber() + 1;
+
+        if (porcentajeIdealInput.value == "0"){
+            observacionesInput.setAttribute('required', 'true');
+        } else {
+            observacionesInput.removeAttribute('required');
+        }
+    });
+
+    function obtenerDiaString(diaNumber){
+        var dia = "";
+        switch(diaNumber){
+            case 1:
+                dia = "LUNES";
+                break;
+            case 2:
+                dia = "MARTES";
+                break;
+            case 3:
+                dia = "MIERCOLES";
+                break;
+            case 4:
+                dia = "JUEVES";
+                break;
+            case 5:
+                dia = "VIERNES";
+                break;
+        }
+        return dia;
+    }
+
+    Date.prototype.getWeekNumber = function () {
+        var d = new Date(+this);
+        d.setHours(0, 0, 0, 0); 
+        d.setDate(d.getDate() + 4 - (d.getDay() || 7)); 
+        return Math.ceil((((d - new Date(d.getFullYear(), 0, 1)) / 8.64e7) + 1) / 7);
+    };
+
 </script>
 {% endblock scripts-opcionales %}
