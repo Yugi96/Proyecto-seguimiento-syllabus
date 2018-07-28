@@ -25,12 +25,12 @@ class SeguimientoForm(forms.ModelForm):
 
         widgets = {
             'seg_porcentaje_real' : forms.TextInput(attrs={
-                'class' : 'input-campo w-50',
-                'onkeypress' : 'return soloNumeros(event);',
-                'id' : 'asi_num_creditos',
+                'class' : 'input-campo w-70',
+                'onkeypress' : 'return NumCheck(event, this);',
+                'id' : 'id_seg_porcentaje_real',
             }),
             'seg_porcentaje_ideal' : forms.TextInput(attrs={
-                'class' : 'input-campo w-50',
+                'class' : 'input-campo w-70',
                 'onkeypress' : 'return soloNumeros(event);',
                 'id' : 'id_seg_porcentaje_ideal',
                 'readonly' :'true',

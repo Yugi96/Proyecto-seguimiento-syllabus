@@ -102,51 +102,75 @@
             <div class="accordion" id="accordionExample">
                 {% for horario in horario_list %}
                     <div class="card w-100">
-                        <div class="card-header bg-primary text-center" id="heading{{ forloop.counter }}" data-toggle="collapse" data-target="#collapse{{ forloop.counter }}" aria-expanded="true" aria-controls="collapse{{ asignatura.forloop.counter }}">
+                        <div class="card-header bg-primary text-center" onclick="obtenerId(this);" id="heading{{ forloop.counter }}" data-toggle="collapse" data-target="#collapse{{ forloop.counter }}" aria-expanded="true" aria-controls="collapse{{ asignatura.forloop.counter }}">
                             <h5 class="mb-0 blanco asignatura-title">{{ horario.asignatura.asi_nombre }}</h5>
                             <h6 class="mb-0 blanco asignatura-docente">{{ horario.docente }}</h6>
                         </div>
-                        <div id="collapse{{ forloop.counter }}" class="collapse {% if forloop.counter == 1 %} show {% endif %}" aria-labelledby="heading{{ asignatura.forloop.counter }}" data-parent="#accordionExample">
-                        <div class="card-body">
-                            <div class="card-body-top">
-                                <div class="content-btn-agregar seguimiento-content-btn">
-                                    <span class="btn-agregar seguimiento-btn-agregar" data-toggle="modal" data-target="#exampleModalCenter"><i class="icon-btn fas fa-plus" ></i>AGREGAR</span>
+                        <div id="collapse{{ forloop.counter }}" class="collapse" aria-labelledby="heading{{ asignatura.forloop.counter }}" data-parent="#accordionExample">
+                            <div class="card-body">
+                                <div class="card-body-top">
+                                    <div class="content-btn-agregar seguimiento-content-btn">
+                                        <span class="btn-agregar seguimiento-btn-agregar" data-toggle="modal" data-target="#exampleModalCenter"><i class="icon-btn fas fa-plus" ></i>AGREGAR</span>
+                                    </div>
+                                    <div class="content-search">
+                                        <input class="input-buscar datepicker" id="searchTerm-{{ forloop.counter }}" type="text" onfocus="doSearch();" onkeyup="doSearch();" placeholder="BUSCAR..."><i class="icon-buscar fas fa-search"></i>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="card-body-content">
-                                <table class="table table-bordered">
-                                    <thead>
-                                        <tr>
-                                        <th class="text-center" scope="col">#</th>
-                                        <th scope="col">FECHA</th>
-                                        <th class="text-center" scope="col">PORCENTAJE <br> REAL</th>
-                                        <th class="text-center" scope="col">PORCENTAJE <br> IDEAL</th>
-                                        <th scope="col">OBSERVACIONES</th>
-                                        <th class="text-center" scope="col">ACCIONES</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
+                                <div class="card-body-content">
+                                    <table class="table table-bordered" id="datos-{{ forloop.counter }}">
+                                        <thead>
+                                            <tr>
+                                            <th class="text-center" scope="col">NUM. <br> SEMANA</th>
+                                            <th scope="col">FECHA</th>
+                                            <th class="text-center" scope="col">PORCENTAJE <br> REAL</th>
+                                            <th class="text-center" scope="col">PORCENTAJE <br> IDEAL</th>
+                                            <th scope="col">OBSERVACIONES</th>
+                                            <th class="text-center" scope="col">ACCIONES</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for seguimiento in seguimiento_list %}
+                                                {% if seguimiento.asignatura.asi_nombre == horario.asignatura.asi_nombre %}
+                                                    <tr>
+                                                        <th class="text-center filtro-semana" scope="row">{{seguimiento.seg_semana}}</th>
+                                                        <td class="filtro-fecha">{{seguimiento.seg_fecha |date:'d/m/Y' }}</td>
+                                                        <td class="text-center suma-por-real"><span>{{seguimiento.seg_porcentaje_real}}</span> %</td>
+                                                        <td class="text-center suma-por-ideal"><span>{{seguimiento.seg_porcentaje_ideal}}</span> %</td>
+                                                        <td>{{seguimiento.seg_observaciones}}</td>
+                                                        <td class="text-center">
+                                                            <div class="content-acciones">
+                                                                <a class="btn-acciones btn-acciones-eliminar" href="{% url 'estudiante:seguimientos_editar' seguimiento.id %}"><i class="fas fa-pencil-alt"></i></a>
+                                                                <a class="btn-acciones btn-acciones-editar" href="{% url 'estudiante:seguimientos_eliminar' seguimiento.id %}"><i class="fas fa-trash-alt"></i></a>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                {% endif %}
+                                                                                           
+                                            {% endfor %}
+                                            <tr>
+                                                <th class="text-center filtro-semana bg-primary blanco" colspan="2" scope="row">AVANCE PORCENTUAL</th>
+                                                <td class="text-center total-real"><span></span> %</td>
+                                                <td class="text-center total-ideal"><span></span> %</td>
+                                                <td></td>
+                                                <td class="text-center"></td>
+                                            </tr>   
+                                        </tbody>
+                                    </table>
+                                    
+                                </div>
+                                <div class="content-semana-filtro" style="display:none;">
                                         {% for seguimiento in seguimiento_list %}
                                             {% if seguimiento.asignatura.asi_nombre == horario.asignatura.asi_nombre %}
-                                                <tr>
-                                                    <th class="text-center" scope="row">{{forloop.counter}}</th>
-                                                    <td>{{seguimiento.seg_fecha |date:'d/m/Y' }}</td>
-                                                    <td class="text-center">{{seguimiento.seg_porcentaje_real}} %</td>
-                                                    <td class="text-center">{{seguimiento.seg_porcentaje_ideal}} %</td>
-                                                    <td>{{seguimiento.seg_observaciones}}</td>
-                                                    <td class="text-center">
-                                                        <div class="content-acciones">
-                                                            <a class="btn-acciones btn-acciones-eliminar" href="{% url 'estudiante:seguimientos_editar' seguimiento.id %}"><i class="fas fa-pencil-alt"></i></a>
-                                                            <a class="btn-acciones btn-acciones-editar" href="{% url 'estudiante:seguimientos_eliminar' seguimiento.id %}"><i class="fas fa-trash-alt"></i></a>
-                                                        </div>
-                                                    </td>
-                                                </tr>
+                                            <span>{{seguimiento.seg_semana}},</span>
                                             {% endif %}                                                    
                                         {% endfor %}
-                                    </tbody>
-                                </table>
+                                        </div>
+                                <nav aria-label="..." class="content-pagination">
+                                    SEMANA
+                                    <ul class="pagination">
+                                    </ul>
+                                </nav>
                             </div>
-                        </div>
                         </div>
                     </div>
                 {% endfor %}
@@ -155,6 +179,27 @@
     </div>
 
     <script>
+
+        function crearPaginationItem(text){
+            item = document.createElement('li');
+            item.setAttribute('class', 'page-item item-semana');
+
+            check = document.createElement('input');
+            check.setAttribute('class', 'check-filtro');
+            check.setAttribute('type', 'checkbox');
+            check.setAttribute('id', text);
+            
+            label = document.createElement('label');
+            label.setAttribute('class', 'label-filtro');
+            //label.setAttribute('for', text);
+            label.textContent = text
+            
+
+            item.appendChild(check);
+            item.appendChild(label);
+            return item
+        }
+
         var btnAgregarList = document.getElementsByClassName('seguimiento-btn-agregar');
         var cardHeader = document.getElementsByClassName('card-header');
         var asignatura = document.getElementById('asignatura');
@@ -165,7 +210,26 @@
         var labelPeriodo = document.getElementById('label-periodo');
         var labelSemestre = document.getElementById('label-semestre');
         var labelParalelo = document.getElementById('label-paralelo');
+        var pagination = document.getElementsByClassName('content-semana-filtro');
+        var contentPagination = document.getElementsByClassName('pagination');
         
+        var strPagination = "";
+        var arrayPagination = [];
+
+        for(let i=0; i < pagination.length; i++){
+            strPagination = "";
+            for(let j=0; j < pagination[i].children.length; j++){
+                strPagination += pagination[i].children[j].textContent;
+            }
+            arrayPagination.push(Array.from(new Set(strPagination.split(','))));
+        }
+
+        for(let i=0; i < contentPagination.length; i++){
+            for(let j=0; j < arrayPagination[i].length-1; j++){
+                contentPagination[i].appendChild(crearPaginationItem(arrayPagination[i][j]));
+            }
+        }
+
         for(let i=0; i < btnAgregarList.length; i++){
             btnAgregarList[i].addEventListener("click", ()=>{
                 asignatura.value = cardHeader[i].children[0].textContent;
@@ -183,14 +247,14 @@
 
                 for(let i=0;i<horario[asignatura.value].length;i++){
                     if(horario[asignatura.value][i][0] == dia){
-                        porcentajeIdealInput.value = ((parseFloat(horario[asignatura.value][i][1]) * 100) / parseFloat(horario[asignatura.value][i][2])).toFixed(1)
+                        porcentajeIdealInput.value = ((parseFloat(horario[asignatura.value][i][1]) * 100) / parseFloat(horario[asignatura.value][i][2])).toFixed(2)
                         break;
                     } else {
                         porcentajeIdealInput.value = "0";
                     }
                 }
                 segNumSemana.value = fechaSeguimientoDate.getWeekNumber() - new Date(periodoInicio).getWeekNumber() + 1;
-                if (porcentajeIdealInput.value == "0"){
+                if (porcentajeIdealInput.value == "0"  || parseFloat(porcentajeRealInput.value) != parseFloat(porcentajeIdealInput.value)){
                     observacionesInput.setAttribute('required', 'true');
                 } else {
                     observacionesInput.removeAttribute('required');
@@ -204,15 +268,22 @@
 <script src="{% static 'lib/bootstrap-datepicker/js/bootstrap-datepicker.min.js'%}"></script>
 <script src="{% static 'lib/bootstrap-datepicker/locales/bootstrap-datepicker.es.min.js'%}"></script>
 <script>
+        var periodoInicio = "{{curso_list.periodo.per_inicio |date:'Y/m/d'}}";
+        var periodoFin = "{{curso_list.periodo.per_fin |date:'Y/m/d'}}";
         var now = new Date();
-        var start = new Date(now.getFullYear(), 0, 0);
+        var start = new Date(periodoInicio);
+        var end = new Date(periodoFin);
         var diff = now - start;
+        var add = end - now;
         var oneDay = 1000 * 60 * 60 * 24;
         var day = Math.floor(diff / oneDay);
+        var dayEnd = Math.floor(add / oneDay);
         var startdate = "-"+day+"d";
+        var endDate = "+"+(dayEnd+1)+"d";
         $('.datepicker').datepicker({
             format: "dd/mm/yyyy",
             startDate: startdate,
+            endDate: endDate,
             language: "es",
             daysOfWeekDisabled: "0,6",
             daysOfWeekHighlighted: "1,2,3,4,5",
@@ -235,11 +306,45 @@
     var fechaSeguimiento = document.getElementById('fecha-seguimiento');
     var segNumSemana = document.getElementById('id-seg-semana');
     var porcentajeIdealInput = document.getElementById('id_seg_porcentaje_ideal');
+    var porcentajeRealInput = document.getElementById('id_seg_porcentaje_real');
     var observacionesInput = document.getElementById('id-seg-observaciones');
+    var busquedaInput = ""
+    var busquedaTable = ""
     
     diaActual = fechaActual.getDate();
     mesActual = fechaActual.getMonth() + 1;
     anioActual = fechaActual.getFullYear();
+    porcentajeRealInput.value = 0;
+
+    obtenerId = function(obj){
+        busquedaInput = obj.parentElement.children[1].children[0].children[0].children[1].children[0].getAttribute('id');
+        busquedaTable = obj.parentElement.children[1].children[0].children[1].children[0].getAttribute('id');
+        itemsPagination = obj.parentElement.children[1].children[0].children[3].children[0].children;
+        
+        avancePorcentual();
+
+        document.getElementById(busquedaInput).addEventListener('click', ()=>{
+            for(let k=0; k < itemsPagination.length; k++){
+                itemsPagination[k].children[0].checked = false;
+            }
+        });
+        
+        for(let i=0; i < itemsPagination.length; i++){
+            itemsPagination[i].addEventListener('click', ()=>{
+                let textSearch = ""
+                for(let k=0; k < itemsPagination.length; k++){
+                    if(itemsPagination[k].children[0].checked == true){
+                        textSearch += itemsPagination[k].children[1].textContent
+                    }
+                    doSearchSemana(textSearch);
+                }
+                avancePorcentual();
+            });
+        }
+    }
+
+    
+
 
     fechaSeguimiento.addEventListener('focus', ()=>{
         var fechaSeguimientoAux = fechaSeguimiento.value.split('/');
@@ -251,7 +356,7 @@
 
         for(let i=0;i<horario[asignatura.value].length;i++){
             if(horario[asignatura.value][i][0] == dia){
-                porcentajeIdealInput.value = ((parseFloat(horario[asignatura.value][i][1]) * 100) / parseFloat(horario[asignatura.value][i][2])).toFixed(1)
+                porcentajeIdealInput.value = ((parseFloat(horario[asignatura.value][i][1]) * 100) / parseFloat(horario[asignatura.value][i][2])).toFixed(2)
                 break;
             } else {
                 porcentajeIdealInput.value = "0";
@@ -259,7 +364,9 @@
         }
         segNumSemana.value = fechaSeguimientoDate.getWeekNumber() - new Date(periodoInicio).getWeekNumber() + 1;
 
-        if (porcentajeIdealInput.value == "0"){
+        
+
+        if (porcentajeIdealInput.value == "0" || parseFloat(porcentajeRealInput.value) != parseFloat(porcentajeIdealInput.value)){
             observacionesInput.setAttribute('required', 'true');
         } else {
             observacionesInput.removeAttribute('required');
@@ -279,7 +386,7 @@
 
         for(let i=0;i<horario[asignatura.value].length;i++){
             if(horario[asignatura.value][i][0] == dia){
-                porcentajeIdealInput.value = ((parseFloat(horario[asignatura.value][i][1]) * 100) / parseFloat(horario[asignatura.value][i][2])).toFixed(1)
+                porcentajeIdealInput.value = ((parseFloat(horario[asignatura.value][i][1]) * 100) / parseFloat(horario[asignatura.value][i][2])).toFixed(2)
                 break;
             } else {
                 porcentajeIdealInput.value = "0"
@@ -287,13 +394,30 @@
         }
         segNumSemana.value = fechaSeguimientoDate.getWeekNumber() - new Date(periodoInicio).getWeekNumber() + 1;
 
-        if (porcentajeIdealInput.value == "0"){
+        console.log(porcentajeRealInput.value)
+
+        if (porcentajeIdealInput.value == "0"  || parseFloat(porcentajeRealInput.value) != parseFloat(porcentajeIdealInput.value)){
             observacionesInput.setAttribute('required', 'true');
         } else {
             observacionesInput.removeAttribute('required');
         }
     });
 
+    porcentajeRealInput.addEventListener('change', ()=>{
+        if(porcentajeRealInput.value == ""){
+            porcentajeRealInput.value = 0;
+        }
+    });
+
+    porcentajeRealInput.addEventListener('keyup', ()=>{
+
+        if (parseFloat(porcentajeRealInput.value) != parseFloat(porcentajeIdealInput.value)){
+            observacionesInput.setAttribute('required', 'true');
+        } else {
+            observacionesInput.removeAttribute('required');
+        }
+    });
+    
     function obtenerDiaString(diaNumber){
         var dia = "";
         switch(diaNumber){
@@ -324,4 +448,99 @@
     };
 
 </script>
+<script>
+
+        function doSearchSemana(semanaText)
+        {
+            var tableReg = document.getElementById(busquedaTable);
+            var searchDate = semanaText;
+            var cellsOfRow="";
+            var found=false;
+            var compareWith="";
+            
+ 
+            // Recorremos todas las filas con contenido de la tabla
+            for (var i = 1; i < tableReg.rows.length-1; i++)
+            {
+                cellsOfRow = tableReg.rows[i].getElementsByClassName('filtro-semana');
+                found = false;
+                // Recorremos todas las celdas
+                for (var j = 0; j < cellsOfRow.length && !found; j++)
+                {
+                    compareWith = cellsOfRow[j].innerHTML;
+                    // Buscamos el texto en el contenido de la celda
+                    if (searchDate == "" || (searchDate.indexOf(compareWith) > -1))
+                    {
+                        found = true;
+                    }
+                }
+                if(found)
+                {
+                    tableReg.rows[i].style.display = '';
+                } else {
+                    // si no ha encontrado ninguna coincidencia, esconde la
+                    // fila de la tabla
+                    tableReg.rows[i].style.display = 'none';
+                }
+            }
+        }
+
+        function doSearch()
+        {
+            var tableReg = document.getElementById(busquedaTable);
+            var searchDate = document.getElementById(busquedaInput).value;
+            //var searchSemana = document.getElementById(busquedaInput);
+            var cellsOfRow="";
+            var found=false;
+            var compareWith="";
+            
+ 
+            // Recorremos todas las filas con contenido de la tabla
+            for (var i = 1; i < tableReg.rows.length-1; i++)
+            {
+                cellsOfRow = tableReg.rows[i].getElementsByClassName('filtro-fecha');
+                found = false;
+                // Recorremos todas las celdas
+                for (var j = 0; j < cellsOfRow.length && !found; j++)
+                {
+                    compareWith = cellsOfRow[j].innerHTML;
+                    // Buscamos el texto en el contenido de la celda
+                    if (searchDate.length == 0 || (compareWith.indexOf(searchDate) > -1))
+                    {
+                        found = true;
+                    }
+                }
+                if(found)
+                {
+                    tableReg.rows[i].style.display = '';
+                } else {
+                    // si no ha encontrado ninguna coincidencia, esconde la
+                    // fila de la tabla
+                    tableReg.rows[i].style.display = 'none';
+                }
+            }
+        }
+
+        function avancePorcentual(){
+            var table = document.getElementById(busquedaTable);
+            var sumPorReal = 0.00;
+            var sumPorIdeal = 0.00;
+            for(let i=0;i<table.rows.length-1;i++){
+                if(table.rows[i].style.display != "none"){
+                    cellPorReal = table.rows[i].getElementsByClassName('suma-por-real');
+                    cellPorIdeal = table.rows[i].getElementsByClassName('suma-por-ideal');
+                    for(let k=0;k<cellPorReal.length;k++){
+                        decimal = cellPorReal[k].children[0].textContent.split(",");
+                        cell = decimal[0] +"."+ decimal[1];
+                        sumPorReal += parseFloat(cell);
+                        decimal = cellPorIdeal[k].children[0].textContent.split(",");
+                        cell = decimal[0] +"."+ decimal[1];
+                        sumPorIdeal += parseFloat(cell);
+                    }
+                }
+            }
+            table.rows[table.rows.length-1].getElementsByClassName('total-real')[0].children[0].textContent = Math.ceil(sumPorReal)
+            table.rows[table.rows.length-1].getElementsByClassName('total-ideal')[0].children[0].textContent = Math.ceil(sumPorIdeal)
+        }
+    </script>
 {% endblock scripts-opcionales %}

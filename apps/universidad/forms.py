@@ -481,6 +481,37 @@ class CursoUpdateForm(forms.ModelForm):
             })
         }
 
+class CursoRemplazarForm(forms.ModelForm):
+    
+    # def __init__(self,*args,**kwargs):
+    #     super (CursoRemplazarForm,self ).__init__(*args,**kwargs)
+    #     alumnosList = Curso.objects.filter(cur_estado=True, cur_eliminado=False)
+    #     noMostrarAlumnos = []
+    #     for alumno in alumnosList:
+    #         noMostrarAlumnos.append(alumno.alumno_id)
+    #     self.fields['alumno'].queryset = Alumno.objects.filter(alu_estado=True).exclude(id__in=noMostrarAlumnos)
+
+
+    class Meta:
+        model = Curso
+
+        fields = [
+            'alumno',
+        ]
+
+        labels = {
+            'alumno' : 'ALUMNO',
+        }
+
+        widgets = {
+            'alumno' : forms.Select(attrs={
+                'class' : 'custom-select', 
+                # 'id' : 'per_nombre', 
+                'required' : 'true',
+            }),
+        }
+
+
 class UserForm(forms.ModelForm):
 
     class Meta:

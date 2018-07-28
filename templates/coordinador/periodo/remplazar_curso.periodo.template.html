@@ -1,0 +1,64 @@
+{% extends 'base/base.app.coordinador.template.html'%}
+{% load staticfiles %}
+{% block title %}
+    COORDINADOR
+{% endblock title %}
+
+{% block periodos-activo %}
+    active-menu-item
+{% endblock periodos-activo %}
+
+{% block content %}
+    {% if messages %}
+    {% for message in messages %}
+        <div class="message-{{ message.tags }} alert alert-warning alert-dismissible fade show content-error" role="alert">
+            {{ message }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    {% endfor %}
+    {% endif %}
+    <div class="content-docentes-editar">
+        <form method="post" class="w-100">
+            {% csrf_token %}
+            <div class="docentes-editar-top modal-header ">
+                <h5 class="modal-title">REMPLAZAR ESTUDIANTE</h5>
+            </div>
+            <div class="modal-body w-100">
+                <div class="modal-docente">
+                    <div class="group-fila-cna">
+                        <div class="group-campo w-30">
+                            <span class="label-campo">PERIODO</span>
+                            <span class="input-campo">{{ object.periodo }}</span>
+                        </div>
+                        <div class="group-campo w-70">
+                            <span class="label-campo">SEMESTRE</span>
+                            <span class="input-campo">{{ object.semestre }}</span>
+                        </div>
+                    </div>
+                    <div class="group-fila-tc w-100">
+                        <div class="group-campo w-70">
+                            <label for="{{ form.alumno.name }}" class="label-campo">{{ form.alumno.label }}</label>
+                            {{ form.alumno }}
+                        </div>
+                        <div class="group-campo w-30">
+                            <span class="label-campo">PARALELO</span>
+                            <span class="input-campo">{{ object.cur_paralelo }}</span>
+                        </div>
+                    </div>
+                    <div class="campo-mensaje w-100">
+                        <textarea name="alu-observacion" id="alu-observacion" class="input-campo w-100" placeholder='Escriba la observacion aqui...' required></textarea>
+                    </div>                    
+                </div> 
+            </div>
+            <div class="modal-footer">
+                <button class="btn-agregar" type="submit"><i class="icon-btn fas fa-save"></i>REMPLAZAR</button>
+                <a href="{% url 'coordinador:periodos' %}" class="btn-cerrar" id="btn-cerrar"><i class="icon-btn fas fa-times"></i>CANCELAR</a>
+            </div>
+        </form>
+    </div>
+
+    
+
+{% endblock content %}

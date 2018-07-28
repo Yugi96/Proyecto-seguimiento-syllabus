@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required, permission_required
 from apps.universidad.views import homeCoordinador, UploadFileView, UpdateDocente, \
                                     UploadFileViewAsignatura, UpdateAsignatura, PeriodoView, \
                                     AsignaturaDocenteView, AsignaturaDocenteUpdateView, EstudianteView, \
-                                    EstudianteUpdateView, CursoView, CursoUpdateView, PeriodoUpdateView, TerminarPeriodoView
+                                    EstudianteUpdateView, CursoView, CursoUpdateView, PeriodoUpdateView, TerminarPeriodoView, CursoRemplazarView
 
 from apps.seguimiento.views import CursosHorariosListView, HorarioCreateView
 
@@ -35,6 +35,7 @@ urlpatterns = [
     
     re_path('^periodo/curso$', permission_required('universidad.Coordinador')(CursoView.as_view()), name='periodos_curso_agregar'),
     re_path('^periodo/curso/editar/(?P<pk>\d+)/', permission_required('universidad.Coordinador')(CursoUpdateView.as_view()), name='periodos_curso_editar'),
+    re_path('^periodo/curso/remplazar/(?P<pk>\d+)/', permission_required('universidad.Coordinador')(CursoRemplazarView.as_view()), name='periodos_curso_remplazar'),
     
     re_path('^periodo/curso/horario/(?P<pk>\d+)/', permission_required('universidad.Coordinador')(CursosHorariosListView.as_view()), name='periodos_curso_horario'),
     re_path('^periodo/curso/horario/crear/(?P<pk>\d+)/', permission_required('universidad.Coordinador')(HorarioCreateView.as_view()), name='periodos_curso_horario_crear'),

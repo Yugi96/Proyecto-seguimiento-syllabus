@@ -33,6 +33,7 @@ class SeguimientoListView(FormMessageMixin, CreateView):
     success_url = reverse_lazy('estudiante:seguimientos')
     template_name = 'estudiante/seguimiento/index.seguimiento.template.html'
     form_valid_message = 'FECHA REGISTRADA CON EXITO'
+    form_invalid_message = 'ERROR: NO SE PUEDE AGREGAR EL REGISTRO'
     
     def get_context_data(self, **kwargs):
         context = super(SeguimientoListView, self).get_context_data(**kwargs)
@@ -50,7 +51,7 @@ class SeguimientoListView(FormMessageMixin, CreateView):
             periodo_id=curso.periodo_id, 
             seg_estado=True, 
             seg_paralelo = curso.cur_paralelo
-        )
+        ).order_by('seg_fecha')
         context['horario_completo'] = Horario.objects.filter(
             hor_estado=True, 
             semestre_id=curso.semestre_id, 

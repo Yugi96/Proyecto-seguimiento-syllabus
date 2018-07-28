@@ -1086,8 +1086,48 @@ body {
     border: 1px solid #dee2e6;
 }
 
+.content-pagination {
+    padding: 15px 10px 0 10px;
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+
+}
+
+.content-pagination > ul {
+    width: auto;
+}
+
+.pagination {
+    margin: 0;
+}
+
+.item-semana {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-left: 15px;
+    
+}
+
+.check-filtro {
+    cursor: pointer;
+}
+
+.label-filtro {
+    cursor: pointer;
+    margin: 0;
+    padding-left: 10px;
+}
+
+.check-filtro:checked ~ .label-filtro {
+    font-weight: bold;
+    color: #007bff;
+}
+
 .card-body-top {
     width: 100%;
+    display: flex;
 }
 
 .seguimiento-btn-agregar {
@@ -1137,6 +1177,7 @@ body {
     display: flex;
     justify-content: flex-start;
     align-items: center;
+    width: 100%;
 }
 
 .informacion-periodo {

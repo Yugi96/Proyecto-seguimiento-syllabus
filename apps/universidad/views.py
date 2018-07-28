@@ -18,7 +18,7 @@ from .forms import DocenteForm, DocenteUpdateForm
 # Import Asignaturas
 from .forms import AsignaturaForm, AsignaturaUpdateForm
 # Import Estudiante Curso
-from .forms import AlumnoForm, CursoForm, UserForm, UserUpdateForm, AlumnoUpdateForm, CursoUpdateForm
+from .forms import AlumnoForm, CursoForm, UserForm, UserUpdateForm, AlumnoUpdateForm, CursoUpdateForm, CursoRemplazarForm
 # Import Periodo
 from .forms import PeriodoForm, TerminarPeriodoForm
 # Import Asignatura Docente
@@ -254,6 +254,50 @@ class CursoUpdateView(FormMessageMixin, UpdateView):
             user.save()
         if form.is_valid():
             form.save()
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
+
+class CursoRemplazarView(FormMessageMixin, UpdateView):
+    model = Curso
+    form_class = CursoRemplazarForm
+    success_url = reverse_lazy('coordinador:periodos')
+    template_name = 'coordinador/periodo/remplazar_curso.periodo.template.html'
+    form_valid_message = 'ESTUDIANTE REMPLAZADO CON EXITO'
+    form_invalid_message = "ERROR: NO SE PUEDE REMPLAZAR EL ESTUDIANTE EN EL CURSO"
+
+    def get_form(self, form_class=None, *args, **kwargs):
+        form = super(CursoRemplazarView,self).get_form(form_class) #instantiate using parent
+        id_curso = self.kwargs['pk']
+        curso = Curso.objects.get(id=id_curso)
+        alumnoCarrera = Alumno.objects.get(id=curso.alumno_id)
+        alumnosList = Curso.objects.filter(cur_estado=True, cur_eliminado=False)
+        noMostrarAlumnos = []
+        for alumno in alumnosList:
+            noMostrarAlumnos.append(alumno.alumno_id)
+        form.fields['alumno'].queryset = Alumno.objects.filter(carrera_id=alumnoCarrera.carrera, alu_estado=True).exclude(id__in=noMostrarAlumnos)
+        return form
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object
+        id_curso = kwargs['pk']
+        curso = self.model.objects.get(id=id_curso)
+        form = self.form_class(request.POST, instance=curso)
+        cursosList = Curso.objects.filter(cur_estado=True, cur_eliminado=False).exclude(alumno_id = curso.alumno_id)
+        alumnoCarrera = Alumno.objects.get(id=curso.alumno_id)
+        user = User.objects.get(id=alumnoCarrera.usuario_id)
+        
+        if form.is_valid():
+            alumnoCarrera.alu_observacion = request.POST['alu-observacion']
+            alumnoCarrera.alu_estado = False
+            alumnoCarrera.save()
+            user.is_active = False
+            user.save()
+            alumnoRemplazado = form.save()
+            user = User.objects.get(id=alumnoRemplazado.alumno.usuario_id)
+            user.is_active = True
+            user.save()
+            
             return self.form_valid(form)
         else:
             return self.form_invalid(form)

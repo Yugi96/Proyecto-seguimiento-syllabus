@@ -127,7 +127,6 @@
                                 <td>{{docente.docente}}</td>
                                 <td class="text-center">
                                     <a class="btn-editar btn-asignatura bg-primary" href="{% url 'coordinador:periodos_docentes_editar' docente.id %}"></i>MOSTRAR</a>
-                                    <!-- <a class="btn-cerrar btn-asignatura" href=""></i>ELIMINAR</a> -->
                                 </td>
                                 <td></td
                             </tr>
@@ -171,6 +170,7 @@
                                     <td class="text-center">
                                         <a class="btn-editar btn-asignatura" href="{% url 'coordinador:periodos_curso_editar' curso.id %}"></i>EDITAR</a>
                                         <a class="btn-editar btn-asignatura bg-primary" href="{% url 'coordinador:periodos_curso_horario' curso.id %}"></i>HORARIO</a>
+                                        <a class="btn-editar btn-asignatura bg-danger" href="{% url 'coordinador:periodos_curso_remplazar' curso.id %}"></i>REMPLAZAR</a>
                                     </td>
                                     <td></td
                                 </tr>
