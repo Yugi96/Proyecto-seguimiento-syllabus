@@ -482,15 +482,6 @@ class CursoUpdateForm(forms.ModelForm):
         }
 
 class CursoRemplazarForm(forms.ModelForm):
-    
-    # def __init__(self,*args,**kwargs):
-    #     super (CursoRemplazarForm,self ).__init__(*args,**kwargs)
-    #     alumnosList = Curso.objects.filter(cur_estado=True, cur_eliminado=False)
-    #     noMostrarAlumnos = []
-    #     for alumno in alumnosList:
-    #         noMostrarAlumnos.append(alumno.alumno_id)
-    #     self.fields['alumno'].queryset = Alumno.objects.filter(alu_estado=True).exclude(id__in=noMostrarAlumnos)
-
 
     class Meta:
         model = Curso
@@ -510,7 +501,6 @@ class CursoRemplazarForm(forms.ModelForm):
                 'required' : 'true',
             }),
         }
-
 
 class UserForm(forms.ModelForm):
 
@@ -595,4 +585,59 @@ class UserUpdateForm(forms.ModelForm):
                 }),
         }
 
+class HistorialAlumnoUpdateForm(forms.ModelForm):
 
+    class Meta:
+        model = Alumno
+
+        fields = [
+            'alu_estado',
+        ]
+
+        labels = {
+            'alu_estado' : 'ESTADO',
+        }
+
+        widgets = {
+            'alu_estado' : forms.CheckboxInput(attrs={
+                'class' : 'campo-check',
+            }),
+        }
+
+class HistorialDocenteUpdateForm(forms.ModelForm):
+    
+    class Meta:
+        model = Docente
+
+        fields = [
+            'doc_estado',
+        ]
+
+        labels = {
+            'doc_estado' : 'ESTADO'
+        }
+
+        widgets = {
+            'doc_estado' : forms.CheckboxInput(attrs={
+                'class' : 'campo-check',
+                })
+        }
+
+class HistorialAsignaturaUpdateForm(forms.ModelForm):
+
+    class Meta:
+        model = Asignatura
+
+        fields = [
+            'asi_estado',
+        ]
+
+        labels = {
+            'asi_estado' : 'ESTADO',
+        }
+
+        widgets = {
+            'asi_estado' : forms.CheckboxInput(attrs={
+                'class' : 'campo-check',
+            }),
+        }

@@ -11,7 +11,7 @@ from django.core import serializers
 
 from datetime import datetime
 
-from .models import Docente, Asignatura, Semestre, Periodo, Curso, Asignatura_Docente, Alumno, Curso
+from .models import Docente, Asignatura, Semestre, Periodo, Curso, Asignatura_Docente, Alumno, Curso, Unidad_Academica, Carrera
 
 # Import Docentes
 from .forms import DocenteForm, DocenteUpdateForm 
@@ -23,6 +23,8 @@ from .forms import AlumnoForm, CursoForm, UserForm, UserUpdateForm, AlumnoUpdate
 from .forms import PeriodoForm, TerminarPeriodoForm
 # Import Asignatura Docente
 from .forms import AsignaturaDocenteForm, AsignaturaDocenteUpdateForm
+# Import Historial Estudiantes
+from .forms import HistorialAlumnoUpdateForm, HistorialDocenteUpdateForm, HistorialAsignaturaUpdateForm
 
 @login_required
 def home(request):
@@ -42,6 +44,9 @@ def homeEstudiante(request):
 def homeCoordinador(request):
     return render(request, template_name='coordinador/index.coordinador.template.html')
 
+def historialMenu(request):
+    return render(request, template_name='coordinador/historial/index.historial.template.html')
+
 class FormMessageMixin(object):
     @property
     def form_valid_message(self):
@@ -54,7 +59,6 @@ class FormMessageMixin(object):
     def form_invalid(self, form):
         messages.error(self.request, self.form_invalid_message)
         return super(FormMessageMixin, self).form_invalid(form)
-
 
 class UploadFileView(FormMessageMixin, CreateView):
     form_class = DocenteForm
@@ -302,7 +306,6 @@ class CursoRemplazarView(FormMessageMixin, UpdateView):
         else:
             return self.form_invalid(form)
 
-
 class EstudianteView(FormMessageMixin, CreateView):
     model = Alumno
     form_class = AlumnoForm
@@ -379,4 +382,61 @@ class EstudianteUpdateView(FormMessageMixin, UpdateView):
             return self.form_valid(form)
         else:
             return self.form_invalid(form)
-        
+
+class HistorialEstudianteView(ListView):
+    model = Alumno
+    template_name = 'coordinador/historial/estudiante/index.estudiante.template.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(HistorialEstudianteView, self).get_context_data(**kwargs)
+        context['estudiantes_list'] = Alumno.objects.filter(alu_estado=False).order_by('usuario__first_name', 'usuario__last_name')
+        return context
+
+class HistorialEstudianteUpdateView(FormMessageMixin, UpdateView):
+    model = Alumno
+    template_name = 'coordinador/historial/estudiante/actualizar.estudiante.template.html'
+    form_class = HistorialAlumnoUpdateForm
+    form_valid_message = 'ESTUDIANTE ACTUALIZADO CON EXITO'
+    form_invalid_message = "ERROR: NO SE PUDO ACTUALIZAR EL ESTUDIANTE"
+    success_url = reverse_lazy('coordinador:estudiantes')
+
+class HistorialDocenteView(ListView):
+    model = Docente
+    template_name = 'coordinador/historial/docente/index.docente.template.html'
+
+    def get_context_data(self, **kwargs):
+        kwargs['object_list'] = Docente.objects.filter(doc_estado=False).order_by('doc_apellidos')
+        return super(HistorialDocenteView, self).get_context_data(**kwargs)
+
+class HistorialDocenteUpdateView(FormMessageMixin, UpdateView):
+    model = Docente
+    template_name = 'coordinador/historial/docente/actualizar.docente.template.html'
+    form_class = HistorialDocenteUpdateForm
+    form_valid_message = 'DOCENTE ACTUALIZADO CON EXITO'
+    form_invalid_message = "ERROR: NO SE PUDO ACTUALIZAR EL DOCENTE"
+    success_url = reverse_lazy('coordinador:docentes')
+
+class HistorialAsignaturaView(ListView):
+    model = Asignatura
+    template_name = 'coordinador/historial/asignatura/index.asignatura.template.html'
+
+    def get_context_data(self, **kwargs):
+        kwargs['object_list'] = Asignatura.objects.filter(asi_estado=False).order_by('carrera','semestre')
+        return super(HistorialAsignaturaView, self).get_context_data(**kwargs)
+
+class HistorialAsignaturaUpdateView(FormMessageMixin, UpdateView):
+    model = Asignatura
+    template_name = 'coordinador/historial/asignatura/actualizar.asignatura.template.html'
+    form_class = HistorialAsignaturaUpdateForm
+    form_valid_message = 'ASIGNATURA ACTUALIZADO CON EXITO'
+    form_invalid_message = "ERROR: NO SE PUDO ACTUALIZAR EL DOCENTE"
+    success_url = reverse_lazy('coordinador:asignaturas')
+
+class IndexView(ListView):
+    template_name = 'coordinador/index.coordinador.template.html'
+    
+    def get_context_data(self, **kwargs):
+        context = super(IndexView, self).get_context_data(**kwargs)
+        context['unidad_list'] = Unidad_Academica.objects.all()
+        context['carrera_list'] = Carrera.objects.filter(car_estado=True)
+        return context

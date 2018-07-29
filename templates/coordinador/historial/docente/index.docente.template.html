@@ -1,0 +1,144 @@
+{% extends 'base/base.app.coordinador.template.html'%}
+{% load staticfiles %}
+{% block title %}
+    COORDINADOR
+{% endblock title %}
+
+{% block modal %}
+{% endblock modal %}
+
+{% block historial-activo %}
+    active-menu-item
+{% endblock historial-activo %}
+
+{% block content %}
+    {% if messages %}
+    {% for message in messages %}
+        <div class="message-{{ message.tags }} alert alert-warning alert-dismissible fade show content-error" role="alert">
+            {{ message }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    {% endfor %}
+    {% endif %}
+    <div class="content-docentes">
+        <div class="docentes-top alinear-derecha">
+            <div class="content-search">
+                <input class="input-buscar" id="searchTerm" type="text" onkeyup="convertirMayuscula(this); doSearch(); " placeholder="BUSCAR..."><i class="icon-buscar fas fa-search"></i>
+            </div>
+        </div>
+        <div class="docentes-list-perfil">
+            {% if object_list %}
+            <div class="docentes-list">
+                <table class="table-docente" id="table">
+                    <thead class="docente-header">
+                        <tr>
+                            <th class="celdas-ocultas">Cedula</th>
+                            <th class="celdas-ocultas">Nombres</th>
+                            <th class="celdas-ocultas">Apellidos</th>
+                            <th class="celdas-ocultas">Telefono</th>
+                            <th class="celdas-ocultas">Correo</th>
+                            <th class="celdas-ocultas">Estado</th>
+                            <th class="column-cont">#</th>
+                            <th class="header-title">APELLIDOS Y NOMBRES</th>
+                        </tr>
+                    </thead>
+                    <tbody class="docente-body">
+                        
+                            {% for docente in object_list %}
+                                <tr class="docente-row" id="docente-row">
+                                    <td class="celdas-ocultas">{{ docente.doc_cedula }}</td>
+                                    <td class="celdas-ocultas">{{ docente.doc_nombres }}</td>
+                                    <td class="celdas-ocultas">{{ docente.doc_apellidos }}</td>
+                                    <td class="celdas-ocultas">{{ docente.doc_telefono }}</td>
+                                    <td class="celdas-ocultas">{{ docente.doc_correo }}</td>
+                                    <td class="celdas-ocultas">{{ docente.doc_estado }}</td>
+                                    <td class="column-cont">{{ forloop.counter }}</td>
+                                    <td>{{ docente.doc_apellidos }} {{ docente.doc_nombres }}</td>
+                                </tr>
+                            {% endfor %} 
+                        
+                        
+                    </tbody>
+                </table>
+            </div>
+            <div class="docentes-perfil">
+                <div class="perfil-username">
+                    <div class="perfil-img">
+                        <img class="img-docente" src="{% static 'img/docente-perfil.png' %}" alt="">
+                    </div>
+                    <div class="content-username">
+                        <p id="apellidos" class="username-text"></p>
+                        <p id="nombres" class="username-text"></p>
+                    </div>
+                </div>
+                <div class="perfil-informacion">
+                    <div class="campos-informacion">
+                        <p class="informacion-campo">CEDULA</p>
+                        <p id="cedula" class="campo-docente"></p>
+                        <p class="informacion-campo">CORREO</p>
+                        <p id="correo" class="campo-docente"></p>
+                        <p class="informacion-campo">TELEFONO</p>
+                        <p id="telefono" class="campo-docente"></p>
+                    </div>
+                    <div class="content-btn">
+                        <a class="btn-editar" id="editar-btn"><i class="icon-btn fas fa-pencil-alt"></i>EDITAR</a>
+                    </div>
+                </div>
+            </div>
+            <script src="{% static 'js/table-select.js' %}"></script>
+
+            {% else %}
+                <div class="content-vacio">
+                    <img class="no-hay-img" src="{% static 'img/no-hay.png' %}" alt="">
+                    <h2 class="title-no-hay">NO HAY DOCENTES.</h2>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <script>
+            function doSearch()
+            {
+                var tableReg = document.getElementById('table');
+                var searchText = document.getElementById('searchTerm').value.toUpperCase();
+                var cellsOfRow="";
+                var found=false;
+                var compareWith="";
+     
+                // Recorremos todas las filas con contenido de la tabla
+                for (var i = 1; i < tableReg.rows.length; i++)
+                {
+                    cellsOfRow = tableReg.rows[i].getElementsByTagName('td');
+                    found = false;
+                    // Recorremos todas las celdas
+                    for (var j = 0; j < cellsOfRow.length && !found; j++)
+                    {
+                        compareWith = cellsOfRow[j].innerHTML.toUpperCase();
+                        // Buscamos el texto en el contenido de la celda
+                        if (searchText.length == 0 || (compareWith.indexOf(searchText) > -1))
+                        {
+                            found = true;
+                        }
+                    }
+                    if(found)
+                    {
+                        tableReg.rows[i].style.display = '';
+                    } else {
+                        // si no ha encontrado ninguna coincidencia, esconde la
+                        // fila de la tabla
+                        tableReg.rows[i].style.display = 'none';
+                    }
+                }
+            }
+        </script>
+
+        
+        
+        
+
+{% endblock content %}
+
+
+

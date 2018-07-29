@@ -4,7 +4,9 @@ from django.contrib.auth.decorators import login_required, permission_required
 from apps.universidad.views import homeCoordinador, UploadFileView, UpdateDocente, \
                                     UploadFileViewAsignatura, UpdateAsignatura, PeriodoView, \
                                     AsignaturaDocenteView, AsignaturaDocenteUpdateView, EstudianteView, \
-                                    EstudianteUpdateView, CursoView, CursoUpdateView, PeriodoUpdateView, TerminarPeriodoView, CursoRemplazarView
+                                    EstudianteUpdateView, CursoView, CursoUpdateView, PeriodoUpdateView, TerminarPeriodoView, \
+                                    CursoRemplazarView, historialMenu, HistorialEstudianteView, HistorialEstudianteUpdateView, \
+                                    HistorialDocenteView, HistorialDocenteUpdateView, HistorialAsignaturaView, HistorialAsignaturaUpdateView
 
 from apps.seguimiento.views import CursosHorariosListView, HorarioCreateView
 
@@ -39,4 +41,15 @@ urlpatterns = [
     
     re_path('^periodo/curso/horario/(?P<pk>\d+)/', permission_required('universidad.Coordinador')(CursosHorariosListView.as_view()), name='periodos_curso_horario'),
     re_path('^periodo/curso/horario/crear/(?P<pk>\d+)/', permission_required('universidad.Coordinador')(HorarioCreateView.as_view()), name='periodos_curso_horario_crear'),
+    
+    re_path('^historial/$', permission_required('universidad.Coordinador')(historialMenu), name='historial'),
+    
+    re_path('^historial/estudiantes/$', permission_required('universidad.Coordinador')(HistorialEstudianteView.as_view()), name='historial_estudiante'),
+    re_path('^historial/estudiantes/editar/(?P<pk>\d+)/', permission_required('universidad.Coordinador')(HistorialEstudianteUpdateView.as_view()), name='historial_estudiante_editar'),
+    
+    re_path('^historial/docentes/$', permission_required('universidad.Coordinador')(HistorialDocenteView.as_view()), name='historial_docente'),
+    re_path('^historial/docentes/editar/(?P<pk>\d+)/', permission_required('universidad.Coordinador')(HistorialDocenteUpdateView.as_view()), name='historial_docente_editar'),
+    
+    re_path('^historial/asignaturas/$', permission_required('universidad.Coordinador')(HistorialAsignaturaView.as_view()), name='historial_asignatura'),
+    re_path('^historial/asignaturas/editar/(?P<pk>.+?)/', permission_required('universidad.Coordinador')(HistorialAsignaturaUpdateView.as_view()), name='historial_asignaturas_editar'),
 ]

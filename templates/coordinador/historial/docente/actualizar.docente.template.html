@@ -1,0 +1,80 @@
+{% extends 'base/base.app.coordinador.template.html'%}
+{% load staticfiles %}
+{% block title %}
+    COORDINADOR
+{% endblock title %}
+
+{% block historial-activo %}
+    active-menu-item
+{% endblock historial-activo %}
+
+{% block content %}
+    {% if messages %}
+    {% for message in messages %}
+        <div class="message-{{ message.tags }} alert alert-warning alert-dismissible fade show content-error" role="alert">
+            {{ message }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    {% endfor %}
+    {% endif %}
+    <div class="content-docentes-editar">
+        <form method="post">
+            {% csrf_token %}
+            <div class="docentes-editar-top modal-header">
+                <h5 class="modal-title">EDITAR DOCENTE</h5>
+                <div class="group-dar-baja">
+                    <label for="{{ form.doc_estado.name }}" class="label-dar-baja">{{ form.doc_estado.label }}</label>
+                    {{ form.doc_estado }}
+                </div>
+            </div>
+            <div class="modal-body">
+                <div class="modal-docente">
+                    <div class="group-fila-cna">
+                        <div class="group-campo campo-cedula">
+                            <span class="label-campo">CÉDULA</span>
+                            <span class="input-campo">{{ object.doc_cedula }}</span>
+                        </div>
+                        <div class="group-campo campo-nombre-apellido">
+                            <span class="label-campo">NOMBRES</span>
+                            <span class="input-campo">{{ object.doc_nombres }}</span>
+                        </div>
+                        <div class="group-campo campo-nombre-apellido">
+                            <span class="label-campo">APELLIDOS</span>
+                            <span class="input-campo">{{ object.doc_apellidos }}</span>
+                        </div>
+                    </div>
+                    <div class="group-fila-tc">
+                        <div class="group-campo campo-correo">
+                            <span class="label-campo">CORREO</span>
+                            <span class="input-campo">{{ object.doc_correo }}</span>
+                        </div>
+                        <div class="group-campo campo-nombre-apellido">
+                            <span class="label-campo">TELEFONO</span>
+                            <span class="input-campo">{{ object.doc_telefono }}</span>
+                        </div>
+                    </div>
+                    
+                </div> 
+            </div>
+            <div class="modal-footer">
+                <button class="btn-agregar" type="submit"><i class="icon-btn fas fa-save"></i>GUARDAR CAMBIOS</button>
+                <a href="{% url 'coordinador:historial_docente' %}" class="btn-cerrar" id="btn-cerrar"><i class="icon-btn fas fa-times"></i>CANCELAR</a>
+            </div>
+        </form>
+    </div>
+
+    
+
+{% endblock content %}
+
+{% block scripts-opcionales %}
+    <script src="{% static 'js/popper.min.js' %}"></script>
+    
+    <script>
+        $(function () {
+            $('[data-toggle="popover"]').popover()
+        });
+    </script>
+{% endblock scripts-opcionales %}

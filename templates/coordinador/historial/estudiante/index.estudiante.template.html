@@ -1,0 +1,189 @@
+{% extends 'base/base.app.coordinador.template.html'%}
+{% load staticfiles %}
+{% block title %}
+    COORDINADOR
+{% endblock title %}
+
+{% block modal %}
+{% endblock modal %}
+
+{% block historial-activo %}
+    active-menu-item
+{% endblock historial-activo %}
+
+{% block content %}
+    {% if messages %}
+    {% for message in messages %}
+        <div class="message-{{ message.tags }} alert alert-warning alert-dismissible fade show content-error" role="alert">
+            {{ message }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    {% endfor %}
+    {% endif %}
+    <div class="content-docentes">
+        <div class="docentes-top alinear-derecha">
+            <div class="content-search">
+                <input class="input-buscar" id="searchTerm" type="text" onkeyup="convertirMayuscula(this); doSearch(); " placeholder="BUSCAR..."><i class="icon-buscar fas fa-search"></i>
+            </div>
+        </div>
+        <div class="docentes-list-perfil">
+            {% if estudiantes_list %}
+                <div class="docentes-list  w-65">
+                    <table class="table" id="table">
+                        <thead class="bg-primary blanco">
+                            <tr>
+                                <th></th>
+                                <th class="celdas-ocultas">Cedula</th>
+                                <th class="celdas-ocultas">Nombres</th>
+                                <th class="celdas-ocultas">Apellidos</th>
+                                <th class="celdas-ocultas">Carrera</th>
+                                <th class="celdas-ocultas">Correo</th>
+                                <th class="celdas-ocultas">Observacion</th>
+                                <th class="column-cont">#</th>
+                                <th class="">APELLIDOS Y NOMBRES</th>
+                                <th class="">CARRERA</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody class="">
+                            
+                                {% for estudiante in estudiantes_list %}
+                                    <tr class="" id="docente-row">
+                                        <td></td>
+                                        <td class="celdas-ocultas">{{ estudiante.id }}</td>
+                                        <td class="celdas-ocultas">{{ estudiante.usuario.username }}</td>
+                                        <td class="celdas-ocultas">{{ estudiante.usuario.first_name }}</td>
+                                        <td class="celdas-ocultas">{{ estudiante.usuario.last_name }}</td>
+                                        <td class="celdas-ocultas">{{ estudiante.carrera }}</td>
+                                        <td class="celdas-ocultas">{{ estudiante.usuario.email }}</td>
+                                        <td class="celdas-ocultas">{{ estudiante.alu_observacion }}</td>
+                                        <td class="column-cont">{{ forloop.counter }}</td>
+                                        <td>{{ estudiante.usuario.first_name }} {{ estudiante.usuario.last_name }}</td>
+                                        <td>{{ estudiante.carrera }}</td>
+                                        <td></td>
+                                    </tr>
+                                {% endfor %} 
+                            
+                            
+                        </tbody>
+                    </table>
+                </div>
+                <div class="docentes-perfil w-35">
+                    <div class="perfil-username h-20">
+                        <div class="content-username">
+                            <p id="apellidos" class="username-text"></p>
+                            <p id="nombres" class="username-text"></p>
+                        </div>
+                    </div>
+                    <div class="perfil-informacion h-80">
+                        <div class="campos-informacion">
+                            <p class="informacion-campo">CEDULA</p>
+                            <p id="id" class="campo-docente"></p>
+                            <p id="cedula" class="campo-docente"></p>
+                            <p class="informacion-campo">CORREO</p>
+                            <p id="correo" class="campo-docente"></p>
+                            <p class="informacion-campo">CARRERA</p>
+                            <p id="carrera" class="campo-docente"></p>
+                            <p class="informacion-campo">OBSERVACIONES</p>
+                            <p id="observaciones" class="campo-docente"></p>
+                        </div>
+                        <div class="content-btn">
+                            <a class="btn-editar" id="editar-btn"><i class="icon-btn fas fa-pencil-alt"></i>EDITAR</a>
+                        </div>
+                    </div>
+                </div>
+
+            {% else %}
+                <div class="content-vacio">
+                    <img class="no-hay-img" src="{% static 'img/no-hay.png' %}" alt="">
+                    <h2 class="title-no-hay">NO HAY ESTUDIANTES INGRESADOS.</h2>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <script>
+            
+            function doSearch()
+            {
+                var tableReg = document.getElementById('table');
+                var searchText = document.getElementById('searchTerm').value.toUpperCase();
+                var cellsOfRow="";
+                var found=false;
+                var compareWith="";
+     
+                // Recorremos todas las filas con contenido de la tabla
+                for (var i = 1; i < tableReg.rows.length; i++)
+                {
+                    cellsOfRow = tableReg.rows[i].getElementsByTagName('td');
+                    found = false;
+                    // Recorremos todas las celdas
+                    for (var j = 0; j < cellsOfRow.length && !found; j++)
+                    {
+                        compareWith = cellsOfRow[j].innerHTML.toUpperCase();
+                        // Buscamos el texto en el contenido de la celda
+                        if (searchText.length == 0 || (compareWith.indexOf(searchText) > -1))
+                        {
+                            found = true;
+                        }
+                    }
+                    if(found)
+                    {
+                        tableReg.rows[i].style.display = '';
+                    } else {
+                        // si no ha encontrado ninguna coincidencia, esconde la
+                        // fila de la tabla
+                        tableReg.rows[i].style.display = 'none';
+                    }
+                }
+            }
+
+            function selectedRow(){
+                var index;
+                var table = document.getElementById("table");
+                document.getElementById("id").textContent = table.rows[1].cells[1].innerHTML;
+                document.getElementById("cedula").textContent = table.rows[1].cells[2].innerHTML;
+                document.getElementById("nombres").textContent = table.rows[1].cells[3].innerHTML;
+                document.getElementById("apellidos").textContent = table.rows[1].cells[4].innerHTML;
+                document.getElementById("carrera").textContent = table.rows[1].cells[5].innerHTML;
+                document.getElementById("correo").textContent = table.rows[1].cells[6].innerHTML;
+                document.getElementById("observaciones").textContent = table.rows[1].cells[7].innerHTML;
+                var btnEditar = document.getElementById('editar-btn');
+                table.rows[1].classList.toggle('hover-row')
+                btnEditar.href="editar/"+ table.rows[1].cells[1].innerHTML +"/";
+                for(var i = 1; i < table.rows.length; i++){
+                    table.rows[i].onclick = function(){
+                        document.getElementById("id").textContent = this.cells[1].innerHTML;
+                        document.getElementById("cedula").textContent = this.cells[2].innerHTML;
+                        document.getElementById("nombres").textContent = this.cells[3].innerHTML;
+                        document.getElementById("apellidos").textContent = this.cells[4].innerHTML;
+                        document.getElementById("carrera").textContent = this.cells[5].innerHTML;
+                        document.getElementById("correo").textContent = this.cells[6].innerHTML;
+                        document.getElementById("observaciones").textContent = this.cells[7].innerHTML;
+
+                        btnEditar.href="editar/"+ this.cells[1].innerHTML +"/";
+                        if(typeof index !== "undefined"){
+                           table.rows[index].classList.toggle("hover-row");
+                        }
+                        table.rows[1].classList.remove('hover-row')
+                        // get the selected row index
+                        index = this.rowIndex;
+                        // add class selected to the row
+                        this.classList.toggle("hover-row");
+                     };
+                }
+            }
+            selectedRow();
+
+        </script>
+
+        
+        
+        
+
+{% endblock content %}
+
+
+

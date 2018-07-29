@@ -1,0 +1,35 @@
+{% extends 'base/base.app.coordinador.template.html'%}
+{% load staticfiles %}
+{% block title %}
+    COORDINADOR
+{% endblock title %}
+
+{% block modal %}
+{% endblock modal %}
+
+{% block historial-activo %}
+    active-menu-item
+{% endblock historial-activo %}
+
+{% block content %}
+
+<div class="content-historial">
+    <a class="content-item-historial" href="{% url 'coordinador:historial_docente' %}">
+        <div class="img-item-historial"><i class="fas fa-file-invoice"></i></div>
+        <div class="title-item-historial"><span>PERIODOS</span></div>
+    </a>
+    <a class="content-item-historial" href="{% url 'coordinador:historial_estudiante' %}">
+        <div class="img-item-historial"><i class="fas fa-user-graduate"></i></div>
+        <div class="title-item-historial"><span>ESTUDIANTES</span></div>
+    </a>
+    <a class="content-item-historial" href="{% url 'coordinador:historial_docente' %}">
+        <div class="img-item-historial"><i class="fas fa-chalkboard-teacher"></i></div>
+        <div class="title-item-historial"><span>DOCENTES</span></div>
+    </a>
+    <a class="content-item-historial" href="{% url 'coordinador:historial_asignatura' %}">
+        <div class="img-item-historial"><i class="fas fa-book"></i></div>
+        <div class="title-item-historial"><span>ASIGNATURAS</span></div>
+    </a>
+</div>
+
+{% endblock content %}
