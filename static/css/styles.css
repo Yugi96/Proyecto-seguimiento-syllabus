@@ -809,10 +809,6 @@ body {
     align-content: space-around;
 }
 
-.periodo-content,
-.cursos-content,
-.docente-asignatura-content {
-}
 
 .periodo-content {
     width: 45%;
@@ -1620,5 +1616,4 @@ body {
 .content-index {
     width: 90%;
     height: 90%;
-    background: #000;
 }
