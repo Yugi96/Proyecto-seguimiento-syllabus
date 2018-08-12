@@ -26,6 +26,10 @@ from .forms import AsignaturaDocenteForm, AsignaturaDocenteUpdateForm
 # Import Historial Estudiantes
 from .forms import HistorialAlumnoUpdateForm, HistorialDocenteUpdateForm, HistorialAsignaturaUpdateForm
 
+from apps.seguimiento.forms import SeguimientoForm
+
+from apps.seguimiento.models import Seguimiento, Horario
+
 @login_required
 def home(request):
     user = request.user
@@ -440,3 +444,98 @@ class IndexView(ListView):
         context['unidad_list'] = Unidad_Academica.objects.all()
         context['carrera_list'] = Carrera.objects.filter(car_estado=True)
         return context
+
+class SeguimientoListView(FormMessageMixin, CreateView):
+    form_class = SeguimientoForm
+    success_url = reverse_lazy('coordinador:periodos_curso_seguimiento')
+    template_name = 'coordinador/periodo/seguimiento/index.seguimiento.template.html'
+    form_valid_message = 'FECHA REGISTRADA CON EXITO'
+    form_invalid_message = 'ERROR: NO SE PUEDE AGREGAR EL REGISTRO'
+    
+    def get_context_data(self, **kwargs):
+        context = super(SeguimientoListView, self).get_context_data(**kwargs)
+        pk = self.kwargs.get('pk', 0)
+        curso = Curso.objects.get(id=pk, cur_eliminado=False)
+        context['horario_list'] = Horario.objects.filter(
+            hor_estado=True, 
+            semestre_id=curso.semestre_id, 
+            periodo_id=curso.periodo_id, 
+            hor_paralelo=curso.cur_paralelo,
+            asignatura__carrera=curso.alumno.carrera_id
+        ).distinct('asignatura')
+        seguimiento = Seguimiento.objects.filter(
+            semestre_id=curso.semestre_id, 
+            periodo_id=curso.periodo_id, 
+            seg_estado=True, 
+            seg_paralelo = curso.cur_paralelo
+        ).order_by('seg_semana', 'seg_fecha')
+        context['horario_completo'] = Horario.objects.filter(
+            hor_estado=True, 
+            semestre_id=curso.semestre_id, 
+            periodo_id=curso.periodo_id, 
+            hor_paralelo=curso.cur_paralelo,
+            asignatura__carrera=curso.alumno.carrera_id
+        )
+        context['curso_list'] = curso
+        context['seguimiento_list'] = seguimiento
+        return context
+    
+    def post(self, request, *args, **kwargs):
+        try:
+            self.object = self.get_object
+            form = self.form_class(request.POST)
+            semestre = Semestre.objects.get(sem_nombre=request.POST['seg_semestre'])
+            periodo = Periodo.objects.get(per_nombre=request.POST['seg_periodo'])
+            asignatura = Asignatura.objects.get(asi_nombre=request.POST['seg_asignatura'])
+            nombres_apellidos_docente = request.POST['seg_docente'].split(" ")
+            nombres_docente = nombres_apellidos_docente[0] + " " +nombres_apellidos_docente[1]
+            apellidos_docente = nombres_apellidos_docente[2] + " " +nombres_apellidos_docente[3]
+            docente = Docente.objects.get(doc_nombres=nombres_docente, doc_apellidos=apellidos_docente)
+            if form.is_valid():
+                seguimiento = form.save(commit=False)
+                seguimiento.periodo = periodo
+                seguimiento.semestre = semestre
+                seguimiento.asignatura = asignatura
+                seguimiento.docente = docente
+                seguimiento.seg_paralelo = request.POST['seg_paralelo']
+                seguimiento.save()
+                return self.form_valid(form, **kwargs)
+            else:
+                return self.form_invalid(form, "ERROR: FECHA YA EXISTENTE")
+        except IntegrityError as e:
+            return self.form_invalid(form, "ERROR: FECHA YA EXISTENTE")
+    
+    def form_invalid(self, form, form_invalid_message):
+        messages.error(self.request, form_invalid_message)
+        return super(SeguimientoListView, self).form_invalid(form)
+
+class SeguimientoDeleteView(FormMessageMixin, DeleteView):
+    model = Seguimiento
+    success_url = reverse_lazy('coordinador:periodos_curso_seguimiento')
+    template_name = 'coordinador/periodo/seguimiento/eliminar.seguimiento.template.html'
+
+class SeguimientoUpdateView(FormMessageMixin ,UpdateView):
+    model = Seguimiento
+    form_class = SeguimientoForm
+    success_url = reverse_lazy('coordinador:periodos_curso_seguimiento')
+    template_name = 'coordinador/periodo/seguimiento/actualizar.seguimiento.template.html'
+    form_valid_message = 'REGISTRO ACTUALIZADO CON EXITO'
+    form_invalid_message = "ERROR: FECHA YA EXISTENTE"
+    
+    def post(self, request, *args, **kwargs):
+        try:
+            self.object = self.get_object
+            id_seguimiento = kwargs['pk']
+            seguimiento = self.model.objects.get(id=id_seguimiento)
+            form = self.form_class(request.POST, instance=seguimiento)
+            if form.is_valid():
+                form.save()
+                return self.form_valid(form)
+            else:
+                return self.form_invalid(form, "ERROR: FECHA YA EXISTENTE")
+        except IntegrityError as e:
+            return self.form_invalid(form, "ERROR: FECHA YA EXISTENTE")
+    
+    def form_invalid(self, form, form_invalid_message):
+        messages.error(self.request, form_invalid_message)
+        return super(SeguimientoUpdateView, self).form_invalid(form)

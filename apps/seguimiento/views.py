@@ -51,7 +51,7 @@ class SeguimientoListView(FormMessageMixin, CreateView):
             periodo_id=curso.periodo_id, 
             seg_estado=True, 
             seg_paralelo = curso.cur_paralelo
-        ).order_by('seg_fecha')
+        ).order_by('seg_semana', 'seg_fecha')
         context['horario_completo'] = Horario.objects.filter(
             hor_estado=True, 
             semestre_id=curso.semestre_id, 

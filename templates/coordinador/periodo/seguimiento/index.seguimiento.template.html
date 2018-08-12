@@ -1,7 +1,7 @@
-{% extends 'base/base.app.estudiante.template.html'%}
+{% extends 'base/base.app.coordinador.template.html'%}
 {% load staticfiles %}
 {% block title %}
-    ESTUDIANTE
+    COORDINADOR
 {% endblock title %}
 
 {% block modal %}
@@ -139,8 +139,8 @@
                                                         <td>{{seguimiento.seg_observaciones}}</td>
                                                         <td class="text-center">
                                                             <div class="content-acciones">
-                                                                <a class="btn-acciones btn-acciones-eliminar" href="{% url 'estudiante:seguimientos_editar' seguimiento.id %}"><i class="fas fa-pencil-alt"></i></a>
-                                                                <a class="btn-acciones btn-acciones-editar" href="{% url 'estudiante:seguimientos_eliminar' seguimiento.id %}"><i class="fas fa-trash-alt"></i></a>
+                                                                <a class="btn-acciones btn-acciones-eliminar" href="{% url 'coordinador:periodos_curso_seguimiento_editar' seguimiento.id %}"><i class="fas fa-pencil-alt"></i></a>
+                                                                <a class="btn-acciones btn-acciones-editar" href="{% url 'coordinador:periodos_curso_seguimiento_eliminar' seguimiento.id %}"><i class="fas fa-trash-alt"></i></a>
                                                             </div>
                                                         </td>
                                                     </tr>

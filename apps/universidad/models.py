@@ -71,7 +71,7 @@ class Asignatura(models.Model):
     asi_codigo = models.CharField(max_length=20, primary_key=True)
     semestre = models.ForeignKey(Semestre, on_delete=models.CASCADE)
     carrera = models.ForeignKey(Carrera, on_delete=models.CASCADE, default="")
-    asi_nombre = models.CharField(max_length=50, unique=True)
+    asi_nombre = models.CharField(max_length=50)
     asi_num_creditos = models.PositiveIntegerField()
     asi_estado = models.BooleanField(default=True)
 

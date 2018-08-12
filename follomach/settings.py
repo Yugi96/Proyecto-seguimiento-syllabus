@@ -40,7 +40,6 @@ INSTALLED_APPS = [
     'apps.usuario.apps.UsuarioConfig',
     'apps.universidad.apps.UniversidadConfig',
     'apps.seguimiento.apps.SeguimientoConfig',
-    'rest_framework',
 ]
 
 MIDDLEWARE = [
@@ -80,7 +79,7 @@ WSGI_APPLICATION = 'follomach.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'dbseguimiento',
+        'NAME': 'dbseguimientopro',
         'USER': 'postgres',
         'PASSWORD': 'junior',
         'HOST': 'localhost',

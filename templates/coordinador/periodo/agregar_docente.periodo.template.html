@@ -20,7 +20,7 @@
     {% endfor %}
     {% endif %}
     <div class="content-docentes-editar">
-        <form method="post">
+        <form method="post" class="w-100">
             {% csrf_token %}
             <div class="docentes-editar-top modal-header">
                 <h5 class="modal-title">AGREGAR ASIGNATURA A DOCENTE</h5>
@@ -38,7 +38,7 @@
                         </div>
                     </div>
                     <div class="group-fila-tc w-100">
-                        <div class="group-campo w-100 alc-fs h-200 h-100">
+                        <div class="group-campo w-100 alc-fs h-200">
                             <label for="{{ form.asignatura.name }}" class="label-campo">{{ form.asignatura.label }}</label>
                             {{ form.asignatura }}
                         </div>

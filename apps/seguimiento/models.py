@@ -26,4 +26,4 @@ class Seguimiento(models.Model):
     seg_estado = models.BooleanField(default=True)
 
     class Meta:
-        unique_together = ("seg_fecha", "asignatura",)
+        unique_together = ("seg_fecha", "asignatura", "seg_semana")

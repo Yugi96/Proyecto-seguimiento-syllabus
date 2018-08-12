@@ -6,7 +6,8 @@ from apps.universidad.views import homeCoordinador, UploadFileView, UpdateDocent
                                     AsignaturaDocenteView, AsignaturaDocenteUpdateView, EstudianteView, \
                                     EstudianteUpdateView, CursoView, CursoUpdateView, PeriodoUpdateView, TerminarPeriodoView, \
                                     CursoRemplazarView, historialMenu, HistorialEstudianteView, HistorialEstudianteUpdateView, \
-                                    HistorialDocenteView, HistorialDocenteUpdateView, HistorialAsignaturaView, HistorialAsignaturaUpdateView
+                                    HistorialDocenteView, HistorialDocenteUpdateView, HistorialAsignaturaView, HistorialAsignaturaUpdateView, \
+                                    SeguimientoListView, SeguimientoDeleteView, SeguimientoUpdateView
 
 from apps.seguimiento.views import CursosHorariosListView, HorarioCreateView
 
@@ -41,6 +42,10 @@ urlpatterns = [
     
     re_path('^periodo/curso/horario/(?P<pk>\d+)/', permission_required('universidad.Coordinador')(CursosHorariosListView.as_view()), name='periodos_curso_horario'),
     re_path('^periodo/curso/horario/crear/(?P<pk>\d+)/', permission_required('universidad.Coordinador')(HorarioCreateView.as_view()), name='periodos_curso_horario_crear'),
+    
+    re_path('^periodo/curso/seguimiento/(?P<pk>\d+)/', permission_required('universidad.Coordinador')(SeguimientoListView.as_view()), name='periodos_curso_seguimiento'),
+    re_path('^periodo/curso/seguimiento/editar/(?P<pk>\d+)/', permission_required('universidad.Coordinador')(SeguimientoUpdateView.as_view()), name='periodos_curso_seguimiento_editar'),
+    re_path('^periodo/curso/seguimiento/eliminar/(?P<pk>\d+)/', permission_required('universidad.Coordinador')(SeguimientoDeleteView.as_view()), name='periodos_curso_seguimiento_eliminar'),
     
     re_path('^historial/$', permission_required('universidad.Coordinador')(historialMenu), name='historial'),
     
