@@ -4,9 +4,10 @@
     COORDINADOR
 {% endblock title %}
 
-{% block asignaturas-activo %}
+
+{% block seguimiento-activo %}
     active-menu-item
-{% endblock asignaturas-activo %}
+{% endblock seguimiento-activo %}
 
 {% block content %}
     {% if messages %}
@@ -53,31 +54,32 @@
                         </div>
                     </div>
                     <div class="group-fila-cna jc-center mt-20">
-                            <div class="group-campo w-20 mr-20">
-                                <label for="{{ form.seg_fecha.name }}" class="label-campo">{{ form.seg_fecha.label }}</label>
-                                <div class="input-group date">
-                                    {{ form.seg_fecha }}
-                                </div>
-                            </div>
-                            <div class="group-campo w-20 ml-10">
-                                <label for="{{ form.seg_porcentaje_real.name }}" class="label-campo">{{ form.seg_porcentaje_real.label }}</label>
-                                <div class="seg_porcentaje-content">
-                                    {{ form.seg_porcentaje_real }}
-                                    <span class="porcentaje-icon">%</span>
-                                </div>
-                            </div>
-                            <div class="group-campo w-20 ml-10">
-                                <label for="{{ form.seg_porcentaje_ideal.name }}" class="label-campo">{{ form.seg_porcentaje_ideal.label }}</label>
-                                <div class="seg_porcentaje-content">
-                                    {{ form.seg_porcentaje_ideal }}
-                                    <span class="porcentaje-icon">%</span>
-                                </div>
-                            </div>
-                            
+                        <div class="group-campo w-35 mr-20">
+                            <span class="label-campo">FECHA</span>
+                            <span class="input-campo">{{ object.seg_fecha | date:'d/m/Y' }}</span>
                         </div>
-                        <div class="campo-mensaje">
-                            {{ form.seg_observaciones }}
+                        <div class="group-campo w-20 ml-10">
+                            <label for="{{ form.seg_porcentaje_real.name }}" class="label-campo">{{ form.seg_porcentaje_real.label }}</label>
+                            <div class="seg_porcentaje-content">
+                                {{ form.seg_porcentaje_real }}
+                                <span class="porcentaje-icon">%</span>
+                            </div>
                         </div>
+                        <div class="group-campo w-20 ml-10">
+                            <span class="label-campo">PORCENTAJE IDEAL</span>
+                            <div class="seg_porcentaje-content">
+                                <span class="input-campo w-70" id="id_seg_porcentaje_ideal">{{ object.seg_porcentaje_ideal }}</span>
+                                <span class="porcentaje-icon">%</span>
+                            </div>
+                        </div>
+                        <div class="group-campo w-10 mr-20">
+                            <span class="label-campo"># SEMANA</span>
+                            <span class="input-campo">{{ object.seg_semana }}</span>
+                        </div>
+                    </div>
+                    <div class="campo-mensaje">
+                        {{ form.seg_observaciones }}
+                    </div>
                     
                 </div> 
             </div>
@@ -96,16 +98,22 @@
 <script src="{% static 'lib/bootstrap-datepicker/js/bootstrap-datepicker.min.js'%}"></script>
 <script src="{% static 'lib/bootstrap-datepicker/locales/bootstrap-datepicker.es.min.js'%}"></script>
 <script>
-        var now = new Date();
-        var start = new Date(now.getFullYear(), 0, 0);
-        var diff = now - start;
-        var oneDay = 1000 * 60 * 60 * 24;
-        var day = Math.floor(diff / oneDay);
-        var startdate = "-"+day+"d";
-        $('.datepicker').datepicker({
-            format: "dd/mm/yyyy",
-            startDate: startdate,
-            language: "es"
+        var porcentajeRealInput = document.getElementById('id_seg_porcentaje_real');
+        var observacionesInput = document.getElementById('id-seg-observaciones');
+        var porcentajeIdealInput = document.getElementById('id_seg_porcentaje_ideal');
+
+        if (parseFloat(porcentajeRealInput.value) != parseFloat(porcentajeIdealInput.textContent)){
+            observacionesInput.setAttribute('required', 'true');
+        } else {
+            observacionesInput.removeAttribute('required');
+        }
+
+        porcentajeRealInput.addEventListener('keyup', ()=>{
+            if (parseFloat(porcentajeRealInput.value) != parseFloat(porcentajeIdealInput.textContent)){
+                observacionesInput.setAttribute('required', 'true');
+            } else {
+                observacionesInput.removeAttribute('required');
+            }
         });
 </script>
 {% endblock scripts-opcionales %}

@@ -10,7 +10,7 @@ from django.urls import reverse_lazy
 from django.http import HttpResponseRedirect
 from .models import Seguimiento, Horario
 from apps.universidad.models import Asignatura_Docente, Curso, Alumno, Asignatura, Semestre, Periodo, Docente
-from .forms import SeguimientoForm, HorarioForm
+from .forms import SeguimientoForm, HorarioForm, SeguimientoUpdateForm
 
 
 # Create your views here.
@@ -38,6 +38,7 @@ class SeguimientoListView(FormMessageMixin, CreateView):
     def get_context_data(self, **kwargs):
         context = super(SeguimientoListView, self).get_context_data(**kwargs)
         alumno = Alumno.objects.get(usuario_id=self.request.user.id)
+        print("---------------------------------")
         curso = Curso.objects.get(cur_estado=True, alumno_id=alumno.id, cur_eliminado=False)
         context['horario_list'] = Horario.objects.filter(
             hor_estado=True, 
@@ -99,11 +100,11 @@ class SeguimientoDeleteView(FormMessageMixin, DeleteView):
 
 class SeguimientoUpdateView(FormMessageMixin ,UpdateView):
     model = Seguimiento
-    form_class = SeguimientoForm
+    form_class = SeguimientoUpdateForm
     success_url = reverse_lazy('estudiante:seguimientos')
     template_name = 'estudiante/seguimiento/actualizar.seguimiento.template.html'
     form_valid_message = 'REGISTRO ACTUALIZADO CON EXITO'
-    form_invalid_message = "ERROR: FECHA YA EXISTENTE"
+    form_invalid_message = "ERROR: NO SE PUDO ACTUALIZAR"
     
     def post(self, request, *args, **kwargs):
         try:
@@ -115,9 +116,9 @@ class SeguimientoUpdateView(FormMessageMixin ,UpdateView):
                 form.save()
                 return self.form_valid(form)
             else:
-                return self.form_invalid(form, "ERROR: FECHA YA EXISTENTE")
+                return self.form_invalid(form, "ERROR: NO SE PUDO ACTUALIZAR")
         except IntegrityError as e:
-            return self.form_invalid(form, "ERROR: FECHA YA EXISTENTE")
+            return self.form_invalid(form, "ERROR: NO SE PUDO ACTUALIZAR")
     
     def form_invalid(self, form, form_invalid_message):
         messages.error(self.request, form_invalid_message)

@@ -9,6 +9,9 @@ from django.urls import reverse_lazy
 from django.http import HttpResponseRedirect
 from django.core import serializers
 
+from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth.forms import PasswordChangeForm
+
 from datetime import datetime
 
 from .models import Docente, Asignatura, Semestre, Periodo, Curso, Asignatura_Docente, Alumno, Curso, Unidad_Academica, Carrera
@@ -539,3 +542,68 @@ class SeguimientoUpdateView(FormMessageMixin ,UpdateView):
     def form_invalid(self, form, form_invalid_message):
         messages.error(self.request, form_invalid_message)
         return super(SeguimientoUpdateView, self).form_invalid(form)
+
+class PerfilView(ListView):
+    model = User
+    template_name = 'coordinador/usuario/perfil.coordinador.template.html'
+
+class PerfilViewEstudiante(ListView):
+    model = User
+    template_name = 'estudiante/usuario/perfil.estudiante.template.html'
+
+class PerfilUpdateView(FormMessageMixin, UpdateView):
+    model = User
+    template_name = 'coordinador/usuario/actualizar_perfil.coordinador.template.html'
+    form_class = UserUpdateForm
+    form_valid_message = 'USUARIO ACTUALIZADO CON EXITO'
+    form_invalid_message = "ERROR: NO SE PUDO ACTUALIZAR EL USUARIO"
+    success_url = reverse_lazy('coordinador:perfil')
+
+class PerfilUpdateEstudianteView(FormMessageMixin, UpdateView):
+    model = User
+    template_name = 'estudiante/usuario/actualizar_perfil.estudiante.template.html'
+    form_class = UserUpdateForm
+    form_valid_message = 'USUARIO ACTUALIZADO CON EXITO'
+    form_invalid_message = "ERROR: NO SE PUDO ACTUALIZAR EL USUARIO"
+    success_url = reverse_lazy('estudiante:perfil')
+
+def change_password(request):
+    if request.method == 'POST':
+        form = PasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)  # Important!
+            messages.success(request, 'CONTRASEÑA ACTUALIZADA CON EXITO.')
+            return redirect('coordinador:perfil')
+        else:
+            return render(request, 'coordinador/usuario/cambiar_password.coordinador.template.html', {
+            'form': form
+        })
+    else:
+        form = PasswordChangeForm(request.user)
+        return render(request, 'coordinador/usuario/cambiar_password.coordinador.template.html', {
+            'form': form
+        })
+
+def change_password_estudiante(request):
+    if request.method == 'POST':
+        form = PasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)  # Important!
+            messages.success(request, 'CONTRASEÑA ACTUALIZADA CON EXITO.')
+            return redirect('estudiante:perfil')
+        else:
+            return render(request, 'estudiante/usuario/cambiar_password.estudiante.template.html', {
+                'form': form
+            })
+    else:
+        form = PasswordChangeForm(request.user)
+        return render(request, 'estudiante/usuario/cambiar_password.estudiante.template.html', {
+            'form': form
+        })
+
+
+
+
+

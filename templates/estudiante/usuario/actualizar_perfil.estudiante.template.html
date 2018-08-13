@@ -1,12 +1,12 @@
-{% extends 'base/base.app.coordinador.template.html'%}
+{% extends 'base/base.app.estudiante.template.html'%}
 {% load staticfiles %}
 {% block title %}
     COORDINADOR
 {% endblock title %}
 
-{% block estudiantes-activo %}
+{% block perfil-activo %}
     active-menu-item
-{% endblock estudiantes-activo %}
+{% endblock perfil-activo %}
 
 {% block content %}
     {% if messages %}
@@ -34,39 +34,28 @@
                     <div class="group-fila-cna">
                         <div class="group-campo campo-cedula">
                             <span class="label-campo">CÉDULA</span>
-                            <span class="input-campo">{{ object.usuario.username }}</span>
+                            <span class="input-campo">{{ user.username }}</span>
                         </div>
                         <div class="group-campo campo-nombre-apellido">
-                            <label for="{{ form2.first_name.name }}" class="label-campo">{{ form2.first_name.label }}</label>
-                            {{ form2.first_name }}
+                            <label for="{{ form.first_name.name }}" class="label-campo">{{ form.first_name.label }}</label>
+                            {{ form.first_name }}
                         </div>
                         <div class="group-campo campo-nombre-apellido">
-                            <label for="{{ form2.last_name.name }}" class="label-campo">{{ form2.last_name.label }}</label>
-                            {{ form2.last_name }}
+                            <label for="{{ form.last_name.name }}" class="label-campo">{{ form.last_name.label }}</label>
+                            {{ form.last_name }}
                         </div>
                     </div>
                     <div class="group-fila-cna">
-                        <div class="group-campo campo-correo">
-                            <label for="{{ form2.email.name }}" class="label-campo">{{ form2.email.label }}</label>
-                            {{ form2.email }}
-                        </div>
-                        <div class="group-campo campo-nombre-apellido">
-                            <label for="" class="label-campo">PERMISOS</label>
-                            <span class="input-campo">ESTUDIANTE</span>
+                        <div class="group-campo campo-cedula w-100">
+                            <label for="{{ form.email.name }}" class="label-campo">{{ form.email.label }}</label>
+                            {{ form.email }}
                         </div>
                     </div>
-                    <div class="group-fila-tc">
-                        <div class="group-campo campo-nombre-apellido w-100">
-                            <label for="{{ form.carrera.name }}" class="label-campo">{{ form.carrera.label }}</label>
-                            {{ form.carrera }}
-                        </div>
-                    </div>
-                    
                 </div> 
             </div>
             <div class="modal-footer">
                 <button class="btn-agregar" type="submit"><i class="icon-btn fas fa-save"></i>GUARDAR CAMBIOS</button>
-                <a href="{% url 'coordinador:estudiantes' %}" class="btn-cerrar" id="btn-cerrar"><i class="icon-btn fas fa-times"></i>CANCELAR</a>
+                <a href="{% url 'estudiante:perfil' %}" class="btn-cerrar" id="btn-cerrar"><i class="icon-btn fas fa-times"></i>CANCELAR</a>
             </div>
         </form>
     </div>
@@ -74,13 +63,3 @@
     
 
 {% endblock content %}
-
-{% block scripts-opcionales %}
-    <script src="{% static 'js/popper.min.js' %}"></script>
-    
-    <script>
-        $(function () {
-            $('[data-toggle="popover"]').popover()
-        });
-    </script>
-{% endblock scripts-opcionales %}

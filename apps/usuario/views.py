@@ -76,7 +76,6 @@ class ListaMensajesView(FormMessageMixin, CreateView):
         else:
             return self.form_invalid(form, **kwargs)
 
-
 class ListaMensajesEstudianteView(FormMessageMixin, CreateView):
     form_class = MensajeriaForm
     success_url = reverse_lazy('estudiante:mensajes')

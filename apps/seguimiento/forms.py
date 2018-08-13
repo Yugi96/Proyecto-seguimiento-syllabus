@@ -54,6 +54,34 @@ class SeguimientoForm(forms.ModelForm):
             }),
         }
 
+class SeguimientoUpdateForm(forms.ModelForm):
+    class Meta:
+        model = Seguimiento
+
+        fields = [
+            'seg_porcentaje_real',
+            'seg_observaciones',
+        ]
+
+        labels = {
+            'seg_porcentaje_real' : 'PORCENTAJE REAL',
+            'seg_observaciones' : 'OBSERVACIONES',
+        }
+
+        widgets = {
+            'seg_porcentaje_real' : forms.TextInput(attrs={
+                'class' : 'input-campo w-70',
+                'onkeypress' : 'return NumCheck(event, this);',
+                'id' : 'id_seg_porcentaje_real',
+            }),
+            'seg_observaciones' : forms.Textarea(attrs={
+                'class' : 'input-campo observacion-seg',
+                'rows' : '2',
+                'id' : 'id-seg-observaciones',
+                'placeholder' : 'Escriba la observacion aqui...'
+            }),
+        }
+
 
 class HorarioForm(forms.Form):
     sentencia = forms.CharField(max_length=2000,

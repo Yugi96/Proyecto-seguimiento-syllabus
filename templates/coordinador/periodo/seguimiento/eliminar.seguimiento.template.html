@@ -1,12 +1,12 @@
-{% extends 'base/base.app.estudiante.template.html'%}
+{% extends 'base/base.app.coordinador.template.html'%}
 {% load staticfiles %}
 {% block title %}
     COORDINADOR
 {% endblock title %}
 
-{% block asignaturas-activo %}
+{% block periodos-activo %}
     active-menu-item
-{% endblock asignaturas-activo %}
+{% endblock periodos-activo %}
 
 {% block content %}
     {% if messages %}
@@ -36,7 +36,7 @@
             </div>
             <div class="modal-footer">
                 <button class="btn-agregar" type="submit"><i class="icon-btn fas fa-check"></i>SI</button>
-                <a href="{% url 'estudiante:seguimientos' %}" class="btn-cerrar" id="btn-cerrar"><i class="icon-btn fas fa-times"></i>NO</a>
+                <a href="{% url 'coordinador:periodos' %}" class="btn-cerrar" id="btn-cerrar"><i class="icon-btn fas fa-times"></i>CANCELAR</a>
             </div>
         </form>
     </div>

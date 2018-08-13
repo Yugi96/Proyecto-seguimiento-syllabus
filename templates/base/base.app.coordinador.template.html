@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="icon" type="image/png" href="{% static 'img/icon.png' %}" />
+    <link rel="icon" type="image/png" href="{% static 'img/icon.svg' %}" />
     <link rel="stylesheet" href="{% static 'css/normalize.css' %}">
     <link rel="stylesheet" href="{% static 'lib/bootstrap-datepicker/css/bootstrap-datepicker3.standalone.css'%}">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
@@ -28,8 +28,10 @@
             <div class="sidebar-user">
                 <img class="imagecood rounded-circle bg-white user-img mx-auto d-block p-1" src="{% static 'img/coordinador-perfil.png' %}" alt="">
                 <div class="content-user-name">
-                    <p class="nomcood m-0 text-center">{{ user.last_name }}</p>
-                    <p class="nomcood m-0 text-center">{{ user.first_name }}</p>
+                    <a class="menu-item-lateral btn btn-block menu-item {% block perfil-activo %} {% endblock perfil-activo %} link-perfil" href="{% url 'coordinador:perfil' %}">
+                        <p class="nomcood m-0 text-center bg-transparent">{{ user.last_name }}</p>
+                        <p class="nomcood m-0 text-center bg-transparent">{{ user.first_name }}</p>
+                    </a>
                 </div>
             </div>
             <ul class="list-unstyled">
@@ -76,10 +78,10 @@
             <nav class="navbar navbar-light bg-white p-0">
                 <ul class="nav pull-left ">
                     <a id="open-hide-btn" class="nav-item mx-5 text-secondary">
-                        <i class="h4 fas fa-bars pt-2"></i>
+                        <i class="h4 fas fa-bars icon-menu-bar"></i>
                     </a>
-                    <span class="navbar-brand pl-5">
-                        <h4 class="logo-title"><b>LOGO APP</b></h4>
+                    <span class="navbar-brand">
+                        <h4 class="logo-title"><img class="icon-logo" src="{% static 'img/icon.svg' %}" alt=""><span>SYLAPP</span></h4>
                     </span>
                 </ul>
                 <ul class="nav pull-rigth">
@@ -88,10 +90,14 @@
                             <i class="fas fa-envelope"></i>
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a href="{% url 'logout' %}" class="nav-link">
+                    <li class="nav-item item-popup">
+                        <span class="nav-link">
                             <i class="fas fa-caret-down"></i>
-                        </a>
+                        </span>
+                        <ul class="content-sub-menu">
+                            <li ><a href="{% url 'coordinador:perfil' %}" class="item-subitem"><i class="fas fa-user-circle"></i>PERFIL</a></li>
+                            <li><a href="{% url 'logout' %}" class="item-subitem"><i class="fas fa-sign-out-alt"></i>SALIR</a></li>
+                        </ul>
                     </li>                   
                 </ul>
             </nav>
