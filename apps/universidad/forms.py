@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.models import User, Permission
 from django.contrib.auth.forms import UserCreationForm
 
-from apps.universidad.models import Docente, Asignatura, Semestre, Periodo, Asignatura_Docente, Alumno, Curso, Carrera
+from apps.universidad.models import Docente, Asignatura, Semestre, Periodo, Asignatura_Docente, Alumno, Curso, Carrera, Carrera
 
 class DocenteForm(forms.ModelForm):
     
@@ -641,3 +641,66 @@ class HistorialAsignaturaUpdateForm(forms.ModelForm):
                 'class' : 'campo-check',
             }),
         }
+
+class CarreraForm(forms.ModelForm):
+    class Meta:
+        model = Carrera
+
+        fields = [
+            'car_codigo',
+            'car_nombre',
+        ]
+
+        labels = {
+            'car_codigo' : 'CODIGO',
+            'car_nombre' : 'NOMBRE DE LA CARRERA',
+        }
+
+        widgets = {
+            'car_codigo' : forms.TextInput(attrs={
+                'class' : 'input-campo', 
+                'id' : 'car_codigo', 
+                'required' : 'true',
+                'onkeyup' : 'convertirMayuscula(this);'
+            }),
+            'car_nombre' : forms.TextInput(attrs={
+                'class' : 'input-campo', 
+                'id' : 'car_nombre', 
+                'required' : 'true',
+                'onkeyup' : 'convertirMayuscula(this);'
+            }),
+        }
+
+class CarreraUpdateForm(forms.ModelForm):
+    class Meta:
+        model = Carrera
+
+        fields = [
+            'car_nombre',
+            'car_estado',
+        ]
+
+        labels = {
+            'car_nombre' : 'NOMBRE DE LA CARRERA',
+            'car_estado' : 'ESTADO',
+        }
+
+        widgets = {
+            'car_nombre' : forms.TextInput(attrs={
+                'class' : 'input-campo', 
+                'id' : 'car_nombre', 
+                'required' : 'true',
+                'onkeyup' : 'convertirMayuscula(this);'
+            }),
+            'car_estado' : forms.CheckboxInput(attrs={
+                'data-toggle' : 'popover',
+                'title' : 'DAR DE BAJA',
+                'class' : 'campo-check',
+                'data-trigger' : 'focus',
+                'data-content' : 'AL DAR DE BAJA A UNA CARRERA, ESTE NO SE MOSTRARÁ EN LA LISTA PRINCIPAL. PUEDE ACCEDER A LAS CARRERAS INACTIVOS EN LA OPCIÓN HISTORIAL DEL MENÚ LATERAL',
+            })
+            
+        }
+
+
+

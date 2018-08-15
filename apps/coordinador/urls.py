@@ -8,7 +8,7 @@ from apps.universidad.views import homeCoordinador, UploadFileView, UpdateDocent
                                     CursoRemplazarView, historialMenu, HistorialEstudianteView, HistorialEstudianteUpdateView, \
                                     HistorialDocenteView, HistorialDocenteUpdateView, HistorialAsignaturaView, HistorialAsignaturaUpdateView, \
                                     SeguimientoListView, SeguimientoDeleteView, SeguimientoUpdateView, PerfilView, change_password, \
-                                    PerfilUpdateView
+                                    PerfilUpdateView, IndexView, CarreraUpdateView
 
 from apps.seguimiento.views import CursosHorariosListView, HorarioCreateView
 
@@ -17,7 +17,8 @@ from apps.usuario.views import ListaMensajesView
 app_name = 'coordinador'
 
 urlpatterns = [
-    re_path('^$', homeCoordinador, name='homeCoordinador'),
+    re_path('^$', permission_required('universidad.Coordinador')(IndexView.as_view()), name='homeCoordinador'),
+    re_path('^carrera/editar/(?P<pk>.+?)/', permission_required('universidad.Coordinador')(CarreraUpdateView.as_view()), name='carrera_editar'),    
     
     re_path('^perfil/$', permission_required('universidad.Coordinador')(PerfilView.as_view()), name='perfil'),
     re_path('^perfil/cambiar-password/$', permission_required('universidad.Coordinador')(change_password) , name='cambiar_password'),

@@ -38,7 +38,6 @@ class SeguimientoListView(FormMessageMixin, CreateView):
     def get_context_data(self, **kwargs):
         context = super(SeguimientoListView, self).get_context_data(**kwargs)
         alumno = Alumno.objects.get(usuario_id=self.request.user.id)
-        print("---------------------------------")
         curso = Curso.objects.get(cur_estado=True, alumno_id=alumno.id, cur_eliminado=False)
         context['horario_list'] = Horario.objects.filter(
             hor_estado=True, 
@@ -132,6 +131,24 @@ class CursosHorariosListView(ListView):
         context = super(CursosHorariosListView, self).get_context_data(**kwargs)
         curso_id = self.kwargs['pk']
         curso = Curso.objects.get(id=curso_id)
+        context['horario_list'] = Horario.objects.filter(
+            hor_estado=True, 
+            semestre_id=curso.semestre_id, 
+            periodo_id=curso.periodo_id, 
+            hor_paralelo=curso.cur_paralelo,
+            asignatura__carrera=curso.alumno.carrera_id
+        )
+        context['curso_list'] = curso
+        return context
+
+class IndexEstudianteView(ListView):
+    model = Horario
+    template_name = 'estudiante/index.estudiante.template.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(IndexEstudianteView, self).get_context_data(**kwargs)
+        alumno = Alumno.objects.get(usuario_id=self.request.user.id)
+        curso = Curso.objects.get(cur_estado=True, alumno_id=alumno.id, cur_eliminado=False)
         context['horario_list'] = Horario.objects.filter(
             hor_estado=True, 
             semestre_id=curso.semestre_id, 

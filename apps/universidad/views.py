@@ -8,6 +8,7 @@ from django.views.generic import ListView, CreateView, UpdateView, DeleteView, T
 from django.urls import reverse_lazy
 from django.http import HttpResponseRedirect
 from django.core import serializers
+from django.db import IntegrityError
 
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
@@ -18,6 +19,8 @@ from .models import Docente, Asignatura, Semestre, Periodo, Curso, Asignatura_Do
 
 # Import Docentes
 from .forms import DocenteForm, DocenteUpdateForm 
+# Import Unidad academica
+from .forms import CarreraForm, CarreraUpdateForm
 # Import Asignaturas
 from .forms import AsignaturaForm, AsignaturaUpdateForm
 # Import Estudiante Curso
@@ -439,14 +442,41 @@ class HistorialAsignaturaUpdateView(FormMessageMixin, UpdateView):
     form_invalid_message = "ERROR: NO SE PUDO ACTUALIZAR EL DOCENTE"
     success_url = reverse_lazy('coordinador:asignaturas')
 
-class IndexView(ListView):
+class IndexView(FormMessageMixin, CreateView):
     template_name = 'coordinador/index.coordinador.template.html'
+    form_class = CarreraForm
+    success_url = reverse_lazy('coordinador:homeCoordinador')
+    form_valid_message = 'CARRERA AGREGADA CON EXITO'
+    form_invalid_message = 'ERROR: CARRERA EXISTENTE'
     
     def get_context_data(self, **kwargs):
         context = super(IndexView, self).get_context_data(**kwargs)
-        context['unidad_list'] = Unidad_Academica.objects.all()
-        context['carrera_list'] = Carrera.objects.filter(car_estado=True)
+        context['unidad_list'] = Unidad_Academica.objects.get(uni_codigo="UN0001")
+        context['carreras_list'] = Carrera.objects.filter(car_estado=True, uni_codigo_id=context['unidad_list'].uni_codigo)
         return context
+
+    def post(self, request, *args, **kwargs):
+        try:
+            self.object = self.get_object
+            form = self.form_class(request.POST)
+            unidad_academica = Unidad_Academica.objects.get(uni_codigo="UN0001")
+            if form.is_valid():
+                carrera = form.save(commit=False)
+                carrera.uni_codigo = unidad_academica
+                carrera.save()
+                return self.form_valid(form, **kwargs)
+            else:
+                return self.form_invalid(form, **kwargs)
+        except IntegrityError as e:
+            return self.form_invalid(form, **kwargs)
+
+class CarreraUpdateView(FormMessageMixin, UpdateView):
+    model = Carrera
+    form_class = CarreraUpdateForm
+    success_url = reverse_lazy('coordinador:homeCoordinador')
+    template_name = 'coordinador/editar_carrera.coordinador.template.html'
+    form_valid_message = 'CARRERA ACTUALIZADA CON EXITO'
+    form_invalid_message = "ERROR: ERROR AL ACTUALIZAR LA CARRERA"
 
 class SeguimientoListView(FormMessageMixin, CreateView):
     form_class = SeguimientoForm

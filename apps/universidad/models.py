@@ -10,7 +10,7 @@ class Unidad_Academica(models.Model):
 class Carrera(models.Model):
     car_codigo = models.CharField(max_length=6, primary_key=True)
     uni_codigo = models.ForeignKey(Unidad_Academica, on_delete=models.CASCADE)
-    car_nombre = models.CharField(max_length=50)
+    car_nombre = models.CharField(max_length=50, unique=True)
     car_estado = models.BooleanField(default=True)
 
     def getCarNombre(self):
