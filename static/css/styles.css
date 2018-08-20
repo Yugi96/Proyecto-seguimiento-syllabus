@@ -766,12 +766,22 @@ body {
     background: #fff;
 }
 
-.content-search {
+.content-info-seguimiento {
     width: 40%;
     height: 50%;
     display: flex;
-    justify-content: center;
+    justify-content: flex-end;
     align-items: center;
+}
+
+.errores-seguimiento {
+    margin: 0;
+    background: #F25D5D;
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 5px;
+    display: none;
+    line-height: 1;
 }
 
 /* Mensajeria */
@@ -1830,4 +1840,33 @@ body {
     color: #fff;
     background: #007bff;
     text-decoration: none;
+}
+
+/* Seguimiento validacion estilos  */
+
+.grupo-campo {
+    width: 20%;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.grupo-campo-title {
+    width: 100%;
+    font-size: .7em;
+    text-align: center;
+    font-weight: bold;
+}
+
+.grupo-campo-valor {
+    text-align: center;
+    padding: 5px 15px;
+    background: #2D2F36;
+    border-radius: 5px;
+    color: #fff;
+}
+
+.bold {
+    font-weight: bold;
 }

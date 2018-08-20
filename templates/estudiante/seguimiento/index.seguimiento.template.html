@@ -65,8 +65,9 @@
                         </div>
                     </div> 
                 </div>
-                <div class="modal-footer">
-                    <button class="btn-agregar" type="submit"><i class="icon-btn fas fa-save"></i>GUARDAR</button>
+                <div class="modal-footer" id="modal-footer">
+                    <p class="errores-seguimiento"><strong><i class="icon-btn fas fa-exclamation-circle"></i>ERROR: </strong><span id="errores-seguimiento"></span></p>
+                    <button class="btn-agregar" id="btn-agregar" type="submit"><i class="icon-btn fas fa-save"></i>GUARDAR</button>
                     <button class="btn-cerrar"  data-dismiss="modal" id="btn-cerrar"><i class="icon-btn fas fa-times"></i>CANCELAR</button>
                 </div>
             </form>
@@ -102,18 +103,43 @@
             <div class="accordion" id="accordionExample">
                 {% for horario in horario_list %}
                     <div class="card w-100">
-                        <div class="card-header bg-primary text-center" onclick="obtenerId(this);" id="heading{{ forloop.counter }}" data-toggle="collapse" data-target="#collapse{{ forloop.counter }}" aria-expanded="true" aria-controls="collapse{{ asignatura.forloop.counter }}">
+                        <div class="card-header bg-primary text-center" onclick="obtenerAsignatura(this);" id="heading{{ forloop.counter }}" data-toggle="collapse" data-target="#collapse{{ forloop.counter }}" aria-expanded="true" aria-controls="collapse{{ asignatura.forloop.counter }}">
                             <h5 class="mb-0 blanco asignatura-title">{{ horario.asignatura.asi_nombre }}</h5>
                             <h6 class="mb-0 blanco asignatura-docente">{{ horario.docente }}</h6>
                         </div>
                         <div id="collapse{{ forloop.counter }}" class="collapse" aria-labelledby="heading{{ asignatura.forloop.counter }}" data-parent="#accordionExample">
                             <div class="card-body">
                                 <div class="card-body-top">
-                                    <div class="content-btn-agregar seguimiento-content-btn">
+                                    <div class="content-btn-agregar seguimiento-content-btn w-30">
                                         <span class="btn-agregar seguimiento-btn-agregar" data-toggle="modal" data-target="#exampleModalCenter"><i class="icon-btn fas fa-plus" ></i>AGREGAR</span>
                                     </div>
-                                    <div class="content-search">
-                                        <input class="input-buscar datepicker" id="searchTerm-{{ forloop.counter }}" type="text" onfocus="doSearch();" onkeyup="doSearch();" placeholder="BUSCAR..."><i class="icon-buscar fas fa-search"></i>
+                                    <div class="content-info-seguimiento w-70">
+                                        <div class="grupo-campo">
+                                            <span class="grupo-campo-title"># SEMANA ACTUAL</span>
+                                            <span class="grupo-campo-valor semana-actual bold"></span>
+                                        </div>
+                                        <div class="grupo-campo">
+                                            <span class="grupo-campo-title">1ER. HEMI % TOTAL</span>
+                                            <span class="grupo-campo-valor">
+                                                <span id="porcentaje-primer-hemi-{{ forloop.counter }}" class="bold"></span>
+                                                <span> / 800</span>
+                                            </span>
+                                        </div>
+                                        <div class="grupo-campo">
+                                            <span class="grupo-campo-title">2DO. HEMI % TOTAL</span>
+                                            <span class="grupo-campo-valor">
+                                                <span id="porcentaje-segundo-hemi-{{ forloop.counter }}" class="bold"></span>
+                                                <span> / 800</span>
+                                            </span>
+                                        </div>
+                                        <div class="grupo-campo">
+                                            <span class="grupo-campo-title">% SEMANA ACTUAL</span>
+                                            <span class="grupo-campo-valor">
+                                                <span id="porcentaje-semana-actual-{{ forloop.counter }}" class="bold"></span>
+                                                <span> / </span>
+                                                <span class="porcentaje-semana-actual"></span>
+                                            </span>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="card-body-content">
@@ -177,290 +203,157 @@
             </div>
         </div>
     </div>
-
-    <script>
-
-        Date.prototype.getWeekNumber = function () {
-            var d = new Date(+this);
-            d.setHours(0, 0, 0, 0); 
-            d.setDate(d.getDate() + 4 - (d.getDay() || 7)); 
-            return Math.ceil((((d - new Date(d.getFullYear(), 0, 1)) / 8.64e7) + 1) / 7);
-        };
-
-        function crearPaginationItem(text){
-            item = document.createElement('li');
-            item.setAttribute('class', 'page-item item-semana');
-
-            check = document.createElement('input');
-            check.setAttribute('class', 'check-filtro');
-            check.setAttribute('type', 'checkbox');
-            check.setAttribute('id', text);
-            
-            label = document.createElement('label');
-            label.setAttribute('class', 'label-filtro');
-            //label.setAttribute('for', text);
-            label.textContent = text
-            
-
-            item.appendChild(check);
-            item.appendChild(label);
-            return item
-        }
-
-        var btnAgregarList = document.getElementsByClassName('seguimiento-btn-agregar');
-        var cardHeader = document.getElementsByClassName('card-header');
-        var asignatura = document.getElementById('asignatura');
-        var docente = document.getElementById('docente');
-        var periodo = document.getElementById('periodo');
-        var semestre = document.getElementById('semestre');
-        var paralelo = document.getElementById('paralelo');
-        var labelPeriodo = document.getElementById('label-periodo');
-        var labelSemestre = document.getElementById('label-semestre');
-        var labelParalelo = document.getElementById('label-paralelo');
-        var pagination = document.getElementsByClassName('content-semana-filtro');
-        var contentPagination = document.getElementsByClassName('pagination');
-        
-        var strPagination = "";
-        var arrayPagination = [];
-
-        for(let i=0; i < pagination.length; i++){
-            strPagination = "";
-            for(let j=0; j < pagination[i].children.length; j++){
-                strPagination += pagination[i].children[j].textContent;
-            }
-            arrayPagination.push(Array.from(new Set(strPagination.split(','))));
-        }
-        periodoInicio = "{{curso_list.periodo.per_inicio |date:'Y/m/d'}}";
-        numSemana  = new Date().getWeekNumber() - new Date(periodoInicio).getWeekNumber() + 1;
-        if(numSemana == 8){
-            numSemanaValidado = 0;
-        }else if(numSemana > 8){
-            numSemanaValidado = numSemana - 1;
-        }else {
-            numSemanaValidado = numSemana;
-        }
-
-        for(let i=0; i < contentPagination.length; i++){
-            for(let j=0; j < arrayPagination[i].length-1; j++){
-                var itemPagination = crearPaginationItem(arrayPagination[i][j]);
-                contentPagination[i].appendChild(itemPagination);
-                
-                if(itemPagination.children[0].getAttribute('id') == numSemanaValidado){
-                    itemPagination.children[0].checked = true;
-                }
-            }
-        }
-
-        for(let i=0; i < btnAgregarList.length; i++){
-            btnAgregarList[i].addEventListener("click", ()=>{
-                asignatura.value = cardHeader[i].children[0].textContent;
-                docente.value = cardHeader[i].children[1].textContent;
-                periodo.value = labelPeriodo.children[1].textContent;
-                semestre.value = labelSemestre.children[1].textContent;
-                paralelo.value = labelParalelo.children[1].textContent;
-                fechaSeguimiento.value = diaActual+"/"+mesActual+"/"+anioActual;
-                var fechaSeguimientoAux = fechaSeguimiento.value.split('/');
-                var dia = "";
-                
-                fechaSeguimientoDate = new Date(fechaSeguimientoAux[2]+"/"+fechaSeguimientoAux[1]+"/"+fechaSeguimientoAux[0]);
-                
-                dia = obtenerDiaString(fechaSeguimientoDate.getDay());
-
-                for(let i=0;i<horario[asignatura.value].length;i++){
-                    if(horario[asignatura.value][i][0] == dia){
-                        porcentajeIdealInput.value = ((parseFloat(horario[asignatura.value][i][1]) * 100) / parseFloat(horario[asignatura.value][i][2])).toFixed(2)
-                        break;
-                    } else {
-                        porcentajeIdealInput.value = "0";
-                    }
-                }
-
-                numSemana  = fechaSeguimientoDate.getWeekNumber() - new Date(periodoInicio).getWeekNumber() + 1;
-                if(numSemana == 8){
-                    segNumSemana.value = 0;
-                }else if(numSemana > 8){
-                    segNumSemana.value = numSemana - 1;
-                }else {
-                    segNumSemana.value = numSemana;
-                }
-
-                if (porcentajeIdealInput.value == "0"  || parseFloat(porcentajeRealInput.value) != parseFloat(porcentajeIdealInput.value)){
-                    observacionesInput.setAttribute('required', 'true');
-                } else {
-                    observacionesInput.removeAttribute('required');
-                }
-            });
-        }
-    </script>
 {% endblock content %}
 
 {% block scripts-opcionales %}
 <script src="{% static 'lib/bootstrap-datepicker/js/bootstrap-datepicker.min.js'%}"></script>
 <script src="{% static 'lib/bootstrap-datepicker/locales/bootstrap-datepicker.es.min.js'%}"></script>
 <script>
-        var periodoInicio = "{{curso_list.periodo.per_inicio |date:'Y/m/d'}}";
-        var periodoFin = "{{curso_list.periodo.per_fin |date:'Y/m/d'}}";
-        var now = new Date();
-        var start = new Date(periodoInicio);
-        var end = new Date(periodoFin);
-        var diff = now - start;
-        var add = end - now;
-        var oneDay = 1000 * 60 * 60 * 24;
-        var day = Math.floor(diff / oneDay);
-        var dayEnd = Math.floor(add / oneDay);
-        var startdate = "-"+day+"d";
-        var endDate = "+"+(dayEnd+1)+"d";
-        $('.datepicker').datepicker({
-            format: "dd/mm/yyyy",
-            startDate: startdate,
-            endDate: now,
-            language: "es",
-            daysOfWeekDisabled: "0,6",
-            daysOfWeekHighlighted: "1,2,3,4,5",
-            todayHighlight: true
-        });
-</script>
-<script>
-    var horario = {};
-    var periodoInicio = "{{curso_list.periodo.per_inicio |date:'Y/m/d'}}";
-    var periodoFin = "{{curso_list.periodo.per_fin |date:'Y/m/d'}}";
+    Date.prototype.getWeekNumber = function () {
+        var d = new Date(+this);
+        d.setHours(0, 0, 0, 0); 
+        d.setDate(d.getDate() + 4 - (d.getDay() || 7)); 
+        return Math.ceil((((d - new Date(d.getFullYear(), 0, 1)) / 8.64e7) + 1) / 7);
+    };
 
-        {% for horario in horario_completo %}
-            horario["{{horario.asignatura.asi_nombre}}"] = [];
-        {% endfor %}
-        {% for horario in horario_completo %}
-            horario["{{horario.asignatura.asi_nombre}}"].push(["{{horario.hor_dia}}", "{{horario.hor_horas}}", "{{horario.asignatura.asi_num_creditos}}"]);
-        {% endfor %}
-
-    var fechaActual = new Date();
+    var btnAgregarList = document.getElementsByClassName('seguimiento-btn-agregar');
+    var btnGuardarSeguimiento = document.getElementById('btn-agregar');
+    var modalFooter = document.getElementById('modal-footer');
+    var erroresSeguimiento = document.getElementById('errores-seguimiento');
+    var cardHeader = document.getElementsByClassName('card-header');
+    var asignatura = document.getElementById('asignatura');
+    var docente = document.getElementById('docente');
+    var periodo = document.getElementById('periodo');
+    var semestre = document.getElementById('semestre');
+    var paralelo = document.getElementById('paralelo');
+    var labelPeriodo = document.getElementById('label-periodo');
+    var labelSemestre = document.getElementById('label-semestre');
+    var labelParalelo = document.getElementById('label-paralelo');
+    var pagination = document.getElementsByClassName('content-semana-filtro');
+    var contentPagination = document.getElementsByClassName('pagination');
     var fechaSeguimiento = document.getElementById('fecha-seguimiento');
     var segNumSemana = document.getElementById('id-seg-semana');
     var porcentajeIdealInput = document.getElementById('id_seg_porcentaje_ideal');
     var porcentajeRealInput = document.getElementById('id_seg_porcentaje_real');
     var observacionesInput = document.getElementById('id-seg-observaciones');
-    var busquedaInput = ""
+    var semanaActual = document.getElementsByClassName('semana-actual');
+    var porcentajeSemanaActual = document.getElementsByClassName('porcentaje-semana-actual');
+    var periodoInicio = "{{curso_list.periodo.per_inicio |date:'Y/m/d'}}";
+    var periodoFin = "{{curso_list.periodo.per_fin |date:'Y/m/d'}}";
+    var now = new Date();
+    var strPagination = "";
+    var arrayPagination = [];
+    var horario = {};
     var busquedaTable = ""
-    
-    diaActual = fechaActual.getDate();
-    mesActual = fechaActual.getMonth() + 1;
-    anioActual = fechaActual.getFullYear();
+    var porcentajePriHemiActual = "";
+    var porcentajeSegHemiActual = "";
+    var porcentajeSemanaActualSeguimiento = "";
+    var diaActual = now.getDate();
+    var mesActual = now.getMonth() + 1;
+    var anioActual = now.getFullYear();
     porcentajeRealInput.value = 0;
 
-    obtenerId = function(obj){
-        busquedaInput = obj.parentElement.children[1].children[0].children[0].children[1].children[0].getAttribute('id');
+    {% for horario in horario_completo %}
+        horario["{{horario.asignatura.asi_nombre}}"] = [];
+    {% endfor %}
+    {% for horario in horario_completo %}
+        horario["{{horario.asignatura.asi_nombre}}"].push(["{{horario.hor_dia}}", "{{horario.hor_horas}}", "{{horario.asignatura.asi_num_creditos}}"]);
+    {% endfor %}
+
+    $('.datepicker').datepicker({
+        format: "dd/mm/yyyy",
+        startDate: calendario(periodoInicio, periodoFin, now),
+        endDate: now,
+        language: "es",
+        daysOfWeekDisabled: "0,6",
+        daysOfWeekHighlighted: "1,2,3,4,5",
+        todayHighlight: true
+    });
+
+    for(let i=0; i < pagination.length; i++){
+        strPagination = "";
+        for(let j=0; j < pagination[i].children.length; j++){
+            strPagination += pagination[i].children[j].textContent;
+        }
+        arrayPagination.push(Array.from(new Set(strPagination.split(','))));
+    }
+    numSemanaValidado = omitirSemanaExamenes(now, periodoInicio);
+    for (let i=0; i<semanaActual.length; i++) {
+        semanaActual[i].textContent = numSemanaValidado;
+        porcentajeSemanaActual[i].textContent = numSemanaValidado * 100;
+    }
+    for(let i=0; i < contentPagination.length; i++){
+        for(let j=0; j < arrayPagination[i].sort((a,b)=>{return a - b}).length; j++){
+            if (arrayPagination[i][j] != "") {
+                var itemPagination = crearPaginationItem(arrayPagination[i][j], i);
+                contentPagination[i].appendChild(itemPagination);
+                if(itemPagination.children[0].getAttribute('id') == (i + "-" +arrayPagination[i][arrayPagination[i].length-1])){
+                    itemPagination.children[0].checked = true;
+                }
+            }
+        }
+    }
+
+    for(let i=0; i < btnAgregarList.length; i++){
+        btnAgregarList[i].addEventListener("click", ()=>{
+            asignatura.value = cardHeader[i].children[0].textContent;
+            docente.value = cardHeader[i].children[1].textContent;
+            periodo.value = labelPeriodo.children[1].textContent;
+            semestre.value = labelSemestre.children[1].textContent;
+            paralelo.value = labelParalelo.children[1].textContent;
+            fechaSeguimiento.value = diaActual+"/"+mesActual+"/"+anioActual;
+            validarIngresoSeguimiento(fechaSeguimiento);            
+        });
+    }
+
+    obtenerAsignatura = function(obj){
+        porcentajePriHemiActual = obj.parentElement.getElementsByClassName('grupo-campo-valor')[1].children[0];
+        porcentajeSegHemiActual = obj.parentElement.getElementsByClassName('grupo-campo-valor')[2].children[0];
+        porcentajeSemanaActualSeguimiento = obj.parentElement.getElementsByClassName('grupo-campo-valor')[3].children[0];
         busquedaTable = obj.parentElement.children[1].children[0].children[1].children[0].getAttribute('id');
         itemsPagination = obj.parentElement.children[1].children[0].children[3].children[0].children;
         
-        avancePorcentual();
+        porcentajeRealTotal();
 
-        document.getElementById(busquedaInput).addEventListener('click', ()=>{
-            for(let k=0; k < itemsPagination.length; k++){
-                itemsPagination[k].children[0].checked = false;
-            }
-        });
-
-        for(let k=0; k < itemsPagination.length; k++){
-            if(itemsPagination[k].children[0].checked == true){
-                doSearchSemana(itemsPagination[k].children[1].textContent);
-            }
-            
-        }
-        avancePorcentual();
-        
         for(let i=0; i < itemsPagination.length; i++){
+            if(itemsPagination[i].children[0].checked == true){
+                doSearchSemana(itemsPagination[i].children[1].textContent);
+            }
             itemsPagination[i].addEventListener('click', ()=>{
-                let textSearch = ""
-                for(let k=0; k < itemsPagination.length; k++){
-                    if(itemsPagination[k].children[0].checked == true){
-                        textSearch += itemsPagination[k].children[1].textContent
-                    }
-                    doSearchSemana(textSearch);
+                if(itemsPagination[i].children[0].checked == true){
+                    doSearchSemana(itemsPagination[i].children[1].textContent);
                 }
                 avancePorcentual();
             });
         }
+
+        avancePorcentual();
     }
 
-    
-
-
     fechaSeguimiento.addEventListener('focus', ()=>{
-        var fechaSeguimientoAux = fechaSeguimiento.value.split('/');
-        var dia = "";
-        
-        fechaSeguimientoDate = new Date(fechaSeguimientoAux[2]+"/"+fechaSeguimientoAux[1]+"/"+fechaSeguimientoAux[0]);
-        
-        dia = obtenerDiaString(fechaSeguimientoDate.getDay());
-
-        for(let i=0;i<horario[asignatura.value].length;i++){
-            if(horario[asignatura.value][i][0] == dia){
-                porcentajeIdealInput.value = ((parseFloat(horario[asignatura.value][i][1]) * 100) / parseFloat(horario[asignatura.value][i][2])).toFixed(2)
-                break;
-            } else {
-                porcentajeIdealInput.value = "0";
-            }
-        }
-        numSemana  = fechaSeguimientoDate.getWeekNumber() - new Date(periodoInicio).getWeekNumber() + 1;
-                if(numSemana == 8){
-                    segNumSemana.value = 0;
-                }else if(numSemana > 8){
-                    segNumSemana.value = numSemana - 1;
-                }else {
-                    segNumSemana.value = numSemana;
-                }
-
-        
-
-        if (porcentajeIdealInput.value == "0" || parseFloat(porcentajeRealInput.value) != parseFloat(porcentajeIdealInput.value)){
-            observacionesInput.setAttribute('required', 'true');
-        } else {
-            observacionesInput.removeAttribute('required');
-        }
+        validarPorcentajeSemanalSeguimiento();
+        validarIngresoSeguimiento(fechaSeguimiento);    
     });
     
     fechaSeguimiento.addEventListener('blur', ()=>{
         if(fechaSeguimiento.value == ""){
             fechaSeguimiento.value = diaActual+"/"+mesActual+"/"+anioActual;
         }
-        var fechaSeguimientoAux = fechaSeguimiento.value.split('/');
-        var dia = "";
-        
-        fechaSeguimientoDate = new Date(fechaSeguimientoAux[2]+"/"+fechaSeguimientoAux[1]+"/"+fechaSeguimientoAux[0]);
-        
-        dia = obtenerDiaString(fechaSeguimientoDate.getDay());
-
-        for(let i=0;i<horario[asignatura.value].length;i++){
-            if(horario[asignatura.value][i][0] == dia){
-                porcentajeIdealInput.value = ((parseFloat(horario[asignatura.value][i][1]) * 100) / parseFloat(horario[asignatura.value][i][2])).toFixed(2)
-                break;
-            } else {
-                porcentajeIdealInput.value = "0"
-            }
-        }
-        numSemana  = fechaSeguimientoDate.getWeekNumber() - new Date(periodoInicio).getWeekNumber() + 1;
-        if(numSemana == 8){
-            segNumSemana.value = 0;
-        }else if(numSemana > 8){
-            segNumSemana.value = numSemana - 1;
-        }else {
-            segNumSemana.value = numSemana;
-        }
-
-        if (porcentajeIdealInput.value == "0"  || parseFloat(porcentajeRealInput.value) != parseFloat(porcentajeIdealInput.value)){
-            observacionesInput.setAttribute('required', 'true');
-        } else {
-            observacionesInput.removeAttribute('required');
-        }
+        validarPorcentajeSemanalSeguimiento();    
+        validarIngresoSeguimiento(fechaSeguimiento);
     });
 
     porcentajeRealInput.addEventListener('change', ()=>{
         if(porcentajeRealInput.value == ""){
             porcentajeRealInput.value = 0;
         }
+        validarPorcentajeSemanalSeguimiento();
+        validarIngresoSeguimiento(fechaSeguimiento)
     });
 
     porcentajeRealInput.addEventListener('keyup', ()=>{
-
+        validarPorcentajeSemanalSeguimiento();
+        validarIngresoSeguimiento(fechaSeguimiento)
         if (parseFloat(porcentajeRealInput.value) != parseFloat(porcentajeIdealInput.value)){
             observacionesInput.setAttribute('required', 'true');
         } else {
@@ -468,6 +361,25 @@
         }
     });
     
+
+    function mostrarErroresIngresoSeguimiento(esVisible, mensaje) {
+        if (esVisible) {
+            btnGuardarSeguimiento.style.display = 'none';
+            modalFooter.style.justifyContent = 'space-between';
+            erroresSeguimiento.parentElement.style.display = 'inline-block';
+            erroresSeguimiento.textContent = mensaje;
+        } else {
+            erroresSeguimiento.parentElement.style.display = 'none';
+            erroresSeguimiento.textContent = "";
+            modalFooter.style.justifyContent = 'flex-end';
+            btnGuardarSeguimiento.style.display = 'inline-block';
+        }
+    }
+
+    function validarPorcentajeSemanalSeguimiento(){
+        mostrarErroresIngresoSeguimiento((parseInt(porcentajeSemanaActualSeguimiento.textContent) + parseInt(porcentajeRealInput.value)) > parseInt(porcentajeSemanaActual[0].textContent), "NO SE PUEDE ADELANTAR CLASES");
+    }
+
     function obtenerDiaString(diaNumber){
         var dia = "";
         switch(diaNumber){
@@ -486,116 +398,276 @@
             case 5:
                 dia = "VIERNES";
                 break;
+            default:
+                dia = "NO"
+                break;
         }
         return dia;
     }
 
-    
+    function doSearchSemana(semanaText)
+    {
+        var tableReg = document.getElementById(busquedaTable);
+        var searchDate = semanaText;
+        var cellsOfRow="";
+        var found=false;
+        var compareWith="";
+        
+
+        // Recorremos todas las filas con contenido de la tabla
+        for (var i = 1; i < tableReg.rows.length-1; i++)
+        {
+            cellsOfRow = tableReg.rows[i].getElementsByClassName('filtro-semana');
+            found = false;
+            // Recorremos todas las celdas
+            for (var j = 0; j < cellsOfRow.length && !found; j++)
+            {
+                compareWith = cellsOfRow[j].innerHTML;
+                // Buscamos el texto en el contenido de la celda
+                if (searchDate == "" || (searchDate == compareWith))
+                {
+                    found = true;
+                }
+            }
+            if(found)
+            {
+                tableReg.rows[i].style.display = '';
+            } else {
+                // si no ha encontrado ninguna coincidencia, esconde la
+                // fila de la tabla
+                tableReg.rows[i].style.display = 'none';
+            }
+        }
+    }
+
+    function porcentajeRealTotal(){
+        var table = document.getElementById(busquedaTable);
+        var sumPorReal = 0.00;
+        var arrayNumSemanasPrimerHemi = [0];
+        var arrayNumSemanasSegundoHemi = [0];
+        for(let i=0;i<table.rows.length-1;i++){
+            var cellPorReal = table.rows[i].getElementsByClassName('suma-por-real');
+            var cellSemana = table.rows[i].getElementsByClassName('filtro-semana');
+            for(let k=0;k<cellPorReal.length;k++){
+                var numSemana = cellSemana[k].textContent;
+                var decimal = cellPorReal[k].children[0].textContent.split(",");
+                var cell = decimal[0] +"."+ decimal[1];
+                if (numSemana <= 8) {
+                    arrayNumSemanasPrimerHemi.push(parseFloat(cell));
+                } else {
+                    arrayNumSemanasSegundoHemi.push(parseFloat(cell));
+                }
+            }
+        }
+        sumPorRealPrimerHemi = arrayNumSemanasPrimerHemi.reduce((a,b)=>{return a + b});
+        sumPorRealSegundoHemi = arrayNumSemanasSegundoHemi.reduce((a,b)=>{return a + b});
+
+        porcentajePriHemiActual.textContent = sumPorRealPrimerHemi;
+        porcentajeSegHemiActual.textContent = sumPorRealSegundoHemi;
+        porcentajeSemanaActualSeguimiento.textContent = sumPorRealPrimerHemi + sumPorRealSegundoHemi;
+    }
+
+    function avancePorcentual(){
+        var table = document.getElementById(busquedaTable);
+        var sumPorReal = 0.00;
+        var sumPorIdeal = 0.00;
+        var arrayNumSemanas = [];
+        for(let i=0;i<table.rows.length-1;i++){
+            if(table.rows[i].style.display != "none"){
+                var cellPorReal = table.rows[i].getElementsByClassName('suma-por-real');
+                var cellPorIdeal = table.rows[i].getElementsByClassName('suma-por-ideal');
+                var cellSemana = table.rows[i].getElementsByClassName('filtro-semana');
+                for(let k=0;k<cellPorReal.length;k++){
+                    var decimal = cellPorReal[k].children[0].textContent.split(",");
+                    var cell = decimal[0] +"."+ decimal[1];
+                    var numSemanaPromedio = cellSemana[k].textContent;
+                    sumPorReal += parseFloat(cell);
+                    decimal = cellPorIdeal[k].children[0].textContent.split(",");
+                    cell = decimal[0] +"."+ decimal[1];
+                    sumPorIdeal += parseFloat(cell);
+                    arrayNumSemanas.push(numSemanaPromedio);
+                }
+            }
+        }
+        contNumSemanas = new Set(arrayNumSemanas).size;
+        if(!contNumSemanas){
+            table.rows[table.rows.length-1].getElementsByClassName('total-real')[0].children[0].textContent = 0;
+            table.rows[table.rows.length-1].getElementsByClassName('total-ideal')[0].children[0].textContent = 0;
+        } else {
+            table.rows[table.rows.length-1].getElementsByClassName('total-real')[0].children[0].textContent = Math.ceil(sumPorReal / contNumSemanas);
+            table.rows[table.rows.length-1].getElementsByClassName('total-ideal')[0].children[0].textContent = Math.ceil(sumPorIdeal / contNumSemanas);
+        }
+    }
+
+    function omitirSemanaExamenes(fecha, fechaIncioPeriodo){
+        numSemana  = fecha.getWeekNumber() - new Date(fechaIncioPeriodo).getWeekNumber() + 1;
+        if(numSemana == 9){
+            return 0;
+        } else if(numSemana > 9){
+            return (numSemana - 1);
+        } else {
+            return numSemana;
+        }
+    }
+
+    function crearPaginationItem(text, index){
+        item = document.createElement('li');
+        item.setAttribute('class', 'page-item item-semana');
+
+        check = document.createElement('input');
+        check.setAttribute('class', 'check-filtro');
+        check.setAttribute('type', 'radio');
+        check.setAttribute('name', (index +"-"+'pagination'));
+        check.setAttribute('id', (index +"-"+ text));
+        
+        label = document.createElement('label');
+        label.setAttribute('class', 'label-filtro');
+        //label.setAttribute('for', text);
+        label.textContent = text
+        
+
+        item.appendChild(check);
+        item.appendChild(label);
+        return item
+    }
+
+    function calendario(periodoInicio, periodoFin, now) {
+        var start = new Date(periodoInicio);
+        var end = new Date(periodoFin);
+        var diff = now - start;
+        var add = end - now;
+        var oneDay = 1000 * 60 * 60 * 24;
+        var day = Math.floor(diff / oneDay);
+        var dayEnd = Math.floor(add / oneDay);
+        var startdate = "-"+day+"d";
+        var endDate = "+"+(dayEnd+1)+"d";
+        return startdate;
+    }
+
+    function validarIngresoSeguimiento(fechaSeguimiento){
+        var fechaSeguimientoAux = fechaSeguimiento.value.split('/');
+        var dia = "";
+        
+        fechaSeguimientoDate = new Date(fechaSeguimientoAux[2]+"/"+fechaSeguimientoAux[1]+"/"+fechaSeguimientoAux[0]);
+        
+        dia = obtenerDiaString(fechaSeguimientoDate.getDay());
+
+        if (dia == "NO") {
+            mostrarErroresIngresoSeguimiento(true, "DIA NO HABIL");
+        } else {
+            for(let i=0;i<horario[asignatura.value].length;i++){
+                if(horario[asignatura.value][i][0] == dia){
+                    porcentajeIdealInput.value = ((parseFloat(horario[asignatura.value][i][1]) * 100) / parseFloat(horario[asignatura.value][i][2])).toFixed(2)
+                    break;
+                } else {
+                    porcentajeIdealInput.value = "0";
+                }
+            }
+            segNumSemana.value = omitirSemanaExamenes(fechaSeguimientoDate, periodoInicio);
+            
+            var estaCompletoPrimerHemi = validacionPrimerSemestre();
+            if (estaCompletoPrimerHemi) {
+                mostrarErroresIngresoSeguimiento(estaCompletoPrimerHemi, "EL PRIMER HEMISEMESTRE ESTA INCOMPLETO");
+            } else {
+                estanSemanasCompletas = validarSemanasCompletas(horario[asignatura.value])
+                if (estanSemanasCompletas) {
+                    mostrarErroresIngresoSeguimiento(estanSemanasCompletas, "SEMANA "+ estanSemanasCompletas +" INCOMPLETA");
+                } else {
+                    var esMayorPorcentajePrimerHemi = validarPorcentajeTotalHemi(porcentajePriHemiActual);
+                    if (esMayorPorcentajePrimerHemi && parseInt(segNumSemana.value) <= 8) {
+                        mostrarErroresIngresoSeguimiento(esMayorPorcentajePrimerHemi, "LÍMITE HEMISEMESTRE SOBREPASADO");
+                    } else {
+                        var esMayorLimiteRecuperacion = validarPorcentajeNumCreditos(horario[asignatura.value]);
+                        if (esMayorLimiteRecuperacion) {
+                            mostrarErroresIngresoSeguimiento(esMayorLimiteRecuperacion, "EL PORCENTAJE SOBREPASA EL LÍMITE DE RECUPERACIÓN");
+                        } else {
+                            if (porcentajeIdealInput.value == "0"  || parseFloat(porcentajeRealInput.value) != parseFloat(porcentajeIdealInput.value)){
+                                observacionesInput.setAttribute('required', 'true');
+                            } else {
+                                observacionesInput.removeAttribute('required');
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    function validarPorcentajeNumCreditos(asignaturaHorario){
+        var esMayorNumeroRecuperacion = false;
+        if (porcentajeIdealInput.value == 0) {
+            for(let i=0;i<asignaturaHorario.length;i++){
+                if (parseFloat(porcentajeRealInput.value) > ((parseFloat(asignaturaHorario[i][1]) * 100) / parseFloat(asignaturaHorario[i][2])).toFixed(2)) {
+                    esMayorNumeroRecuperacion = true;
+                } else {
+                    esMayorNumeroRecuperacion = false;
+                }
+            }
+            return esMayorNumeroRecuperacion;
+        } else {
+            for(let i=0;i<asignaturaHorario.length;i++){
+                if (parseFloat(porcentajeRealInput.value) > (((parseFloat(asignaturaHorario[i][1]) * 100) / parseFloat(asignaturaHorario[i][2])) * 2).toFixed(2)) {
+                    esMayorNumeroRecuperacion = true;
+                } else {
+                    esMayorNumeroRecuperacion = false;
+                }
+            }
+            return esMayorNumeroRecuperacion;
+        }
+    }
+
+    function validacionPrimerSemestre() {
+        if(parseInt(segNumSemana.value) > 8) {
+            if (parseFloat(porcentajePriHemiActual.textContent) < 800) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    function validarPorcentajeTotalHemi(hemisemestre) {
+        if ((parseFloat(hemisemestre.textContent) + parseFloat(porcentajeRealInput.value)) > 800) {
+            return true;
+        }
+        return false;
+    }
+
+    function validarSemanasCompletas(asignaturaHorario){
+        var table = document.getElementById(busquedaTable);
+        var minDiasSemana = asignaturaHorario.length;
+        var numeroSemanasArray = {
+            1:0,
+            2:0,
+            3:0,
+            4:0,
+            5:0,
+            6:0,
+            7:0,
+            8:0,
+            9:0,
+            10:0,
+            11:0,
+            12:0,
+            15:0,
+            16:0
+        }
+        var semanaIncompleta = '';
+        for(let i=0;i<table.rows.length-1;i++){
+            var cellSemana = table.rows[i].getElementsByClassName('filtro-semana');
+            for (let i=0 ; i < cellSemana.length ; i++) {
+                numeroSemanasArray[cellSemana[i].textContent]++ ;
+            }
+        }
+        for (let i in numeroSemanasArray){
+            if ( parseInt(i) < parseInt(segNumSemana.value) ) {
+                if (numeroSemanasArray[i] < minDiasSemana) {
+                    return i;
+                }
+            }
+        }
+        return null;
+        
+    }
 
 </script>
-<script>
-
-        function doSearchSemana(semanaText)
-        {
-            var tableReg = document.getElementById(busquedaTable);
-            var searchDate = semanaText;
-            var cellsOfRow="";
-            var found=false;
-            var compareWith="";
-            
- 
-            // Recorremos todas las filas con contenido de la tabla
-            for (var i = 1; i < tableReg.rows.length-1; i++)
-            {
-                cellsOfRow = tableReg.rows[i].getElementsByClassName('filtro-semana');
-                found = false;
-                // Recorremos todas las celdas
-                for (var j = 0; j < cellsOfRow.length && !found; j++)
-                {
-                    compareWith = cellsOfRow[j].innerHTML;
-                    // Buscamos el texto en el contenido de la celda
-                    if (searchDate == "" || (searchDate.indexOf(compareWith) > -1))
-                    {
-                        found = true;
-                    }
-                }
-                if(found)
-                {
-                    tableReg.rows[i].style.display = '';
-                } else {
-                    // si no ha encontrado ninguna coincidencia, esconde la
-                    // fila de la tabla
-                    tableReg.rows[i].style.display = 'none';
-                }
-            }
-        }
-
-        function doSearch()
-        {
-            var tableReg = document.getElementById(busquedaTable);
-            var searchDate = document.getElementById(busquedaInput).value;
-            //var searchSemana = document.getElementById(busquedaInput);
-            var cellsOfRow="";
-            var found=false;
-            var compareWith="";
-            
- 
-            // Recorremos todas las filas con contenido de la tabla
-            for (var i = 1; i < tableReg.rows.length-1; i++)
-            {
-                cellsOfRow = tableReg.rows[i].getElementsByClassName('filtro-fecha');
-                found = false;
-                // Recorremos todas las celdas
-                for (var j = 0; j < cellsOfRow.length && !found; j++)
-                {
-                    compareWith = cellsOfRow[j].innerHTML;
-                    // Buscamos el texto en el contenido de la celda
-                    if (searchDate.length == 0 || (compareWith.indexOf(searchDate) > -1))
-                    {
-                        found = true;
-                    }
-                }
-                if(found)
-                {
-                    tableReg.rows[i].style.display = '';
-                } else {
-                    // si no ha encontrado ninguna coincidencia, esconde la
-                    // fila de la tabla
-                    tableReg.rows[i].style.display = 'none';
-                }
-            }
-        }
-
-        function avancePorcentual(){
-            var table = document.getElementById(busquedaTable);
-            var sumPorReal = 0.00;
-            var sumPorIdeal = 0.00;
-            var arrayNumSemanas = [];
-            for(let i=0;i<table.rows.length-1;i++){
-                if(table.rows[i].style.display != "none"){
-                    cellPorReal = table.rows[i].getElementsByClassName('suma-por-real');
-                    cellPorIdeal = table.rows[i].getElementsByClassName('suma-por-ideal');
-                    cellSemana = table.rows[i].getElementsByClassName('filtro-semana');
-                    for(let k=0;k<cellPorReal.length;k++){
-                        decimal = cellPorReal[k].children[0].textContent.split(",");
-                        cell = decimal[0] +"."+ decimal[1];
-                        sumPorReal += parseFloat(cell);
-                        decimal = cellPorIdeal[k].children[0].textContent.split(",");
-                        cell = decimal[0] +"."+ decimal[1];
-                        sumPorIdeal += parseFloat(cell);
-                        numSemanaPromedio = cellSemana[k].textContent;
-                        arrayNumSemanas.push(numSemanaPromedio);
-                    }
-                }
-            }
-            contNumSemanas = new Set(arrayNumSemanas).size;
-            if(!contNumSemanas){
-                table.rows[table.rows.length-1].getElementsByClassName('total-real')[0].children[0].textContent = 0;
-                table.rows[table.rows.length-1].getElementsByClassName('total-ideal')[0].children[0].textContent = 0;
-            } else {
-                table.rows[table.rows.length-1].getElementsByClassName('total-real')[0].children[0].textContent = Math.ceil(sumPorReal / contNumSemanas);
-                table.rows[table.rows.length-1].getElementsByClassName('total-ideal')[0].children[0].textContent = Math.ceil(sumPorIdeal / contNumSemanas);
-            }
-        }
-    </script>
 {% endblock scripts-opcionales %}
