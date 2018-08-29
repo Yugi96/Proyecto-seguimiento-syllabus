@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'apps.usuario.apps.UsuarioConfig',
     'apps.universidad.apps.UniversidadConfig',
     'apps.seguimiento.apps.SeguimientoConfig',
+    'wkhtmltopdf',
 ]
 
 MIDDLEWARE = [
@@ -137,3 +138,9 @@ EMAIL_PORT = 587
 EMAIL_HOST_USER = 'sylapp.utmach@gmail.com'
 EMAIL_HOST_PASSWORD = 'utmach-8vo'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+WKHTMLTOPDF_CMD = 'C:/Program Files/wkhtmltopdf/bin/wkhtmltopdf.exe'
+WKHTMLTOPDF_CMD_OPTIONS = {
+    'quiet': True,
+    'disable-javascript': False,
+    'orientation': 'landscape'
+}

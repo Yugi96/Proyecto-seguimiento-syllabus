@@ -25,7 +25,7 @@
                     </div>
                 </div>
                 <div class="content-num-dias-semana">
-                    <span for="{{ form.alu_estado.name }}" class="label-dar-baja text-center">NUM. DIAS A LA<br>SEMANA</span>
+                    <span for="{{ form.alu_estado.name }}" class="label-dar-baja text-center">NUM. DÍAS A LA<br>SEMANA</span>
                     <input type="text" class="input-campo input-dias" onkeypress='return soloNumeros(event);' id="modal-num-dias" value="0">
                 </div>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -94,12 +94,12 @@
                         <label for="" class="label-campo">NUM. CREDITOS</label>
                         <p class="num-creditos-asignatura" id="num-creditos">0</p>
                     </div>
-                    <span id="btn-dias" class="btn-dias" >DIAS</span>
+                    <span id="btn-dias" class="btn-dias" >DÍAS</span>
                 </div>
             </div>
             <div class="content-horario-top-dias">
                 <div class="dias-asignados-row header text-center">
-                    <span class="asignatura-dias-asignados w-100">DIAS ASIGNADOS</span>
+                    <span class="asignatura-dias-asignados w-100">ASIGNATURAS AGREGADAS</span>
                 </div>
                 <div class="dias-asignados-rows" id="dias-asignados-rows">
                 </div>
@@ -252,7 +252,7 @@
 
             labelDia = document.createElement('span');
             labelDia.setAttribute("class","label-dia");
-            labelDia.textContent = "DIA";
+            labelDia.textContent = "DÍA";
 
             selectDias = document.createElement('select');
             selectDias.setAttribute("class","custom-select dias-select")
@@ -343,9 +343,10 @@
                 var asignaturasHorario = document.getElementsByClassName("hor-"+asignatura.split(' ').join(""));
                 var asignaturasAgregadaEliminar = document.getElementById("asi-"+asignatura.split(' ').join(""));
                 for(let i=asignaturasHorario.length-1; i>=0; i--){
+                    diasNumHorasMaximas[asignaturasHorario[i].parentElement.parentElement.parentElement.children[0].textContent] -= parseInt(asignaturasHorario[i].parentElement.children[2].textContent[0]);
                     asignaturasHorario[i].parentElement.remove();
                 }
-                var pos = asignaturasAgregadas.indexOf('asignatura');
+                var pos = asignaturasAgregadas.indexOf(asignatura);
                 asignaturasAgregadas.splice(pos, 1)
                 asignaturasAgregadaEliminar.remove();
             });
@@ -359,6 +360,13 @@
         var btnSubmit = document.getElementById('btn-submit');
         var btnCancelar = document.getElementById('btn-cerrar');
         var asignaturasAgregadas = [];
+        var diasNumHorasMaximas = {
+            'LUNES': 0,
+            'MARTES': 0,
+            'MIERCOLES': 0,
+            'JUEVES': 0,
+            'VIERNES': 0
+        }
         
         leerDatabase();
         btnDias.addEventListener('click', ()=>{
@@ -395,7 +403,7 @@
             var numHoras = [];
 
             if(modalBody.children.length == 0){
-                crearMensajes("ERROR: INGRESE LOS DIAS", "error");
+                crearMensajes("ERROR: INGRESE LOS DÍAS", "error");
             } else {
                 for(let i=0; i<modalBody.children.length; i++){
                     var horarioDia = [];
@@ -426,21 +434,39 @@
                         }
                     }
                     if(esIgual){
-                        crearMensajes("ERROR: DIAS IGUALES", "error");
+                        crearMensajes("ERROR: DÍAS IGUALES", "error");
                     } else {
-                        asignaturasAgregadas.push(horarioAsignatura)
-                        for(let i=0; i < horario.length; i++){
-                            var rowDia = addRowHorario(horario[i][0], horario[i][1], horario[i][3]);
-                            var diaHorario = document.getElementById("dia-"+horario[i][2]);
-                            diaHorario.appendChild(rowDia);
+                        var estaExcedidoHoras = false;
+                        var diaExcedido = '';
+                        for(let i=0; i<horario.length; i++){
+                            if((diasNumHorasMaximas[horario[i][2]] + parseInt(horario[i][3])) > 6) {
+                                estaExcedidoHoras = true;
+                                diaExcedido = horario[i][2];
+                                break;
+                            }                            
                         }
-                        var asignaturasAsignadas = document.getElementById("dias-asignados-rows");
-                        asignaturasAsignadas.innerHTML = "";
-                        for(let i=0; i<asignaturasAgregadas.length; i++){
-                            asignaturasAsignadas.appendChild(crearRowsAsignatuasAsignadas(asignaturasAgregadas[i]));
+
+                        if(estaExcedidoHoras) {
+                            crearMensajes("ERROR: EL DÍA " + diaExcedido + " TIENE EL MÁXIMO DE HORAS PERMITIDAS", "error");
+                        } else {
+                            for(let i=0; i<horario.length; i++){
+                                diasNumHorasMaximas[horario[i][2]] += parseInt(horario[i][3])                  
+                            }
+                            asignaturasAgregadas.push(horarioAsignatura)
+                            for(let i=0; i < horario.length; i++){
+                                var rowDia = addRowHorario(horario[i][0], horario[i][1], horario[i][3]);
+                                var diaHorario = document.getElementById("dia-"+horario[i][2]);
+                                diaHorario.appendChild(rowDia);
+                            }
+                            var asignaturasAsignadas = document.getElementById("dias-asignados-rows");
+                            asignaturasAsignadas.innerHTML = "";
+                            for(let i=0; i<asignaturasAgregadas.length; i++){
+                                asignaturasAsignadas.appendChild(crearRowsAsignatuasAsignadas(asignaturasAgregadas[i]));
+                            }
+                            limpiar();
+                            $('#exampleModalCenter').modal('hide');
                         }
-                        limpiar();
-                        $('#exampleModalCenter').modal('hide');
+
                     }
                 }     
             }
@@ -462,56 +488,56 @@
                 for(let i=0; i < lunes.children.length; i++){
                     var asignaturaSubmit = lunes.children[i].children[0].textContent;
                     var docenteSubmit = lunes.children[i].children[1].textContent;
-                    var periodoSutmit = '{{curso_list.periodo}}';
-                    var semestreSutmit = '{{curso_list.semestre}}';
-                    var paraleloSutmit = '{{curso_list.cur_paralelo}}';
-                    var diaSutmit = 'LUNES';
-                    var horasSutmit = lunes.children[i].children[2].children[0].textContent; 
-                    sentencia = sentencia + (asignaturaSubmit +","+ docenteSubmit +","+ periodoSutmit +","+ semestreSutmit +","+ paraleloSutmit + ","+ diaSutmit +","+ horasSutmit +";");
+                    var periodoSubmit = '{{curso_list.periodo}}';
+                    var semestreSubmit = '{{curso_list.semestre}}';
+                    var paraleloSubmit = '{{curso_list.cur_paralelo}}';
+                    var diaSubmit = 'LUNES';
+                    var horasSubmit = lunes.children[i].children[2].children[0].textContent; 
+                    sentencia = sentencia + (asignaturaSubmit +","+ docenteSubmit +","+ periodoSubmit +","+ semestreSubmit +","+ paraleloSubmit + ","+ diaSubmit +","+ horasSubmit +";");
                 }
                 //martes
                 for(let i=0; i < martes.children.length; i++){
                     var asignaturaSubmit = martes.children[i].children[0].textContent;
                     var docenteSubmit = martes.children[i].children[1].textContent;
-                    var periodoSutmit = '{{curso_list.periodo}}';
-                    var semestreSutmit = '{{curso_list.semestre}}';
-                    var paraleloSutmit = '{{curso_list.cur_paralelo}}';
-                    var diaSutmit = 'MARTES';
-                    var horasSutmit = martes.children[i].children[2].children[0].textContent; 
-                    sentencia = sentencia + (asignaturaSubmit +","+ docenteSubmit +","+ periodoSutmit +","+ semestreSutmit +","+ paraleloSutmit + ","+ diaSutmit +","+ horasSutmit +";");
+                    var periodoSubmit = '{{curso_list.periodo}}';
+                    var semestreSubmit = '{{curso_list.semestre}}';
+                    var paraleloSubmit = '{{curso_list.cur_paralelo}}';
+                    var diaSubmit = 'MARTES';
+                    var horasSubmit = martes.children[i].children[2].children[0].textContent; 
+                    sentencia = sentencia + (asignaturaSubmit +","+ docenteSubmit +","+ periodoSubmit +","+ semestreSubmit +","+ paraleloSubmit + ","+ diaSubmit +","+ horasSubmit +";");
                 }
                 //miercoles
                 for(let i=0; i < miercoles.children.length; i++){
                     var asignaturaSubmit = miercoles.children[i].children[0].textContent;
                     var docenteSubmit = miercoles.children[i].children[1].textContent;
-                    var periodoSutmit = '{{curso_list.periodo}}';
-                    var semestreSutmit = '{{curso_list.semestre}}';
-                    var paraleloSutmit = '{{curso_list.cur_paralelo}}';
-                    var diaSutmit = 'MIERCOLES';
-                    var horasSutmit = miercoles.children[i].children[2].children[0].textContent; 
-                    sentencia = sentencia + (asignaturaSubmit +","+ docenteSubmit +","+ periodoSutmit +","+ semestreSutmit +","+ paraleloSutmit + ","+ diaSutmit +","+ horasSutmit +";");
+                    var periodoSubmit = '{{curso_list.periodo}}';
+                    var semestreSubmit = '{{curso_list.semestre}}';
+                    var paraleloSubmit = '{{curso_list.cur_paralelo}}';
+                    var diaSubmit = 'MIERCOLES';
+                    var horasSubmit = miercoles.children[i].children[2].children[0].textContent; 
+                    sentencia = sentencia + (asignaturaSubmit +","+ docenteSubmit +","+ periodoSubmit +","+ semestreSubmit +","+ paraleloSubmit + ","+ diaSubmit +","+ horasSubmit +";");
                 }
                 //jueves
                 for(let i=0; i < jueves.children.length; i++){
                     var asignaturaSubmit = jueves.children[i].children[0].textContent;
                     var docenteSubmit = jueves.children[i].children[1].textContent;
-                    var periodoSutmit = '{{curso_list.periodo}}';
-                    var semestreSutmit = '{{curso_list.semestre}}';
-                    var paraleloSutmit = '{{curso_list.cur_paralelo}}';
-                    var diaSutmit = 'JUEVES';
-                    var horasSutmit = jueves.children[i].children[2].children[0].textContent; 
-                    sentencia = sentencia + (asignaturaSubmit +","+ docenteSubmit +","+ periodoSutmit +","+ semestreSutmit +","+ paraleloSutmit + ","+ diaSutmit +","+ horasSutmit +";");
+                    var periodoSubmit = '{{curso_list.periodo}}';
+                    var semestreSubmit = '{{curso_list.semestre}}';
+                    var paraleloSubmit = '{{curso_list.cur_paralelo}}';
+                    var diaSubmit = 'JUEVES';
+                    var horasSubmit = jueves.children[i].children[2].children[0].textContent; 
+                    sentencia = sentencia + (asignaturaSubmit +","+ docenteSubmit +","+ periodoSubmit +","+ semestreSubmit +","+ paraleloSubmit + ","+ diaSubmit +","+ horasSubmit +";");
                 }
                 //viernes
                 for(let i=0; i < viernes.children.length; i++){
                     var asignaturaSubmit = viernes.children[i].children[0].textContent;
                     var docenteSubmit = viernes.children[i].children[1].textContent;
-                    var periodoSutmit = '{{curso_list.periodo}}';
-                    var semestreSutmit = '{{curso_list.semestre}}';
-                    var paraleloSutmit = '{{curso_list.cur_paralelo}}';
-                    var diaSutmit = 'VIERNES';
-                    var horasSutmit = viernes.children[i].children[2].children[0].textContent; 
-                    sentencia = sentencia + (asignaturaSubmit +","+ docenteSubmit +","+ periodoSutmit +","+ semestreSutmit +","+ paraleloSutmit + ","+ diaSutmit +","+ horasSutmit +";");
+                    var periodoSubmit = '{{curso_list.periodo}}';
+                    var semestreSubmit = '{{curso_list.semestre}}';
+                    var paraleloSubmit = '{{curso_list.cur_paralelo}}';
+                    var diaSubmit = 'VIERNES';
+                    var horasSubmit = viernes.children[i].children[2].children[0].textContent; 
+                    sentencia = sentencia + (asignaturaSubmit +","+ docenteSubmit +","+ periodoSubmit +","+ semestreSubmit +","+ paraleloSubmit + ","+ diaSubmit +","+ horasSubmit +";");
                 }
 
                 document.getElementById("id_sentencia").value = sentencia;

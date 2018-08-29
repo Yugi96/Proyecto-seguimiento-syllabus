@@ -1566,6 +1566,7 @@ body {
 /* Horario tabla estilos */
 .content-horario-body-dias-rows {
     overflow: auto;
+    height: 90%;
 }
 
 .horario-asignatura-row {

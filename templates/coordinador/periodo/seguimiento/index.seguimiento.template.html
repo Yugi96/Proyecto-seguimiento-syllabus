@@ -164,8 +164,13 @@
     }
     numSemanaValidado = omitirSemanaExamenes(now, periodoInicio);
     for (let i=0; i<semanaActual.length; i++) {
+        if(numSemanaValidado > 16) {
+            semanaActual[i].textContent = 16;
+            porcentajeSemanaActual[i].textContent = 1600;
+        } else {
         semanaActual[i].textContent = numSemanaValidado;
         porcentajeSemanaActual[i].textContent = numSemanaValidado * 100;
+    }
     }
     for(let i=0; i < contentPagination.length; i++){
         for(let j=0; j < arrayPagination[i].sort((a,b)=>{return a - b}).length; j++){
@@ -320,7 +325,7 @@
         
         label = document.createElement('label');
         label.setAttribute('class', 'label-filtro');
-        //label.setAttribute('for', text);
+        label.setAttribute('for', (index +"-"+ text));
         label.textContent = text
         
 

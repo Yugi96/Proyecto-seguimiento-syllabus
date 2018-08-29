@@ -43,7 +43,7 @@ class Alumno(models.Model):
     alu_estado = models.BooleanField(default=True)
 
     def __str__(self):
-        return "{} {}".format(self.usuario.first_name, self.usuario.last_name)
+        return "{} {}".format(self.usuario.last_name, self.usuario.first_name)
 
     def getCarrera(self):
         return "{}".format(self.carrera)

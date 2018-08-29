@@ -1,5 +1,5 @@
 from django.db import models
-from apps.universidad.models import Asignatura, Docente, Periodo, Semestre
+from apps.universidad.models import Asignatura, Docente, Periodo, Semestre, Carrera
 
 # Create your models here.
 class Horario(models.Model):
@@ -7,6 +7,7 @@ class Horario(models.Model):
     docente = models.ForeignKey(Docente, on_delete=models.CASCADE)
     periodo = models.ForeignKey(Periodo, on_delete=models.CASCADE, default="")
     semestre = models.ForeignKey(Semestre, on_delete=models.CASCADE)
+    carrera = models.ForeignKey(Carrera, on_delete=models.CASCADE)
     hor_paralelo = models.CharField(max_length=5)
     hor_dia = models.CharField(max_length=15)
     hor_horas = models.PositiveIntegerField()
@@ -17,6 +18,7 @@ class Seguimiento(models.Model):
     docente = models.ForeignKey(Docente, on_delete=models.CASCADE)
     periodo = models.ForeignKey(Periodo, on_delete=models.CASCADE)
     semestre = models.ForeignKey(Semestre, on_delete=models.CASCADE)
+    carrera = models.ForeignKey(Carrera, on_delete=models.CASCADE)
     seg_paralelo = models.CharField(max_length=5)
     seg_porcentaje_real = models.FloatField()
     seg_porcentaje_ideal = models.FloatField()

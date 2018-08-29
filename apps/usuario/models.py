@@ -10,10 +10,3 @@ class Mensaje(models.Model):
     men_fecha = models.DateTimeField(auto_now_add=True)
     men_leido = models.BooleanField(default=False)
     men_estado = models.BooleanField(default=True)
-
-class Notificaciones(models.Model):
-    usuario = models.ForeignKey(User, on_delete=models.CASCADE)
-    not_notificacion = models.CharField(max_length=100)
-    not_fecha = models.DateTimeField(auto_now_add=True)
-    not_leido = models.BooleanField(default=False)
-    not_estado = models.BooleanField(default=True)

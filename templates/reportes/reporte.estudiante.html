@@ -1,0 +1,198 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Title</title>
+        <style type="text/css">
+            
+            body {
+                font-family: "Arial";
+                font-weight: 200;
+                font-size: 10px;
+            }
+            
+            table {
+                border-collapse:collapse;
+            }
+
+            table.encabezado {
+                font-family: "Times New Roman";
+                font-weight: 200;
+                font-size: 11px;
+                margin-bottom: 5px;
+            }
+
+            .text-al-left {
+                text-align: left;
+            }
+
+            th.th {
+                vertical-align: center;
+                padding: 10px 5px;
+                line-height: 1;
+                border: 1px solid #000;
+            }
+
+            td.td {
+                vertical-align: center;
+                padding: 5px 0;
+                line-height: 1;
+                text-align: center;
+                border: 1px solid #000;
+            }
+
+            th,td {
+                line-height: 0;
+                padding-right: 30px;
+            }
+
+            
+        </style>
+    </head>
+    <body>
+        <table class="encabezado">
+            <tr>
+                <th><p class="text-al-left">CURSO/SEMESTRE:</p></th>
+                <td>{{ curso_list.semestre }}</td>
+                <th><p class="text-al-left">PARALELO:</p> </th>
+                <td class="text-al-left">{{ curso_list.cur_paralelo }}</td>
+            </tr>
+            <tr>
+                <th><p class="text-al-left">NOMBRE DEL ESTUDIANTE:</p></th>
+                <td>{{ alumno_list }}</td>
+            </tr>
+        </table>
+        <table id="table-seguimiento">
+            <tr id="asingnatura-cell">
+                <th rowspan="2" class="th">MES: MAYO 30-04-2018 AL 04-05-2018 FECHA</th>
+            </tr>
+            <tr id="porcentajes-cell">
+            </tr>
+        </table>
+        <div id="ejemplo"></div>
+        <script>
+            var diasSemana = [];
+            var tableSeguimientoContent = document.getElementById('table-seguimiento');
+            var asigaturas = [];
+            var seguimientoCompleto = [];
+            var asignaturaCellContent = document.getElementById('asingnatura-cell');
+            var porcentajeCellContent = document.getElementById('porcentajes-cell');
+
+            {% for seguimiento in seguimiento_list %}
+                seguimientoCompleto.push([
+                "{{seguimiento.seg_porcentaje_real}}",
+                "{{seguimiento.seg_porcentaje_ideal}}",
+                "{{seguimiento.seg_observaciones}}",
+                "{{seguimiento.seg_fecha |date:'d/m/Y'}}",
+                "{{seguimiento.asignatura.asi_nombre }}"
+                ])
+
+            {% endfor %}
+
+            {% for seguimiento in seguimiento_list %}
+                if(!existeDia("{{seguimiento.seg_fecha |date:'d/m/Y'}}")) {
+                    diasSemana.push("{{seguimiento.seg_fecha |date:'d/m/Y'}}");
+                }
+            {% endfor %}
+
+            {% for asignatura in seguimiento_list %}
+                if(!existeAsignatura("{{ asignatura.asignatura.asi_nombre }}")) {
+                    asigaturas.push("{{ asignatura.asignatura.asi_nombre }}");
+                }
+            {% endfor %}
+
+            for(var i=0;i<asigaturas.length;i++) {
+                asignaturaCellContent.appendChild(crearAsignaturaCell(asigaturas[i]))
+            }
+
+            for(var i=0;i<asigaturas.length;i++) {
+                porcentajeCellContent.appendChild(crearPorcentajeCell('Porcentaje real de avance'));
+                porcentajeCellContent.appendChild(crearPorcentajeCell('Porcentaje ideal de avance'));
+            }
+
+            for(var i=0;i<diasSemana.length;i++) {
+                var row = document.createElement('tr');
+                row.appendChild(crearFechaSemana(diasSemana[i]));
+                for(var k=0;k<asigaturas.length;k++) {
+                    row.appendChild(crearPorcentajes("", asigaturas[k], diasSemana[i]));
+                    row.appendChild(crearPorcentajes(""));
+                }
+                tableSeguimientoContent.appendChild(row);
+            }
+
+            for(var i=0;i<diasSemana.length;i++) {
+                var row = document.createElement('tr');
+                row.appendChild(crearFechaSemana(diasSemana[i]));
+                for(var j=0; j<seguimientoCompleto.length;j++) {
+                    document.getElementById('ejemplo').innerHTML += seguimientoCompleto[j][3] + " - ";
+                    document.getElementById('ejemplo').innerHTML += seguimientoCompleto[j][4] + "</br>";
+                    document.getElementById('ejemplo').innerHTML += "-------"+diasSemana[i] + "</br>";
+                    if(seguimientoCompleto[j][3] == diasSemana[i]) {
+                        row.appendChild(crearPorcentajes(seguimientoCompleto[j][0]));
+                        row.appendChild(crearPorcentajes(seguimientoCompleto[j][1]));
+                    } 
+                }
+                tableSeguimientoContent.appendChild(row);
+            }
+
+            
+            
+            
+
+            
+            
+            function crearPorcentajes(porcentaje, asignatura, fecha) {
+                porcentajeItem = document.createElement('td');
+                porcentajeItem.setAttribute('class','td');
+                porcentajeItem.setAttribute('id', asignatura.replace(" ", ""));
+                if(porcentaje == "") {
+                    porcentajeItem.textContent = porcentaje;
+                } else {
+                    porcentajeItem.textContent = porcentaje + " %";
+                }
+                return porcentajeItem;
+            }
+
+            function crearFechaSemana(fecha) {
+                fechaItem = document.createElement('td');
+                fechaItem.setAttribute('class','td');
+                fechaItem.textContent = fecha;
+                return fechaItem;
+            }
+
+            function crearAsignaturaCell(asignatura) {
+                asignaturaItem = document.createElement('th');
+                asignaturaItem.setAttribute('class','th');
+                asignaturaItem.setAttribute('colspan','2');
+                asignaturaItem.textContent = asignatura;
+                return asignaturaItem;
+            }
+
+            function crearPorcentajeCell(text) {
+                porcentajeCell = document.createElement('th');
+                porcentajeCell.setAttribute('class','th');
+                porcentajeCell.textContent = text;
+                return porcentajeCell;
+            }
+
+            function existeDia(dia) {
+                for(var i=0;i<diasSemana.length;i++){
+                    if(diasSemana[i] == dia) {
+                        return true
+                    }
+                }
+                return false
+            }
+
+            function existeAsignatura(asignatura) {
+                for(var i=0;i<asigaturas.length;i++){
+                    if(asigaturas[i] == asignatura) {
+                        return true
+                    }
+                }
+                return false
+            }
+        </script>
+        
+    </body>
+</html>

@@ -279,8 +279,13 @@
     }
     numSemanaValidado = omitirSemanaExamenes(now, periodoInicio);
     for (let i=0; i<semanaActual.length; i++) {
-        semanaActual[i].textContent = numSemanaValidado;
-        porcentajeSemanaActual[i].textContent = numSemanaValidado * 100;
+        if(numSemanaValidado > 16) {
+            semanaActual[i].textContent = 16;
+            porcentajeSemanaActual[i].textContent = 1600;
+        } else {
+            semanaActual[i].textContent = numSemanaValidado;
+            porcentajeSemanaActual[i].textContent = numSemanaValidado * 100;
+        }
     }
     for(let i=0; i < contentPagination.length; i++){
         for(let j=0; j < arrayPagination[i].sort((a,b)=>{return a - b}).length; j++){
@@ -331,7 +336,6 @@
     }
 
     fechaSeguimiento.addEventListener('focus', ()=>{
-        validarPorcentajeSemanalSeguimiento();
         validarIngresoSeguimiento(fechaSeguimiento);    
     });
     
@@ -339,7 +343,6 @@
         if(fechaSeguimiento.value == ""){
             fechaSeguimiento.value = diaActual+"/"+mesActual+"/"+anioActual;
         }
-        validarPorcentajeSemanalSeguimiento();    
         validarIngresoSeguimiento(fechaSeguimiento);
     });
 
@@ -347,12 +350,10 @@
         if(porcentajeRealInput.value == ""){
             porcentajeRealInput.value = 0;
         }
-        validarPorcentajeSemanalSeguimiento();
         validarIngresoSeguimiento(fechaSeguimiento)
     });
 
     porcentajeRealInput.addEventListener('keyup', ()=>{
-        validarPorcentajeSemanalSeguimiento();
         validarIngresoSeguimiento(fechaSeguimiento)
         if (parseFloat(porcentajeRealInput.value) != parseFloat(porcentajeIdealInput.value)){
             observacionesInput.setAttribute('required', 'true');
@@ -377,7 +378,25 @@
     }
 
     function validarPorcentajeSemanalSeguimiento(){
-        mostrarErroresIngresoSeguimiento((parseInt(porcentajeSemanaActualSeguimiento.textContent) + parseInt(porcentajeRealInput.value)) > parseInt(porcentajeSemanaActual[0].textContent), "NO SE PUEDE ADELANTAR CLASES");
+        return (porcentajeSemanaTotalRegistrada() + parseFloat(porcentajeRealInput.value)) > parseInt(segNumSemana.value * 100)
+    }
+
+    function porcentajeSemanaTotalRegistrada() {
+        var table = document.getElementById(busquedaTable);
+        var sumPorReal = 0.00;
+
+        for(let i=0;i<table.rows.length-1;i++){
+            var cellSemana = table.rows[i].getElementsByClassName('filtro-semana');
+            var cellPorReal = table.rows[i].getElementsByClassName('suma-por-real');
+            for (let k=0 ; k < cellSemana.length ; k++) {
+                if (parseInt(cellSemana[k].textContent) <= parseInt(segNumSemana.value)) {
+                    var decimal = cellPorReal[k].children[0].textContent.split(",");
+                    var cell = decimal[0] +"."+ decimal[1];
+                    sumPorReal += parseFloat(cell);
+                }
+            }
+        }
+        return sumPorReal;
     }
 
     function obtenerDiaString(diaNumber){
@@ -522,7 +541,7 @@
         
         label = document.createElement('label');
         label.setAttribute('class', 'label-filtro');
-        //label.setAttribute('for', text);
+        label.setAttribute('for', (index +"-"+ text));
         label.textContent = text
         
 
@@ -551,40 +570,70 @@
         fechaSeguimientoDate = new Date(fechaSeguimientoAux[2]+"/"+fechaSeguimientoAux[1]+"/"+fechaSeguimientoAux[0]);
         
         dia = obtenerDiaString(fechaSeguimientoDate.getDay());
-
+        
         if (dia == "NO") {
             mostrarErroresIngresoSeguimiento(true, "DIA NO HABIL");
         } else {
-            for(let i=0;i<horario[asignatura.value].length;i++){
-                if(horario[asignatura.value][i][0] == dia){
-                    porcentajeIdealInput.value = ((parseFloat(horario[asignatura.value][i][1]) * 100) / parseFloat(horario[asignatura.value][i][2])).toFixed(2)
-                    break;
-                } else {
-                    porcentajeIdealInput.value = "0";
-                }
-            }
-            segNumSemana.value = omitirSemanaExamenes(fechaSeguimientoDate, periodoInicio);
-            
-            var estaCompletoPrimerHemi = validacionPrimerSemestre();
-            if (estaCompletoPrimerHemi) {
-                mostrarErroresIngresoSeguimiento(estaCompletoPrimerHemi, "EL PRIMER HEMISEMESTRE ESTA INCOMPLETO");
+            mostrarErroresIngresoSeguimiento(false, "");
+            var terminoPeriodo = validarFinPeriodo(fechaSeguimientoDate);
+            if (terminoPeriodo) {
+                mostrarErroresIngresoSeguimiento(terminoPeriodo, "FIN DEL PERIODO");
             } else {
-                estanSemanasCompletas = validarSemanasCompletas(horario[asignatura.value])
-                if (estanSemanasCompletas) {
-                    mostrarErroresIngresoSeguimiento(estanSemanasCompletas, "SEMANA "+ estanSemanasCompletas +" INCOMPLETA");
-                } else {
-                    var esMayorPorcentajePrimerHemi = validarPorcentajeTotalHemi(porcentajePriHemiActual);
-                    if (esMayorPorcentajePrimerHemi && parseInt(segNumSemana.value) <= 8) {
-                        mostrarErroresIngresoSeguimiento(esMayorPorcentajePrimerHemi, "LÍMITE HEMISEMESTRE SOBREPASADO");
+                mostrarErroresIngresoSeguimiento(false, "");
+                for(let i=0;i<horario[asignatura.value].length;i++){
+                    if(horario[asignatura.value][i][0] == dia){
+                        porcentajeIdealInput.value = ((parseFloat(horario[asignatura.value][i][1]) * 100) / parseFloat(horario[asignatura.value][i][2])).toFixed(2)
+                        break;
                     } else {
-                        var esMayorLimiteRecuperacion = validarPorcentajeNumCreditos(horario[asignatura.value]);
-                        if (esMayorLimiteRecuperacion) {
-                            mostrarErroresIngresoSeguimiento(esMayorLimiteRecuperacion, "EL PORCENTAJE SOBREPASA EL LÍMITE DE RECUPERACIÓN");
+                        porcentajeIdealInput.value = "0";
+                    }
+                }
+                segNumSemana.value = omitirSemanaExamenes(fechaSeguimientoDate, periodoInicio);
+                
+                var esSemanaExamenes = validarSemanaExamenes();
+            
+                if (esSemanaExamenes) {
+                    mostrarErroresIngresoSeguimiento(esSemanaExamenes, "SEMANA DE EXAMENES");
+                } else {
+                    mostrarErroresIngresoSeguimiento(false, "");
+                    var estaCompletoPrimerHemi = validacionPrimerSemestre();
+                    if (estaCompletoPrimerHemi) {
+                        mostrarErroresIngresoSeguimiento(estaCompletoPrimerHemi, "EL PRIMER HEMISEMESTRE ESTA INCOMPLETO");
+                    } else {
+                        mostrarErroresIngresoSeguimiento(false, "");
+                        estanSemanasCompletas = validarSemanasCompletas()
+                        if (estanSemanasCompletas) {
+                            mostrarErroresIngresoSeguimiento(estanSemanasCompletas, "SEMANA "+ estanSemanasCompletas +" INCOMPLETA");
                         } else {
-                            if (porcentajeIdealInput.value == "0"  || parseFloat(porcentajeRealInput.value) != parseFloat(porcentajeIdealInput.value)){
-                                observacionesInput.setAttribute('required', 'true');
+                            mostrarErroresIngresoSeguimiento(false, "");
+                            var esMayorPorcentajePrimerHemi = validarPorcentajeTotalHemi(porcentajePriHemiActual);
+                            if (esMayorPorcentajePrimerHemi && parseInt(segNumSemana.value) <= 8) {
+                                mostrarErroresIngresoSeguimiento(esMayorPorcentajePrimerHemi, "LÍMITE HEMISEMESTRE SOBREPASADO");
                             } else {
-                                observacionesInput.removeAttribute('required');
+                                mostrarErroresIngresoSeguimiento(false, "");
+                                var estaAdelantandoClases = validarPorcentajeSemanalSeguimiento();
+                                if (estaAdelantandoClases) {
+                                    mostrarErroresIngresoSeguimiento(estaAdelantandoClases, "LÍMITE SEMANAL SOBREPASADO");
+                                } else {
+                                    mostrarErroresIngresoSeguimiento(false, "");
+                                    var esMayorLimiteRecuperacion = validarPorcentajeNumCreditos(horario[asignatura.value]);
+                                    if (esMayorLimiteRecuperacion) {
+                                        mostrarErroresIngresoSeguimiento(esMayorLimiteRecuperacion, "EL PORCENTAJE SOBREPASA EL LÍMITE DE RECUPERACIÓN");
+                                    } else {
+                                        mostrarErroresIngresoSeguimiento(false, "");
+                                        var estanCamposVacios = validarCamposVacios();
+                                        if (estanCamposVacios) {
+                                            mostrarErroresIngresoSeguimiento(estanCamposVacios, "CAMPOS VACIOS");
+                                        } else {
+                                            mostrarErroresIngresoSeguimiento(false, "");
+                                            if (porcentajeIdealInput.value == "0"  || parseFloat(porcentajeRealInput.value) != parseFloat(porcentajeIdealInput.value)){
+                                                observacionesInput.setAttribute('required', 'true');
+                                            } else {
+                                                observacionesInput.removeAttribute('required');
+                                            }
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
@@ -595,13 +644,17 @@
 
     function validarPorcentajeNumCreditos(asignaturaHorario){
         var esMayorNumeroRecuperacion = false;
+        var numHoras = [];
+        var numCreditos = 0;
         if (porcentajeIdealInput.value == 0) {
             for(let i=0;i<asignaturaHorario.length;i++){
-                if (parseFloat(porcentajeRealInput.value) > ((parseFloat(asignaturaHorario[i][1]) * 100) / parseFloat(asignaturaHorario[i][2])).toFixed(2)) {
-                    esMayorNumeroRecuperacion = true;
-                } else {
-                    esMayorNumeroRecuperacion = false;
-                }
+                numHoras.push(asignaturaHorario[i][1]);
+                numCreditos = asignaturaHorario[i][2];
+            }
+            if (parseFloat(porcentajeRealInput.value) > ((parseFloat(Math.max(...numHoras)) * 100) / parseFloat(numCreditos)).toFixed(2)) {
+                esMayorNumeroRecuperacion = true;
+            } else {
+                esMayorNumeroRecuperacion = false;
             }
             return esMayorNumeroRecuperacion;
         } else {
@@ -632,9 +685,8 @@
         return false;
     }
 
-    function validarSemanasCompletas(asignaturaHorario){
+    function validarSemanasCompletas(){
         var table = document.getElementById(busquedaTable);
-        var minDiasSemana = asignaturaHorario.length;
         var numeroSemanasArray = {
             1:0,
             2:0,
@@ -648,25 +700,42 @@
             10:0,
             11:0,
             12:0,
+            13:0,
+            14:0,
             15:0,
             16:0
         }
         var semanaIncompleta = '';
         for(let i=0;i<table.rows.length-1;i++){
             var cellSemana = table.rows[i].getElementsByClassName('filtro-semana');
-            for (let i=0 ; i < cellSemana.length ; i++) {
-                numeroSemanasArray[cellSemana[i].textContent]++ ;
+            var cellPorIdeal = table.rows[i].getElementsByClassName('suma-por-ideal');
+            for (let k=0 ; k < cellSemana.length ; k++) {
+                var decimal = cellPorIdeal[k].children[0].textContent.split(",");
+                var cell = decimal[0] +"."+ decimal[1];
+                numeroSemanasArray[cellSemana[k].textContent] =  numeroSemanasArray[cellSemana[k].textContent] + parseFloat(cell);
             }
         }
         for (let i in numeroSemanasArray){
             if ( parseInt(i) < parseInt(segNumSemana.value) ) {
-                if (numeroSemanasArray[i] < minDiasSemana) {
+                if (numeroSemanasArray[i] !== 100) {
                     return i;
                 }
             }
         }
         return null;
         
+    }
+
+    function validarSemanaExamenes(){
+        return segNumSemana.value == 0;
+    }
+
+    function validarFinPeriodo(fechaSeguimiento){
+        return fechaSeguimiento > new Date(periodoFin);
+    }
+
+    function validarCamposVacios() {
+        return porcentajeIdealInput.value == 0 && porcentajeRealInput.value == 0;
     }
 
 </script>

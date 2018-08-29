@@ -1,8 +1,10 @@
 from django.urls import path, re_path
 from django.contrib.auth.decorators import permission_required
 from apps.universidad.views import homeEstudiante, PerfilViewEstudiante, change_password_estudiante, PerfilUpdateEstudianteView
-from apps.seguimiento.views import SeguimientoListView, SeguimientoUpdateView, SeguimientoDeleteView, IndexEstudianteView
+from apps.seguimiento.views import SeguimientoListView, SeguimientoUpdateView, SeguimientoDeleteView, IndexEstudianteView, GeneratePdfEstudiante, MyPDFView
 from apps.usuario.views import ListaMensajesEstudianteView
+
+from wkhtmltopdf.views import PDFTemplateView
 
 app_name = 'estudiante'
 
@@ -19,4 +21,7 @@ urlpatterns = [
 
     re_path('^mensajes/$', permission_required('universidad.Estudiante')(ListaMensajesEstudianteView.as_view()), name='mensajes'),
     
+    re_path('^reporte/$', permission_required('universidad.Estudiante')(GeneratePdfEstudiante.as_view()), name='reporte'),
+    re_path('^report/$', permission_required('universidad.Estudiante')(MyPDFView.as_view()), name='report'),
+
 ]
