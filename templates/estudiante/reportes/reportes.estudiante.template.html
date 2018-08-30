@@ -1,0 +1,28 @@
+{% extends 'base/base.app.estudiante.template.html'%}
+{% load staticfiles %}
+{% block title %}
+    ESTUDIANTE - REPORTES
+{% endblock title %}
+
+{% block modal %}
+{% endblock modal %}
+
+{% block reporte-activo %}
+    active-menu-item
+{% endblock reporte-activo %}
+
+{% block content %}
+
+
+<div class="content-reportes">
+    <p class="semana-reporte-title">SOLO SE MOSTRARÁN LAS SEMANAS CULMINADAS </p>
+    {% for semana in semanas_list %}
+        <a class="semana-content" href="{% url 'estudiante:report' semana%}" target="blank">
+            <i class="far fa-file-pdf icon-pdf"></i>
+            <p class="semana-class">SEMANA {{semana}}</p>
+        </a>
+    {% endfor %}
+    
+</div>
+
+{% endblock content %}

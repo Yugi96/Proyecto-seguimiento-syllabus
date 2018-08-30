@@ -10,7 +10,7 @@ from apps.universidad.views import homeCoordinador, UploadFileView, UpdateDocent
                                     SeguimientoListView, SeguimientoDeleteView, SeguimientoUpdateView, PerfilView, change_password, \
                                     PerfilUpdateView, IndexView, CarreraUpdateView
 
-from apps.seguimiento.views import CursosHorariosListView, HorarioCreateView, HorarioDeleteView, GeneratePdf
+from apps.seguimiento.views import CursosHorariosListView, HorarioCreateView, HorarioDeleteView
 
 from apps.usuario.views import ListaMensajesView
 
@@ -65,6 +65,6 @@ urlpatterns = [
     re_path('^historial/asignaturas/$', permission_required('universidad.Coordinador')(HistorialAsignaturaView.as_view()), name='historial_asignatura'),
     re_path('^historial/asignaturas/editar/(?P<pk>.+?)/', permission_required('universidad.Coordinador')(HistorialAsignaturaUpdateView.as_view()), name='historial_asignaturas_editar'),
 
-    re_path('^reporte/$', permission_required('universidad.Coordinador')(GeneratePdf.as_view()), name='reporte'),
+    # re_path('^reporte/$', permission_required('universidad.Coordinador')(GeneratePdf.as_view()), name='reporte'),
 
 ]

@@ -141,6 +141,5 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 WKHTMLTOPDF_CMD = 'C:/Program Files/wkhtmltopdf/bin/wkhtmltopdf.exe'
 WKHTMLTOPDF_CMD_OPTIONS = {
     'quiet': True,
-    'disable-javascript': False,
     'orientation': 'landscape'
 }

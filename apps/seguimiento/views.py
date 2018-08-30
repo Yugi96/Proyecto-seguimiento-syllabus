@@ -16,8 +16,7 @@ from .models import Seguimiento, Horario
 from apps.universidad.models import Asignatura_Docente, Curso, Alumno, Asignatura, Semestre, Periodo, Docente
 from .forms import SeguimientoForm, HorarioForm, SeguimientoUpdateForm
 
-
-from .utils import render_to_pdf
+from wkhtmltopdf.views import PDFTemplateResponse
 
 # Create your views here.
 
@@ -249,67 +248,80 @@ class HorarioDeleteView(FormMessageMixin, DeleteView):
             
         return HttpResponseRedirect(reverse('coordinador:periodos_curso_horario', kwargs={'pk': curso_id}))
 
-class GeneratePdf(ListView):
-    def get(self, request, *args, **kwargs):
-        seguimiento = Seguimiento.objects.all().order_by('seg_semana', 'seg_fecha')
-        pdf = render_to_pdf('reportes/reporte.coordinador.html', {'seguimiento_list':seguimiento})
-        return HttpResponse(pdf, content_type='application/pdf')
+# class GeneratePdf(ListView):
+#     def get(self, request, *args, **kwargs):
+#         seguimiento = Seguimiento.objects.all().order_by('seg_semana', 'seg_fecha')
+#         pdf = render_to_pdf('reportes/reporte.coordinador.html', {'seguimiento_list':seguimiento})
+#         return HttpResponse(pdf, content_type='application/pdf')
 
-class GeneratePdfEstudiante(ListView):
-    def get(self, request, *args, **kwargs):
+class ReportesView(ListView):
+    model = Seguimiento
+    template_name = 'estudiante/reportes/reportes.estudiante.template.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(ReportesView, self).get_context_data(**kwargs)
         alumno = Alumno.objects.get(usuario_id=self.request.user.id)
         curso = Curso.objects.get(cur_estado=True, alumno_id=alumno.id, cur_eliminado=False)
-        seguimiento = Seguimiento.objects.filter(
-            semestre_id=curso.semestre_id, 
-            periodo_id=curso.periodo_id, 
-            seg_estado=True,
-            seg_semana="1",
-            seg_paralelo = curso.cur_paralelo
-        ).order_by('seg_semana', 'seg_fecha')
-        horario = Horario.objects.filter(
+
+        asignaturas = Horario.objects.filter(
             hor_estado=True, 
             semestre_id=curso.semestre_id, 
             periodo_id=curso.periodo_id, 
             hor_paralelo=curso.cur_paralelo,
             asignatura__carrera=curso.alumno.carrera_id
-        ).distinct('asignatura')
-        pdf = render_to_pdf('reportes/reporte.estudiante.html', {
-            'seguimiento_list':seguimiento,
-            'curso_list':curso,
-            'alumno_list':alumno,
-            'horario_list':horario
-            })
-        return HttpResponse(pdf, content_type='application/pdf')
+        ).values_list('asignatura__asi_nombre').distinct('asignatura')
 
-from wkhtmltopdf.views import PDFTemplateResponse
+        semanas = Seguimiento.objects.filter(
+            semestre_id=curso.semestre_id, 
+            periodo_id=curso.periodo_id, 
+            seg_estado=True, 
+            seg_paralelo = curso.cur_paralelo
+        ).values_list('seg_semana').order_by('seg_semana').distinct('seg_semana')
+
+        seguimiento = Seguimiento.objects.filter(
+            semestre_id=curso.semestre_id, 
+            periodo_id=curso.periodo_id, 
+            seg_estado=True, 
+            seg_paralelo = curso.cur_paralelo
+        ).order_by('seg_semana', 'seg_fecha')
+
+        semanasValidas = []
+        for semana in semanas:
+            porcentajeIdealTotal = 0.0
+
+            for porcentajeIdeal in seguimiento:
+                if(semana[0] == porcentajeIdeal.seg_semana):
+                    porcentajeIdealTotal = porcentajeIdealTotal + porcentajeIdeal.seg_porcentaje_ideal
+            if(porcentajeIdealTotal/len(asignaturas) == 100):
+                semanasValidas.append(semana[0])
+
+        context['semanas_list'] = semanasValidas
+        # context['seguimiento_list'] = seguimiento
+        return context
 
 class MyPDFView(View):
     template='reportes/reporte.estudiante.html'
     
-    def get(self, request):
+    def get(self, request, seg_semana):
         alumno = Alumno.objects.get(usuario_id=self.request.user.id)
         curso = Curso.objects.get(cur_estado=True, alumno_id=alumno.id, cur_eliminado=False)
         seguimiento = Seguimiento.objects.filter(
             semestre_id=curso.semestre_id, 
             periodo_id=curso.periodo_id, 
             seg_estado=True,
-            seg_semana="1",
+            seg_semana=seg_semana,
             seg_paralelo = curso.cur_paralelo
-        ).order_by('seg_semana', 'seg_fecha')
+        ).order_by('seg_fecha', 'asignatura__asi_nombre')
         response = PDFTemplateResponse(request=request,
                                        template=self.template,
-                                       filename="hello.pdf",
+                                       filename="reporte-semana"+ seg_semana +".pdf",
                                        context= {
                                         'seguimiento_list':seguimiento,
                                         'curso_list':curso,
                                         'alumno_list':alumno,
                                         },
-                                       show_content_in_browser=True,
-                                       cmd_options={'margin-top': 50,
-                                        'margin-left': 25,
-                                        'margin-right': 25,
-                                        'margin-bottom': 30,
-                                       "zoom":1,
+                                        show_content_in_browser=True,
+                                       cmd_options={
                                        "viewport-size" :"100 x 100",
                                        'javascript-delay':3000,
                                        "no-stop-slow-scripts":True,},

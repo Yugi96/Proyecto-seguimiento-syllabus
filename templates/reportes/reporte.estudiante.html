@@ -5,12 +5,31 @@
         <title>Title</title>
         <style type="text/css">
             
+            html {
+                height: auto;
+              }
+            
+              body {
+                height: auto;
+                padding-top: 230px;
+                padding-bottom: 100px;
+                padding-left: 80px;
+                padding-right: 80px;
+                background-image: url('C:/Users/Edinson/Documents/PROGRAMACION VI - PYTHON/PROYECTO/seguimiento-proyecto/static/img/bg-reporte-estudiante.jpg');
+                background-size: cover;
+                background-repeat: no-repeat;
+              }
+
             body {
                 font-family: "Arial";
                 font-weight: 200;
-                font-size: 10px;
+                font-size: 13px;
             }
             
+            th {
+                font-weight: normal;
+            }
+
             table {
                 border-collapse:collapse;
             }
@@ -18,8 +37,13 @@
             table.encabezado {
                 font-family: "Times New Roman";
                 font-weight: 200;
-                font-size: 11px;
                 margin-bottom: 5px;
+                font-size: 18px;
+                margin-bottom: 20px;
+            }
+
+            table.encabezado th {
+                font-weight: bold;
             }
 
             .text-al-left {
@@ -46,6 +70,44 @@
                 padding-right: 30px;
             }
 
+            th.w-20 {
+                padding: 30px 10px;
+            }
+
+            td.w-20 {
+                padding: 30px 10px;
+            }
+
+            th.w-20.with {
+                width: 17%;
+            }
+
+            p{
+                line-height: 1;
+                padding: 0;
+                margin: 0;
+            }
+
+            p.p-tableseguimiento{
+                padding: 30px 0;
+            }
+            td.p-lr {
+                padding-right: 10px;
+                padding-left: 10px;
+            }
+
+            .firma-content {
+                padding-top: 70px;
+                width: 30%;
+                font-size: 15px;
+                text-align: center;
+            }
+
+            .firma {
+                border-top: 1px solid #000;
+                padding-top: 15px;
+            }
+
             
         </style>
     </head>
@@ -64,11 +126,18 @@
         </table>
         <table id="table-seguimiento">
             <tr id="asingnatura-cell">
-                <th rowspan="2" class="th">MES: MAYO 30-04-2018 AL 04-05-2018 FECHA</th>
+                <th rowspan="2" class="th w-20 with">
+                    <p id="mes-semana"></p>
+                    <p class="p-tableseguimiento" id="inicio-fin"></p>
+                    <p >FECHA</p>
+                </th>
             </tr>
             <tr id="porcentajes-cell">
             </tr>
         </table>
+        <div class="firma-content">
+            <p class="firma">FIRMA DE ESTUDIANTE</p>
+        </div>
         <div id="ejemplo"></div>
         <script>
             var diasSemana = [];
@@ -77,6 +146,7 @@
             var seguimientoCompleto = [];
             var asignaturaCellContent = document.getElementById('asingnatura-cell');
             var porcentajeCellContent = document.getElementById('porcentajes-cell');
+            var avancePorcentual = document.getElementById('avance-porcentual');
 
             {% for seguimiento in seguimiento_list %}
                 seguimientoCompleto.push([
@@ -101,6 +171,12 @@
                 }
             {% endfor %}
 
+            document.getElementById('inicio-fin').textContent = diasSemana[0] +" AL "+ diasSemana[diasSemana.length-1];
+            
+            obtenerMes();
+
+            
+
             for(var i=0;i<asigaturas.length;i++) {
                 asignaturaCellContent.appendChild(crearAsignaturaCell(asigaturas[i]))
             }
@@ -109,42 +185,137 @@
                 porcentajeCellContent.appendChild(crearPorcentajeCell('Porcentaje real de avance'));
                 porcentajeCellContent.appendChild(crearPorcentajeCell('Porcentaje ideal de avance'));
             }
-
             for(var i=0;i<diasSemana.length;i++) {
                 var row = document.createElement('tr');
                 row.appendChild(crearFechaSemana(diasSemana[i]));
                 for(var k=0;k<asigaturas.length;k++) {
-                    row.appendChild(crearPorcentajes("", asigaturas[k], diasSemana[i]));
-                    row.appendChild(crearPorcentajes(""));
-                }
-                tableSeguimientoContent.appendChild(row);
-            }
+                    
+                    var estaDia = true;
+                    for(var j=0; j<seguimientoCompleto.length;j++) {
+                        if(seguimientoCompleto[j][4] == asigaturas[k]) {
+                            if(seguimientoCompleto[j][3] == diasSemana[i]) {
+                                row.appendChild(crearPorcentajes(seguimientoCompleto[j][0].replace(",", ".")));
+                                row.appendChild(crearPorcentajes(seguimientoCompleto[j][1].replace(",", ".")));
+                                estaDia = true;
+                                break
+                            } else { 
+                                estaDia = false;
+                            }
+                        }
+                    }
 
-            for(var i=0;i<diasSemana.length;i++) {
-                var row = document.createElement('tr');
-                row.appendChild(crearFechaSemana(diasSemana[i]));
-                for(var j=0; j<seguimientoCompleto.length;j++) {
-                    document.getElementById('ejemplo').innerHTML += seguimientoCompleto[j][3] + " - ";
-                    document.getElementById('ejemplo').innerHTML += seguimientoCompleto[j][4] + "</br>";
-                    document.getElementById('ejemplo').innerHTML += "-------"+diasSemana[i] + "</br>";
-                    if(seguimientoCompleto[j][3] == diasSemana[i]) {
-                        row.appendChild(crearPorcentajes(seguimientoCompleto[j][0]));
-                        row.appendChild(crearPorcentajes(seguimientoCompleto[j][1]));
+                    if(!estaDia) {
+                        row.appendChild(crearPorcentajes(""));
+                        row.appendChild(crearPorcentajes(""));
                     } 
                 }
                 tableSeguimientoContent.appendChild(row);
             }
 
+            var rowAvancePorcentual = document.createElement('tr');
+            rowAvancePorcentual.appendChild(crearAvancePorcentual('AVANCE PORCENTUAL'));
+
+            for(var i=1;i<tableSeguimientoContent.children[2].children.length;i++){
+                var sumaPorcentual = 0.0;
+                for(var k=1;k<tableSeguimientoContent.children.length;k++) {
+                    var porcentaje = tableSeguimientoContent.children[k].children[i].textContent.split(' ').slice(tableSeguimientoContent.children[k].children[i].textContent.split(' ')-1,1)
+                    if(porcentaje == '') {
+                        porcentaje = 0;
+                    }
+                    sumaPorcentual += parseFloat(porcentaje)
+                }
+                rowAvancePorcentual.appendChild(crearAvancePorcentual(sumaPorcentual  + " %"));
+            }
             
-            
-            
+            tableSeguimientoContent.appendChild(rowAvancePorcentual);
+
+            var rowObservaciones = document.createElement('tr');
+            rowObservaciones.appendChild(crearObservacionLabel());
+
+            for(var i=0;i<asigaturas.length;i++) {
+                var observaciones = '';
+                for(var j=0; j<seguimientoCompleto.length;j++) {
+                    if(seguimientoCompleto[j][4] == asigaturas[i]) {
+                        if(seguimientoCompleto[j][2] != "") {
+                            observaciones += seguimientoCompleto[j][2] + "<br>";
+                        }
+                    }
+                }
+                rowObservaciones.appendChild(crearObservacion(observaciones));
+            }
+
+            tableSeguimientoContent.appendChild(rowObservaciones);
 
             
             
-            function crearPorcentajes(porcentaje, asignatura, fecha) {
+            
+            function obtenerMes(){
+                var meses = {};
+                var mesSemana = "";
+                var listaMeses = [];
+                var aux = 0;
+                for(var i=0;i<diasSemana.length;i++){
+                    meses[diasSemana[i].split('/')[1]] = 0;
+                }
+
+                for(var i=0;i<diasSemana.length;i++){
+                    meses[diasSemana[i].split('/')[1]]++;
+                }
+
+                for(mes in meses){
+                    if(meses[mes] > aux) {
+                        aux = meses[mes];
+                    }
+                }
+
+                for(mes in meses){
+                    if(meses[mes] == aux) {
+                        mesSemana = mes;
+                    }
+                }
+                document.getElementById('mes-semana').textContent = "MES: "+ obtenerMesString(mesSemana)
+            }
+
+            function obtenerMesString(mes){
+                switch(mes) {
+                    case '01':
+                        return "ENERO"
+                    case '02':
+                        return "FEBRERO"
+                    case '03':
+                        return "MARZO"
+                    case '04':
+                        return "ABRIL"
+                    case '05':
+                        return "MAYO"
+                    case '06':
+                        return "JUNIO"
+                    case '07':
+                        return "JULIO"
+                    case '08':
+                        return "AGOSTO"
+                    case '09':
+                        return "SEPTIEMBRE"
+                    case '10':
+                        return "OCTUBRE"
+                    case '11':
+                        return "NOVIEMBRE"
+                    case '12':
+                        return "DICIEMBRE"
+                }
+            }
+
+            function crearAvancePorcentual(avanceSuma){
                 porcentajeItem = document.createElement('td');
                 porcentajeItem.setAttribute('class','td');
-                porcentajeItem.setAttribute('id', asignatura.replace(" ", ""));
+                porcentajeItem.textContent = avanceSuma;
+                return porcentajeItem;
+            }
+
+            
+            function crearPorcentajes(porcentaje) {
+                porcentajeItem = document.createElement('td');
+                porcentajeItem.setAttribute('class','td');
                 if(porcentaje == "") {
                     porcentajeItem.textContent = porcentaje;
                 } else {
@@ -162,7 +333,7 @@
 
             function crearAsignaturaCell(asignatura) {
                 asignaturaItem = document.createElement('th');
-                asignaturaItem.setAttribute('class','th');
+                asignaturaItem.setAttribute('class','th w-20');
                 asignaturaItem.setAttribute('colspan','2');
                 asignaturaItem.textContent = asignatura;
                 return asignaturaItem;
@@ -173,6 +344,21 @@
                 porcentajeCell.setAttribute('class','th');
                 porcentajeCell.textContent = text;
                 return porcentajeCell;
+            }
+
+            function crearObservacionLabel() {
+                item = document.createElement('td');
+                item.setAttribute('class','td w-20');
+                item.textContent = 'OBSERVACIONES';
+                return item;
+            }
+
+            function crearObservacion(texto) {
+                item = document.createElement('td');
+                item.setAttribute('class','td p-lr');
+                item.setAttribute('colspan','2');
+                item.innerHTML = texto;
+                return item;
             }
 
             function existeDia(dia) {
