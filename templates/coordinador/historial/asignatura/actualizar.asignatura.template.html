@@ -1,7 +1,7 @@
 {% extends 'base/base.app.coordinador.template.html'%}
 {% load staticfiles %}
 {% block title %}
-    COORDINADOR
+    HISTORIAL - ASIGNATURAS
 {% endblock title %}
 
 {% block historial-activo %}
@@ -34,7 +34,7 @@
                 <div class="modal-docente">
                     <div class="group-fila-cna">
                         <div class="group-campo campo-asi-codigo">
-                            <span class="label-campo">CODIGO</span>
+                            <span class="label-campo">CÓDIGO</span>
                             <span class="input-campo">{{ object.asi_codigo }}</span>
                         </div>
                         <div class="group-campo campo-asi-carrera">
@@ -53,7 +53,7 @@
                             <span class="input-campo">{{ object.asi_nombre }}</span>
                         </div>
                         <div class="group-campo campo-asi-num-creditos">
-                            <span class="label-campo">NUM. CREDITOS</span>
+                            <span class="label-campo">NÚM. CRÉDITOS</span>
                             <span class="input-campo">{{ object.asi_num_creditos }}</span>
                         </div>
                     </div>

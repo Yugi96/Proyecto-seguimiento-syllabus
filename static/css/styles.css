@@ -23,7 +23,7 @@ body {
 
 .sidebar{
     min-width: 250px;
-    max-width: 250px;
+    width: 250px;
     background: #3E4149;
     color: #fff;
     box-shadow: 15px 0px 15px 0px rgba(0,0,0,0.15);
@@ -1904,9 +1904,10 @@ body {
 .semana-content:hover {
     transform: scale(1.1);
     transition: .3s all ease;
+    text-decoration: none;
 }
 
-.semana-content:hover::before {
+.semana-content::before {
     position: absolute;
     content: 'DESCARGAR';
     width: 100%;
@@ -1918,6 +1919,12 @@ body {
     align-items: center;
     justify-content: center;
     background: #F25D5D;
+    opacity: 0;
+    transition: .1s ease all;
+}
+
+.semana-content:hover::before {
+    opacity: 1;
 }
 
 .semana-class {
@@ -1942,4 +1949,55 @@ body {
     width: 100%;
     text-align: center;
     font-weight: bold;
+    
 }
+
+#open-hide-btn-query {
+    display: none;
+}
+
+/* Media queries
+@media (max-width: 320px) { 
+    .sidebar {
+        position: fixed;
+        top: 0;
+        left: -100%;
+        transition: .3s ease all;
+        width: 100%;
+        z-index: 200;
+        height: 100%;
+        font-size: 13px;
+    }
+
+    .menu-item-lateral {
+        justify-content: center;
+        padding-left: 0;
+    }
+
+    li > .menu-item-lateral > i.fa{
+        margin: 0;
+        padding: 0;
+    }
+
+    .sidebar-user {
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
+
+    .imagecood {
+        width: 20%;
+    }
+
+    #open-hide-btn {
+        display: none;
+    }
+
+    #open-hide-btn-query {
+        display: block;
+    }
+    
+    .query-sidebar {
+        left: 0;
+        transition: .3s ease all;
+    }
+} */

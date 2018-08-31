@@ -24,7 +24,7 @@ from .forms import CarreraForm, CarreraUpdateForm
 # Import Asignaturas
 from .forms import AsignaturaForm, AsignaturaUpdateForm
 # Import Estudiante Curso
-from .forms import AlumnoForm, CursoForm, UserForm, UserUpdateForm, AlumnoUpdateForm, CursoUpdateForm, CursoRemplazarForm
+from .forms import AlumnoForm, CursoForm, UserForm, UserUpdateForm, UserUpdatePerfilEstudianteForm,UserUpdatePerfilCoordinadorForm, AlumnoUpdateForm, CursoUpdateForm, CursoRemplazarForm
 # Import Periodo
 from .forms import PeriodoForm, TerminarPeriodoForm
 # Import Asignatura Docente
@@ -74,7 +74,7 @@ class UploadFileView(FormMessageMixin, CreateView):
     form_class = DocenteForm
     success_url = reverse_lazy('coordinador:docentes')
     template_name = 'coordinador/docente/index.docente.template.html'
-    form_valid_message = 'DOCENTE AGREGADO CON EXITO'
+    form_valid_message = 'DOCENTE AGREGADO CON ÉXITO'
     form_invalid_message = "ERROR: EL NÚMERO DE CÉDULA YA EXISTE"
 
     def get_context_data(self, **kwargs):
@@ -86,14 +86,14 @@ class UpdateDocente(FormMessageMixin, UpdateView):
     form_class = DocenteUpdateForm
     success_url = reverse_lazy('coordinador:docentes')
     template_name = 'coordinador/docente/actualizar.docente.template.html'
-    form_valid_message = 'DOCENTE ACTUALIZADO CON EXITO'
+    form_valid_message = 'DOCENTE ACTUALIZADO CON ÉXITO'
     form_invalid_message = "ERROR: ERROR AL ACTUALIZAR EL DOCENTE"
 
 class UploadFileViewAsignatura(FormMessageMixin, CreateView):
     form_class = AsignaturaForm
     success_url = reverse_lazy('coordinador:asignaturas')
     template_name = 'coordinador/asignatura/index.asignatura.is.template.html'
-    form_valid_message = 'ASIGNATURA AGREGADA CON EXITO'
+    form_valid_message = 'ASIGNATURA AGREGADA CON ÉXITO'
     form_invalid_message = "ERROR: LA ASIGNATURA YA EXISTE"
 
     def get_context_data(self, **kwargs):
@@ -105,14 +105,14 @@ class UpdateAsignatura(FormMessageMixin, UpdateView):
     form_class = AsignaturaUpdateForm
     success_url = reverse_lazy('coordinador:asignaturas')
     template_name = 'coordinador/asignatura/actualizar.asignatura.template.html'
-    form_valid_message = 'ASIGNATURA ACTUALIZADO CON EXITO'
+    form_valid_message = 'ASIGNATURA ACTUALIZADO CON ÉXITO'
     form_invalid_message = "ERROR: ERROR AL ACTUALIZAR ASIGNATURA"
 
 class PeriodoView(FormMessageMixin, CreateView):
     form_class = PeriodoForm
     success_url = reverse_lazy('coordinador:periodos')
     template_name = 'coordinador/periodo/index.periodo.template.html'
-    form_valid_message = 'PERIODO AGREGADO CON EXITO'
+    form_valid_message = 'PERIODO AGREGADO CON ÉXITO'
     
     def get_context_data(self, **kwargs):
         context = super(PeriodoView, self).get_context_data(**kwargs)
@@ -147,7 +147,7 @@ class PeriodoUpdateView(UpdateView):
     form_class = PeriodoForm
     success_url = reverse_lazy('coordinador:periodos')
     template_name = 'coordinador/periodo/actualizar.periodo.template.html'
-    form_valid_message = 'PERIODO ACTUALIZADO CON EXITO'
+    form_valid_message = 'PERIODO ACTUALIZADO CON ÉXITO'
     
     def post(self, request, *args, **kwargs):
         self.object = self.get_object
@@ -204,22 +204,32 @@ class AsignaturaDocenteView(FormMessageMixin, CreateView):
     form_class = AsignaturaDocenteForm
     success_url = reverse_lazy('coordinador:periodos')
     template_name = 'coordinador/periodo/agregar_docente.periodo.template.html'
-    form_valid_message = 'ASIGNATURAS AGREGADAS CON EXITO'
+    form_valid_message = 'ASIGNATURAS AGREGADAS CON ÉXITO'
     form_invalid_message = "ERROR: NO SE PUDO AGREGAR EL REGISTRO"
+
+class HistorialAsignaturaDocenteView(FormMessageMixin, ListView):
+    model = Asignatura_Docente
+    template_name = 'coordinador/historial/periodo/agregar_docente.periodo.template.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(HistorialAsignaturaDocenteView, self).get_context_data(**kwargs)
+        pk = self.kwargs.get('pk', 0)
+        context['docente_asignatura_list'] = Asignatura_Docente.objects.get(id=pk)
+        return context
 
 class AsignaturaDocenteUpdateView(FormMessageMixin, UpdateView):
     model = Asignatura_Docente
     form_class = AsignaturaDocenteUpdateForm
     success_url = reverse_lazy('coordinador:periodos')
     template_name = 'coordinador/periodo/editar_docente.periodo.template.html'
-    form_valid_message = 'ASIGNATURAS ACTUALIZADA CON EXITO'
+    form_valid_message = 'ASIGNATURAS ACTUALIZADA CON ÉXITO'
     form_invalid_message = "ERROR: NO SE PUDO ACTUALIZAR EL REGISTRO"
 
 class CursoView(FormMessageMixin, CreateView):
     form_class = CursoForm
     success_url = reverse_lazy('coordinador:periodos')
     template_name = 'coordinador/periodo/agregar_curso.periodo.template.html'
-    form_valid_message = 'ESTUDIANTE AGREGADO CON EXITO'
+    form_valid_message = 'ESTUDIANTE AGREGADO CON ÉXITO'
     form_invalid_message = "ERROR: YA EXISTE UN ESTUDIANTE EN EL CURSO"
     
     def post(self, request, *args, **kwargs):
@@ -246,7 +256,7 @@ class CursoUpdateView(FormMessageMixin, UpdateView):
     form_class = CursoUpdateForm
     success_url = reverse_lazy('coordinador:periodos')
     template_name = 'coordinador/periodo/editar_curso.periodo.template.html'
-    form_valid_message = 'ESTUDIANTE ACTUALIZADA CON EXITO'
+    form_valid_message = 'ESTUDIANTE ACTUALIZADA CON ÉXITO'
     form_invalid_message = "ERROR: YA EXISTE UN ESTUDIANTE EN EL CURSO"
 
     def post(self, request, *args, **kwargs):
@@ -277,7 +287,7 @@ class CursoRemplazarView(FormMessageMixin, UpdateView):
     form_class = CursoRemplazarForm
     success_url = reverse_lazy('coordinador:periodos')
     template_name = 'coordinador/periodo/remplazar_curso.periodo.template.html'
-    form_valid_message = 'ESTUDIANTE REMPLAZADO CON EXITO'
+    form_valid_message = 'ESTUDIANTE REMPLAZADO CON ÉXITO'
     form_invalid_message = "ERROR: NO SE PUEDE REMPLAZAR EL ESTUDIANTE EN EL CURSO"
 
     def get_form(self, form_class=None, *args, **kwargs):
@@ -321,7 +331,7 @@ class EstudianteView(FormMessageMixin, CreateView):
     form_class = AlumnoForm
     second_form_class = UserForm
     template_name = 'coordinador/estudiante/index.estudiante.template.html'
-    form_valid_message = 'ESTUDIANTE INGRESADO CON EXITO'
+    form_valid_message = 'ESTUDIANTE INGRESADO CON ÉXITO'
     form_invalid_message = "ERROR: NO SE PUDO INGRESAR EL ESTUDIANTE"
     success_url = reverse_lazy('coordinador:estudiantes')
 
@@ -358,7 +368,7 @@ class EstudianteUpdateView(FormMessageMixin, UpdateView):
     template_name = 'coordinador/estudiante/actualizar.estudiante.template.html'
     form_class = AlumnoUpdateForm
     second_form_class = UserUpdateForm
-    form_valid_message = 'ESTUDIANTE ACTUALIZADO CON EXITO'
+    form_valid_message = 'ESTUDIANTE ACTUALIZADO CON ÉXITO'
     form_invalid_message = "ERROR: NO SE PUDO ACTUALIZAR EL ESTUDIANTE"
     success_url = reverse_lazy('coordinador:estudiantes')
 
@@ -406,7 +416,7 @@ class HistorialEstudianteUpdateView(FormMessageMixin, UpdateView):
     model = Alumno
     template_name = 'coordinador/historial/estudiante/actualizar.estudiante.template.html'
     form_class = HistorialAlumnoUpdateForm
-    form_valid_message = 'ESTUDIANTE ACTUALIZADO CON EXITO'
+    form_valid_message = 'ESTUDIANTE ACTUALIZADO CON ÉXITO'
     form_invalid_message = "ERROR: NO SE PUDO ACTUALIZAR EL ESTUDIANTE"
     success_url = reverse_lazy('coordinador:estudiantes')
 
@@ -422,7 +432,7 @@ class HistorialDocenteUpdateView(FormMessageMixin, UpdateView):
     model = Docente
     template_name = 'coordinador/historial/docente/actualizar.docente.template.html'
     form_class = HistorialDocenteUpdateForm
-    form_valid_message = 'DOCENTE ACTUALIZADO CON EXITO'
+    form_valid_message = 'DOCENTE ACTUALIZADO CON ÉXITO'
     form_invalid_message = "ERROR: NO SE PUDO ACTUALIZAR EL DOCENTE"
     success_url = reverse_lazy('coordinador:docentes')
 
@@ -434,11 +444,33 @@ class HistorialAsignaturaView(ListView):
         kwargs['object_list'] = Asignatura.objects.filter(asi_estado=False).order_by('carrera','semestre')
         return super(HistorialAsignaturaView, self).get_context_data(**kwargs)
 
+class HistorialPeriodosView(ListView):
+    model = Periodo
+    template_name = 'coordinador/historial/periodo/index.periodos.template.html'
+
+    def get_context_data(self, **kwargs):
+        kwargs['object_list'] = Periodo.objects.filter(per_estado=False).order_by('per_inicio')
+        return super(HistorialPeriodosView, self).get_context_data(**kwargs)
+
+class HistorialPeriodoDetalleView(ListView):
+    model = Periodo
+    template_name = 'coordinador/historial/periodo/detalle.periodo.template.html'
+    
+    def get_context_data(self, **kwargs):
+        context = super(HistorialPeriodoDetalleView, self).get_context_data(**kwargs)
+        pk = self.kwargs.get('pk', 0)
+        context['periodos_list'] = Periodo.objects.filter(id=pk)
+        if len(context['periodos_list']) != 0:
+            context['cursos_list'] = Curso.objects.filter(cur_eliminado=False, periodo_id = pk ).order_by('alumno')
+            context['docentes_asingaturas_list'] = Asignatura_Docente.objects.filter(asi_doc_eliminado=False, periodo_id = pk ).order_by('docente')
+        return context
+
+
 class HistorialAsignaturaUpdateView(FormMessageMixin, UpdateView):
     model = Asignatura
     template_name = 'coordinador/historial/asignatura/actualizar.asignatura.template.html'
     form_class = HistorialAsignaturaUpdateForm
-    form_valid_message = 'ASIGNATURA ACTUALIZADO CON EXITO'
+    form_valid_message = 'ASIGNATURA ACTUALIZADO CON ÉXITO'
     form_invalid_message = "ERROR: NO SE PUDO ACTUALIZAR EL DOCENTE"
     success_url = reverse_lazy('coordinador:asignaturas')
 
@@ -446,7 +478,7 @@ class IndexView(FormMessageMixin, CreateView):
     template_name = 'coordinador/index.coordinador.template.html'
     form_class = CarreraForm
     success_url = reverse_lazy('coordinador:homeCoordinador')
-    form_valid_message = 'CARRERA AGREGADA CON EXITO'
+    form_valid_message = 'CARRERA AGREGADA CON ÉXITO'
     form_invalid_message = 'ERROR: CARRERA EXISTENTE'
     
     def get_context_data(self, **kwargs):
@@ -475,14 +507,14 @@ class CarreraUpdateView(FormMessageMixin, UpdateView):
     form_class = CarreraUpdateForm
     success_url = reverse_lazy('coordinador:homeCoordinador')
     template_name = 'coordinador/editar_carrera.coordinador.template.html'
-    form_valid_message = 'CARRERA ACTUALIZADA CON EXITO'
+    form_valid_message = 'CARRERA ACTUALIZADA CON ÉXITO'
     form_invalid_message = "ERROR: ERROR AL ACTUALIZAR LA CARRERA"
 
 class SeguimientoListView(FormMessageMixin, CreateView):
     form_class = SeguimientoForm
     success_url = reverse_lazy('coordinador:periodos_curso_seguimiento')
     template_name = 'coordinador/periodo/seguimiento/index.seguimiento.template.html'
-    form_valid_message = 'FECHA REGISTRADA CON EXITO'
+    form_valid_message = 'FECHA REGISTRADA CON ÉXITO'
     form_invalid_message = 'ERROR: NO SE PUEDE AGREGAR EL REGISTRO'
     
     def get_context_data(self, **kwargs):
@@ -513,66 +545,6 @@ class SeguimientoListView(FormMessageMixin, CreateView):
         context['seguimiento_list'] = seguimiento
         return context
     
-    def post(self, request, *args, **kwargs):
-        try:
-            self.object = self.get_object
-            form = self.form_class(request.POST)
-            semestre = Semestre.objects.get(sem_nombre=request.POST['seg_semestre'])
-            periodo = Periodo.objects.get(per_nombre=request.POST['seg_periodo'])
-            asignatura = Asignatura.objects.get(asi_nombre=request.POST['seg_asignatura'])
-            nombres_apellidos_docente = request.POST['seg_docente'].split(" ")
-            nombres_docente = nombres_apellidos_docente[0] + " " +nombres_apellidos_docente[1]
-            apellidos_docente = nombres_apellidos_docente[2] + " " +nombres_apellidos_docente[3]
-            docente = Docente.objects.get(doc_nombres=nombres_docente, doc_apellidos=apellidos_docente)
-            if form.is_valid():
-                seguimiento = form.save(commit=False)
-                seguimiento.periodo = periodo
-                seguimiento.semestre = semestre
-                seguimiento.asignatura = asignatura
-                seguimiento.docente = docente
-                seguimiento.seg_paralelo = request.POST['seg_paralelo']
-                seguimiento.save()
-                return self.form_valid(form, **kwargs)
-            else:
-                return self.form_invalid(form, "ERROR: FECHA YA EXISTENTE")
-        except IntegrityError as e:
-            return self.form_invalid(form, "ERROR: FECHA YA EXISTENTE")
-    
-    def form_invalid(self, form, form_invalid_message):
-        messages.error(self.request, form_invalid_message)
-        return super(SeguimientoListView, self).form_invalid(form)
-
-class SeguimientoDeleteView(FormMessageMixin, DeleteView):
-    model = Seguimiento
-    success_url = reverse_lazy('coordinador:periodos_curso_seguimiento')
-    template_name = 'coordinador/periodo/seguimiento/eliminar.seguimiento.template.html'
-
-class SeguimientoUpdateView(FormMessageMixin ,UpdateView):
-    model = Seguimiento
-    form_class = SeguimientoForm
-    success_url = reverse_lazy('coordinador:periodos_curso_seguimiento')
-    template_name = 'coordinador/periodo/seguimiento/actualizar.seguimiento.template.html'
-    form_valid_message = 'REGISTRO ACTUALIZADO CON EXITO'
-    form_invalid_message = "ERROR: FECHA YA EXISTENTE"
-    
-    def post(self, request, *args, **kwargs):
-        try:
-            self.object = self.get_object
-            id_seguimiento = kwargs['pk']
-            seguimiento = self.model.objects.get(id=id_seguimiento)
-            form = self.form_class(request.POST, instance=seguimiento)
-            if form.is_valid():
-                form.save()
-                return self.form_valid(form)
-            else:
-                return self.form_invalid(form, "ERROR: FECHA YA EXISTENTE")
-        except IntegrityError as e:
-            return self.form_invalid(form, "ERROR: FECHA YA EXISTENTE")
-    
-    def form_invalid(self, form, form_invalid_message):
-        messages.error(self.request, form_invalid_message)
-        return super(SeguimientoUpdateView, self).form_invalid(form)
-
 class PerfilView(ListView):
     model = User
     template_name = 'coordinador/usuario/perfil.coordinador.template.html'
@@ -584,16 +556,16 @@ class PerfilViewEstudiante(ListView):
 class PerfilUpdateView(FormMessageMixin, UpdateView):
     model = User
     template_name = 'coordinador/usuario/actualizar_perfil.coordinador.template.html'
-    form_class = UserUpdateForm
-    form_valid_message = 'USUARIO ACTUALIZADO CON EXITO'
+    form_class = UserUpdatePerfilCoordinadorForm
+    form_valid_message = 'USUARIO ACTUALIZADO CON ÉXITO'
     form_invalid_message = "ERROR: NO SE PUDO ACTUALIZAR EL USUARIO"
     success_url = reverse_lazy('coordinador:perfil')
 
 class PerfilUpdateEstudianteView(FormMessageMixin, UpdateView):
     model = User
     template_name = 'estudiante/usuario/actualizar_perfil.estudiante.template.html'
-    form_class = UserUpdateForm
-    form_valid_message = 'USUARIO ACTUALIZADO CON EXITO'
+    form_class = UserUpdatePerfilEstudianteForm
+    form_valid_message = 'USUARIO ACTUALIZADO CON ÉXITO'
     form_invalid_message = "ERROR: NO SE PUDO ACTUALIZAR EL USUARIO"
     success_url = reverse_lazy('estudiante:perfil')
 
@@ -603,7 +575,7 @@ def change_password(request):
         if form.is_valid():
             user = form.save()
             update_session_auth_hash(request, user)  # Important!
-            messages.success(request, 'CONTRASEÑA ACTUALIZADA CON EXITO.')
+            messages.success(request, 'CONTRASEÑA ACTUALIZADA CON ÉXITO.')
             return redirect('coordinador:perfil')
         else:
             return render(request, 'coordinador/usuario/cambiar_password.coordinador.template.html', {
@@ -621,7 +593,7 @@ def change_password_estudiante(request):
         if form.is_valid():
             user = form.save()
             update_session_auth_hash(request, user)  # Important!
-            messages.success(request, 'CONTRASEÑA ACTUALIZADA CON EXITO.')
+            messages.success(request, 'CONTRASEÑA ACTUALIZADA CON ÉXITO.')
             return redirect('estudiante:perfil')
         else:
             return render(request, 'estudiante/usuario/cambiar_password.estudiante.template.html', {

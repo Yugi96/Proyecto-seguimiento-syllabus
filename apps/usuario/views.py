@@ -28,8 +28,8 @@ class ListaMensajesView(FormMessageMixin, CreateView):
     form_class = MensajeriaForm
     success_url = reverse_lazy('coordinador:mensajes')
     template_name = 'coordinador/mensajes.coordinador.template.html'
-    form_valid_message = 'MENSAJE ENVIADO CON EXITO'
-    form_invalid_message = "ERROR: NO SE PUEDO ENVIAR EL MENSAJE"
+    form_valid_message = 'MENSAJE ENVIADO CON ÉXITO'
+    form_invalid_message = "ERROR: NO SE PUDO ENVIAR EL MENSAJE"
 
     def get_context_data(self, **kwargs):
         context = super(ListaMensajesView, self).get_context_data(**kwargs)
@@ -80,8 +80,8 @@ class ListaMensajesEstudianteView(FormMessageMixin, CreateView):
     form_class = MensajeriaForm
     success_url = reverse_lazy('estudiante:mensajes')
     template_name = 'estudiante/mensajes.estudiante.template.html'
-    form_valid_message = 'MENSAJE ENVIADO CON EXITO'
-    form_invalid_message = "ERROR: NO SE PUEDO ENVIAR EL MENSAJE"
+    form_valid_message = 'MENSAJE ENVIADO CON ÉXITO'
+    form_invalid_message = "ERROR: NO SE PUDO ENVIAR EL MENSAJE"
 
     def get_context_data(self, **kwargs):
         context = super(ListaMensajesEstudianteView, self).get_context_data(**kwargs)

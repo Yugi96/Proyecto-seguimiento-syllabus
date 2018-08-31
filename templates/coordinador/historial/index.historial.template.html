@@ -1,7 +1,7 @@
 {% extends 'base/base.app.coordinador.template.html'%}
 {% load staticfiles %}
 {% block title %}
-    COORDINADOR
+    HISTORIAL
 {% endblock title %}
 
 {% block modal %}
@@ -14,7 +14,7 @@
 {% block content %}
 
 <div class="content-historial">
-    <a class="content-item-historial" href="{% url 'coordinador:historial_docente' %}">
+    <a class="content-item-historial" href="{% url 'coordinador:historial_periodos' %}">
         <div class="img-item-historial"><i class="fas fa-file-invoice"></i></div>
         <div class="title-item-historial"><span>PERIODOS</span></div>
     </a>

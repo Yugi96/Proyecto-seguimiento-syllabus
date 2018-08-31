@@ -1,12 +1,12 @@
 {% extends 'base/base.app.coordinador.template.html'%}
 {% load staticfiles %}
 {% block title %}
-    SEGUIMIENTO
+    HISTORIAL - SEGUIMIENTO
 {% endblock title %}
 
-{% block periodos-activo %}
+{% block historial-activo %}
     active-menu-item
-{% endblock periodos-activo %}
+{% endblock historial-activo %}
 
 {% block modal %}
 {% endblock modal %}
@@ -70,7 +70,7 @@
                                 <table class="table table-bordered" id="datos-{{ forloop.counter }}">
                                     <thead>
                                         <tr>
-                                        <th class="text-center" scope="col">NÚM <br> SEMANA</th>
+                                        <th class="text-center" scope="col">NÚM. <br> SEMANA</th>
                                         <th scope="col">FECHA</th>
                                         <th class="text-center" scope="col">PORCENTAJE <br> REAL</th>
                                         <th class="text-center" scope="col">PORCENTAJE <br> IDEAL</th>

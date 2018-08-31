@@ -39,7 +39,7 @@ class SeguimientoForm(forms.ModelForm):
                 'class' : 'input-campo observacion-seg',
                 'rows' : '2',
                 'id' : 'id-seg-observaciones',
-                'placeholder' : 'Escriba la observacion aqui...'
+                'placeholder' : 'Escriba la observacion aquí...'
             }),
             'seg_semana' : forms.TextInput(attrs={
                 'class' : 'input-campo', 
@@ -78,7 +78,7 @@ class SeguimientoUpdateForm(forms.ModelForm):
                 'class' : 'input-campo observacion-seg',
                 'rows' : '2',
                 'id' : 'id-seg-observaciones',
-                'placeholder' : 'Escriba la observacion aqui...'
+                'placeholder' : 'Escriba la observacion aquí...'
             }),
         }
 

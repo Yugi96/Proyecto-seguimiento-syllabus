@@ -1,7 +1,7 @@
 {% extends 'base/base.app.coordinador.template.html'%}
 {% load staticfiles %}
 {% block title %}
-    COORDINADOR
+COORDINADOR - PERFIL
 {% endblock title %}
 
 {% block perfil-activo %}
@@ -33,8 +33,8 @@
                 <div class="modal-docente">
                     <div class="group-fila-cna">
                         <div class="group-campo campo-cedula">
-                            <span class="label-campo">CÉDULA</span>
-                            <span class="input-campo">{{ user.username }}</span>
+                            <label for="{{ form.username.name }}" class="label-campo">{{ form.username.label }}</label>
+                            {{ form.username }}
                         </div>
                         <div class="group-campo campo-nombre-apellido">
                             <label for="{{ form.first_name.name }}" class="label-campo">{{ form.first_name.label }}</label>

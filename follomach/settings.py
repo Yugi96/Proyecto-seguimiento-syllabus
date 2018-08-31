@@ -80,7 +80,7 @@ WSGI_APPLICATION = 'follomach.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'dbseguimientopro',
+        'NAME': 'sylapp-db',
         'USER': 'postgres',
         'PASSWORD': 'junior',
         'HOST': 'localhost',

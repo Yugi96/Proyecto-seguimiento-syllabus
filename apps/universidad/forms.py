@@ -100,7 +100,7 @@ class DocenteUpdateForm(forms.ModelForm):
                 'title' : 'DAR DE BAJA',
                 'class' : 'campo-check',
                 'data-trigger' : 'focus',
-                'data-content' : 'AL DAR DE BAJA A UN DOCENTE, ESTE NO SE MOSTRARÁ EN LA LISTA PRINCIPAL. PUEDE ACCEDER A LOS DOCENTES INACTIVOS EN LA OPCIÓN HISTORIA DEL MENÚ LATERAL',
+                'data-content' : 'AL DAR DE BAJA A UN DOCENTE, ESTE NO SE MOSTRARÁ EN LA LISTA PRINCIPAL. PUEDE ACCEDER A LOS DOCENTES INACTIVOS EN LA OPCIÓN HISTORIAL DEL MENÚ LATERAL',
                 })
         }
 
@@ -125,7 +125,7 @@ class AsignaturaForm(forms.ModelForm):
             'carrera' : 'CARRERA',
             'semestre' : 'SEMESTRE',
             'asi_nombre' : 'NOMBRE',
-            'asi_num_creditos' : 'NUM. CREDITOS',
+            'asi_num_creditos' : 'NÚM. CRÉDITOS',
         }
 
         widgets = {
@@ -176,7 +176,7 @@ class AsignaturaUpdateForm(forms.ModelForm):
             'carrera' : 'CARRERA',
             'semestre' : 'SEMESTRE',
             'asi_nombre' : 'NOMBRE',
-            'asi_num_creditos' : 'NUM. CREDITOS',
+            'asi_num_creditos' : 'NÚM. CRÉDITOS',
             'asi_estado' : 'ESTADO',
         }
 
@@ -205,7 +205,7 @@ class AsignaturaUpdateForm(forms.ModelForm):
                 'title' : 'DAR DE BAJA',
                 'class' : 'campo-check',
                 'data-trigger' : 'focus',
-                'data-content' : 'AL DAR DE BAJA A UNA ASIGNATURA, ESTE NO SE MOSTRARÁ EN LA LISTA PRINCIPAL. PUEDE ACCEDER A LAS ASIGNATURAS INACTIVOS EN LA OPCIÓN HISTORIA DEL MENÚ LATERAL',
+                'data-content' : 'AL DAR DE BAJA A UNA ASIGNATURA, ESTE NO SE MOSTRARÁ EN LA LISTA PRINCIPAL. PUEDE ACCEDER A LAS ASIGNATURAS INACTIVOS EN LA OPCIÓN HISTORIAL DEL MENÚ LATERAL',
             }),
         }
 
@@ -385,7 +385,7 @@ class AlumnoUpdateForm(forms.ModelForm):
                 'title' : 'DAR DE BAJA',
                 'class' : 'campo-check',
                 'data-trigger' : 'focus',
-                'data-content' : 'AL DAR DE BAJA A UN ESTUDIANTE, ESTE NO SE MOSTRARÁ EN LA LISTA PRINCIPAL. PUEDE ACCEDER A LOS ESTUDIANTES INACTIVOS EN LA OPCIÓN HISTORIA DEL MENÚ LATERAL',
+                'data-content' : 'AL DAR DE BAJA A UN ESTUDIANTE, ESTE NO SE MOSTRARÁ EN LA LISTA PRINCIPAL. PUEDE ACCEDER A LOS ESTUDIANTES INACTIVOS EN LA OPCIÓN HISTORIAL DEL MENÚ LATERAL',
             }),
         }
 
@@ -515,7 +515,7 @@ class UserForm(forms.ModelForm):
         ]
 
         labels = {
-            'username' : 'CEDULA',
+            'username' : 'CÉDULA',
             'first_name' : 'NOMBRES',
             'last_name' : 'APELLIDOS',
             'email' : 'CORREO INSTITUCIONAL',
@@ -579,6 +579,73 @@ class UserUpdateForm(forms.ModelForm):
                 'onkeypress' : 'return soloLetras(event);',
                 'onkeyup' : 'convertirMayuscula(this);'
                 }),
+            'email' : forms.EmailInput(attrs={
+                'class' : 'input-campo', 
+                'id' : 'alu_correo'
+                }),
+        }
+
+class UserUpdatePerfilCoordinadorForm(forms.ModelForm):
+
+    class Meta:
+        model = User
+
+        fields = [
+            'username',
+            'first_name',
+            'last_name',
+            'email',
+        ]
+
+        labels = {
+            'username': 'CÉDULA',
+            'first_name' : 'NOMBRES',
+            'last_name' : 'APELLIDOS',
+            'email' : 'CORREO INSTITUCIONAL',
+        }
+
+        widgets = {
+            'username' : forms.TextInput(attrs={
+                'class' : 'input-campo', 
+                'id' : 'doc_cedula', 
+                'maxlength' : '10',
+                'minlength' : '10', 
+                'onkeypress' : 'return soloNumeros(event);',
+                'autocomplete' : 'off',
+                'required' : 'true',
+                }),
+            'first_name' : forms.TextInput(attrs={
+                'class' : 'input-campo', 
+                'id' : 'alu_nombres',
+                'onkeypress' : 'return soloLetras(event);',
+                'onkeyup' : 'convertirMayuscula(this);'
+                }),
+            'last_name' : forms.TextInput(attrs={
+                'class' : 'input-campo', 
+                'id' : 'alu_apellidos',
+                'onkeypress' : 'return soloLetras(event);',
+                'onkeyup' : 'convertirMayuscula(this);'
+                }),
+            'email' : forms.EmailInput(attrs={
+                'class' : 'input-campo', 
+                'id' : 'alu_correo'
+                }),
+        }
+
+class UserUpdatePerfilEstudianteForm(forms.ModelForm):
+
+    class Meta:
+        model = User
+
+        fields = [
+            'email',
+        ]
+
+        labels = {
+            'email' : 'CORREO INSTITUCIONAL',
+        }
+
+        widgets = {
             'email' : forms.EmailInput(attrs={
                 'class' : 'input-campo', 
                 'id' : 'alu_correo'
@@ -652,7 +719,7 @@ class CarreraForm(forms.ModelForm):
         ]
 
         labels = {
-            'car_codigo' : 'CODIGO',
+            'car_codigo' : 'CÓDIGO',
             'car_nombre' : 'NOMBRE DE LA CARRERA',
         }
 

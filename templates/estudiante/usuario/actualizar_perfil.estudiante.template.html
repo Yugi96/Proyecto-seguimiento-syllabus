@@ -1,7 +1,7 @@
 {% extends 'base/base.app.estudiante.template.html'%}
 {% load staticfiles %}
 {% block title %}
-    COORDINADOR
+ESTUDIANTE - PERFIL
 {% endblock title %}
 
 {% block perfil-activo %}
@@ -20,7 +20,7 @@
     {% endfor %}
     {% endif %}
     <div class="content-docentes-editar">
-        <form method="post">
+        <form method="post" class="w-100">
             {% csrf_token %}
             <div class="docentes-editar-top modal-header">
                 <h5 class="modal-title">EDITAR ESTUDIANTE</h5>
@@ -37,12 +37,12 @@
                             <span class="input-campo">{{ user.username }}</span>
                         </div>
                         <div class="group-campo campo-nombre-apellido">
-                            <label for="{{ form.first_name.name }}" class="label-campo">{{ form.first_name.label }}</label>
-                            {{ form.first_name }}
+                            <span class="label-campo">NOMBRES</span>
+                            <span class="input-campo">{{ user.first_name }}</span>
                         </div>
                         <div class="group-campo campo-nombre-apellido">
-                            <label for="{{ form.last_name.name }}" class="label-campo">{{ form.last_name.label }}</label>
-                            {{ form.last_name }}
+                            <span class="label-campo">APELLIDOS</span>
+                            <span class="input-campo">{{ user.last_name }}</span>
                         </div>
                     </div>
                     <div class="group-fila-cna">

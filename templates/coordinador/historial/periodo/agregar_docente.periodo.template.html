@@ -1,0 +1,49 @@
+{% extends 'base/base.app.coordinador.template.html'%}
+{% load staticfiles %}
+{% block title %}
+    HISTORIAL - PERIODO - DOCENTE
+{% endblock title %}
+
+{% block historial-activo %}
+    active-menu-item
+{% endblock historial-activo %}
+
+{% block content %}
+    <div class="content-docentes-editar">
+        <div class="w-100">
+            <div class="docentes-editar-top modal-header">
+                <h5 class="modal-title">AGREGAR ASIGNATURA A DOCENTE</h5>
+            </div>
+            <div class="modal-body">
+                <div class="modal-docente">
+                    <div class="group-fila-cna">
+                        <div class="group-campo w-30">
+                            <span class="label-campo">PERIODO</span>
+                            <span class="input-campo">{{ docente_asignatura_list.periodo }}</span>
+                        </div>
+                        <div class="group-campo w-70">
+                            <span class="label-campo">DOCENTE</span>
+                            <span class="input-campo">{{ docente_asignatura_list.docente }}</span>
+                        </div>
+                    </div>
+                    <div class="group-fila-tc w-100">
+                        <div class="group-campo w-100 alc-fs h-200">
+                            <ul>
+                                
+                                {% for asignatura in docente_asignatura_list.asignatura.all %}
+                                <li> {{asignatura}}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                    
+                </div> 
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+
+    
+
+{% endblock content %}

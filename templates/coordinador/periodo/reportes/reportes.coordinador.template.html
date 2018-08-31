@@ -1,0 +1,28 @@
+{% extends 'base/base.app.coordinador.template.html'%}
+{% load staticfiles %}
+{% block title %}
+    COORDINADOR - REPORTES
+{% endblock title %}
+
+{% block modal %}
+{% endblock modal %}
+
+{% block periodos-activo %}
+    active-menu-item
+{% endblock periodos-activo %}
+
+{% block content %}
+
+
+<div class="content-reportes">
+    <p class="semana-reporte-title">SOLO SE MOSTRARÁN LAS SEMANAS CULMINADAS {{curso_list.id}} </p>
+    {% for semana in semanas_list %}
+        <a class="semana-content" href="{% url 'coordinador:report' curso_list.id semana %}" target="blank">
+            <i class="far fa-file-pdf icon-pdf"></i>
+            <p class="semana-class">SEMANA {{semana}}</p>
+        </a>
+    {% endfor %}
+    
+</div>
+
+{% endblock content %}

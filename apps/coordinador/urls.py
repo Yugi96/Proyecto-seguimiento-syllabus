@@ -7,10 +7,13 @@ from apps.universidad.views import homeCoordinador, UploadFileView, UpdateDocent
                                     EstudianteUpdateView, CursoView, CursoUpdateView, PeriodoUpdateView, TerminarPeriodoView, \
                                     CursoRemplazarView, historialMenu, HistorialEstudianteView, HistorialEstudianteUpdateView, \
                                     HistorialDocenteView, HistorialDocenteUpdateView, HistorialAsignaturaView, HistorialAsignaturaUpdateView, \
-                                    SeguimientoListView, SeguimientoDeleteView, SeguimientoUpdateView, PerfilView, change_password, \
-                                    PerfilUpdateView, IndexView, CarreraUpdateView
+                                    SeguimientoListView, PerfilView, change_password, \
+                                    PerfilUpdateView, IndexView, CarreraUpdateView, HistorialPeriodosView, HistorialPeriodoDetalleView, \
+                                    HistorialAsignaturaDocenteView
 
-from apps.seguimiento.views import CursosHorariosListView, HorarioCreateView, HorarioDeleteView
+from apps.seguimiento.views import CursosHorariosListView, HorarioCreateView, HorarioDeleteView, ReportesViewCoordinador, \
+                                    MyPDFViewCoordinadorEstudiante, CursosHistorialHorariosListView, HistorialReportesViewCoordinador, \
+                                    HistorialMyPDFViewCoordinadorEstudiante, HistorialSeguimientoListView, MyPDFViewMensual, ReportesMensualesView
 
 from apps.usuario.views import ListaMensajesView
 
@@ -51,8 +54,6 @@ urlpatterns = [
     re_path('^periodo/curso/horario/eliminar/(?P<pk>\d+)/', permission_required('universidad.Coordinador')(HorarioDeleteView.as_view()), name='periodos_curso_horario_eliminar'),
     
     re_path('^periodo/curso/seguimiento/(?P<pk>\d+)/', permission_required('universidad.Coordinador')(SeguimientoListView.as_view()), name='periodos_curso_seguimiento'),
-    re_path('^periodo/curso/seguimiento/editar/(?P<pk>\d+)/', permission_required('universidad.Coordinador')(SeguimientoUpdateView.as_view()), name='periodos_curso_seguimiento_editar'),
-    re_path('^periodo/curso/seguimiento/eliminar/(?P<pk>\d+)/', permission_required('universidad.Coordinador')(SeguimientoDeleteView.as_view()), name='periodos_curso_seguimiento_eliminar'),
     
     re_path('^historial/$', permission_required('universidad.Coordinador')(historialMenu), name='historial'),
     
@@ -65,6 +66,19 @@ urlpatterns = [
     re_path('^historial/asignaturas/$', permission_required('universidad.Coordinador')(HistorialAsignaturaView.as_view()), name='historial_asignatura'),
     re_path('^historial/asignaturas/editar/(?P<pk>.+?)/', permission_required('universidad.Coordinador')(HistorialAsignaturaUpdateView.as_view()), name='historial_asignaturas_editar'),
 
-    # re_path('^reporte/$', permission_required('universidad.Coordinador')(GeneratePdf.as_view()), name='reporte'),
+    re_path('^historial/periodos/$', permission_required('universidad.Coordinador')(HistorialPeriodosView.as_view()), name='historial_periodos'),
+    re_path('^historial/periodo/(?P<pk>.+?)/$', permission_required('universidad.Coordinador')(HistorialPeriodoDetalleView.as_view()), name='historial_periodo'),
+    re_path('^historial/periodo/curso/horario/(?P<pk>.+?)', permission_required('universidad.Coordinador')(CursosHistorialHorariosListView.as_view()), name='historial_periodo_horario'),
+    re_path('^historial/periodo/curso/reportes/(?P<pk>.+?)', permission_required('universidad.Coordinador')(HistorialReportesViewCoordinador.as_view()), name='historial_periodo_reporte'),
+    re_path('^historial/periodo/curso/report/(?P<seg_semana>\d+)/(?P<pk>.+?)', permission_required('universidad.Coordinador')(HistorialMyPDFViewCoordinadorEstudiante.as_view()), name='historial_periodo_report'),
+    re_path('^historial/periodo/curso/seguimiento/(?P<pk>.+?)', permission_required('universidad.Coordinador')(HistorialSeguimientoListView.as_view()), name='historial_seguimiento'),
+    re_path('^historial/periodo/asignaturas-docente/(?P<pk>.+?)', permission_required('universidad.Coordinador')(HistorialAsignaturaDocenteView.as_view()), name='historial_docentes_asignaturas'),
+
+
+    re_path('^reportes/(?P<pk>.+?)/$', permission_required('universidad.Coordinador')(ReportesViewCoordinador.as_view()), name='reportes'),
+    # re_path('^reportes/mensuales-(?P<pk>\d+)', permission_required('universidad.Coordinador')(ReportesMensualesView.as_view()), name='reportes_mensuales'),
+
+    re_path('^reporte/(?P<pk>.+?)/(?P<seg_semana>\d+)/$', permission_required('universidad.Coordinador')(MyPDFViewCoordinadorEstudiante.as_view()), name='report'),
+    # re_path('^reporte/mensual/(?P<periodo>\d+)/(?P<semanas>.+?)/$', permission_required('universidad.Coordinador')(MyPDFViewMensual.as_view()), name='report_mensual'),
 
 ]

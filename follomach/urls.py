@@ -20,7 +20,8 @@ from apps.universidad.views import homeEstudiante, homeCoordinador, home
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    re_path('^$', home, name='home'),
+    re_path('^$', login, { 'template_name' : 'index.html' }, name='home'),
+    re_path('^rol$', home, name='home'),
     re_path('^estudiante/', include('apps.estudiante.urls', namespace='estudiante')),
     re_path('^coordinador/', include('apps.coordinador.urls', namespace='coordinador')),
     # Login

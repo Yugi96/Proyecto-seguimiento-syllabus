@@ -37,7 +37,7 @@ class SeguimientoListView(FormMessageMixin, CreateView):
     form_class = SeguimientoForm
     success_url = reverse_lazy('estudiante:seguimientos')
     template_name = 'estudiante/seguimiento/index.seguimiento.template.html'
-    form_valid_message = 'FECHA REGISTRADA CON EXITO'
+    form_valid_message = 'FECHA REGISTRADA CON ÉXITO'
     form_invalid_message = 'ERROR: NO SE PUEDE AGREGAR EL REGISTRO'
     
     def get_context_data(self, **kwargs):
@@ -109,7 +109,7 @@ class SeguimientoUpdateView(FormMessageMixin ,UpdateView):
     form_class = SeguimientoUpdateForm
     success_url = reverse_lazy('estudiante:seguimientos')
     template_name = 'estudiante/seguimiento/actualizar.seguimiento.template.html'
-    form_valid_message = 'REGISTRO ACTUALIZADO CON EXITO'
+    form_valid_message = 'REGISTRO ACTUALIZADO CON ÉXITO'
     form_invalid_message = "ERROR: NO SE PUDO ACTUALIZAR"
     
     def post(self, request, *args, **kwargs):
@@ -148,6 +148,24 @@ class CursosHorariosListView(ListView):
         context['curso_list'] = curso
         return context
 
+class CursosHistorialHorariosListView(ListView):
+    model = Horario
+    template_name = 'estudiante/horario/historial.horario.template.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(CursosHistorialHorariosListView, self).get_context_data(**kwargs)
+        curso_id = self.kwargs['pk']
+        curso = Curso.objects.get(id=curso_id)
+        context['horario_list'] = Horario.objects.filter(
+            hor_estado=True,
+            semestre_id=curso.semestre_id, 
+            periodo_id=curso.periodo_id, 
+            hor_paralelo=curso.cur_paralelo,
+            asignatura__carrera=curso.alumno.carrera_id
+        )
+        context['curso_list'] = curso
+        return context
+
 class IndexEstudianteView(ListView):
     model = Horario
     template_name = 'estudiante/index.estudiante.template.html'
@@ -170,7 +188,7 @@ class HorarioCreateView(FormMessageMixin, FormView):
     form_class = HorarioForm
     success_url = reverse_lazy('coordinador:periodos')
     template_name = 'estudiante/horario/agregar.horario.template.html'
-    form_valid_message = 'HORARIO AGREGADO CON EXITO'
+    form_valid_message = 'HORARIO AGREGADO CON ÉXITO'
     form_invalid_message = "ERROR: NO SE PUDO AGREGAR EL HORARIO"
     
     def get_context_data(self, **kwargs):
@@ -248,12 +266,6 @@ class HorarioDeleteView(FormMessageMixin, DeleteView):
             
         return HttpResponseRedirect(reverse('coordinador:periodos_curso_horario', kwargs={'pk': curso_id}))
 
-# class GeneratePdf(ListView):
-#     def get(self, request, *args, **kwargs):
-#         seguimiento = Seguimiento.objects.all().order_by('seg_semana', 'seg_fecha')
-#         pdf = render_to_pdf('reportes/reporte.coordinador.html', {'seguimiento_list':seguimiento})
-#         return HttpResponse(pdf, content_type='application/pdf')
-
 class ReportesView(ListView):
     model = Seguimiento
     template_name = 'estudiante/reportes/reportes.estudiante.template.html'
@@ -296,7 +308,96 @@ class ReportesView(ListView):
                 semanasValidas.append(semana[0])
 
         context['semanas_list'] = semanasValidas
-        # context['seguimiento_list'] = seguimiento
+        return context
+
+class ReportesViewCoordinador(ListView):
+    model = Seguimiento
+    template_name = 'coordinador/periodo/reportes/reportes.coordinador.template.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(ReportesViewCoordinador, self).get_context_data(**kwargs)
+        pk = self.kwargs.get('pk', 0)
+        curso = Curso.objects.get(id=pk, cur_eliminado=False, cur_estado=True)
+
+        asignaturas = Horario.objects.filter(
+            hor_estado=True, 
+            semestre_id=curso.semestre_id, 
+            periodo_id=curso.periodo_id, 
+            hor_paralelo=curso.cur_paralelo,
+            asignatura__carrera=curso.alumno.carrera_id
+        ).values_list('asignatura__asi_nombre').distinct('asignatura')
+
+        semanas = Seguimiento.objects.filter(
+            semestre_id=curso.semestre_id, 
+            periodo_id=curso.periodo_id, 
+            seg_estado=True, 
+            seg_paralelo = curso.cur_paralelo
+        ).values_list('seg_semana').order_by('seg_semana').distinct('seg_semana')
+
+        seguimiento = Seguimiento.objects.filter(
+            semestre_id=curso.semestre_id, 
+            periodo_id=curso.periodo_id, 
+            seg_estado=True, 
+            seg_paralelo = curso.cur_paralelo
+        ).order_by('seg_semana', 'seg_fecha')
+
+        semanasValidas = []
+        for semana in semanas:
+            porcentajeIdealTotal = 0.0
+
+            for porcentajeIdeal in seguimiento:
+                if(semana[0] == porcentajeIdeal.seg_semana):
+                    porcentajeIdealTotal = porcentajeIdealTotal + porcentajeIdeal.seg_porcentaje_ideal
+            if(porcentajeIdealTotal/len(asignaturas) == 100):
+                semanasValidas.append(semana[0])
+
+        context['semanas_list'] = semanasValidas
+        context['curso_list'] = curso
+        return context
+
+class HistorialReportesViewCoordinador(ListView):
+    model = Seguimiento
+    template_name = 'coordinador/historial/periodo/reportes.coordinador.template.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(HistorialReportesViewCoordinador, self).get_context_data(**kwargs)
+        pk = self.kwargs.get('pk', 0)
+        curso = Curso.objects.get(id=pk, cur_eliminado=False)
+
+        asignaturas = Horario.objects.filter(
+            hor_estado=True, 
+            semestre_id=curso.semestre_id, 
+            periodo_id=curso.periodo_id, 
+            hor_paralelo=curso.cur_paralelo,
+            asignatura__carrera=curso.alumno.carrera_id
+        ).values_list('asignatura__asi_nombre').distinct('asignatura')
+
+        semanas = Seguimiento.objects.filter(
+            semestre_id=curso.semestre_id, 
+            periodo_id=curso.periodo_id, 
+            seg_estado=True, 
+            seg_paralelo = curso.cur_paralelo
+        ).values_list('seg_semana').order_by('seg_semana').distinct('seg_semana')
+
+        seguimiento = Seguimiento.objects.filter(
+            semestre_id=curso.semestre_id, 
+            periodo_id=curso.periodo_id, 
+            seg_estado=True, 
+            seg_paralelo = curso.cur_paralelo
+        ).order_by('seg_semana', 'seg_fecha')
+
+        semanasValidas = []
+        for semana in semanas:
+            porcentajeIdealTotal = 0.0
+
+            for porcentajeIdeal in seguimiento:
+                if(semana[0] == porcentajeIdeal.seg_semana):
+                    porcentajeIdealTotal = porcentajeIdealTotal + porcentajeIdeal.seg_porcentaje_ideal
+            if(porcentajeIdealTotal/len(asignaturas) == 100):
+                semanasValidas.append(semana[0])
+
+        context['semanas_list'] = semanasValidas
+        context['curso_list'] = curso
         return context
 
 class MyPDFView(View):
@@ -329,4 +430,209 @@ class MyPDFView(View):
                                        )
         return response
 
+class MyPDFViewCoordinadorEstudiante(View):
+    template='reportes/reporte.estudiante.html'
+    
+    def get(self, request, seg_semana, pk):
+        curso = Curso.objects.get(id=pk, cur_eliminado=False, cur_estado=True)
+        seguimiento = Seguimiento.objects.filter(
+            semestre_id=curso.semestre_id, 
+            periodo_id=curso.periodo_id, 
+            seg_estado=True,
+            seg_semana=seg_semana,
+            seg_paralelo = curso.cur_paralelo
+        ).order_by('seg_fecha', 'asignatura__asi_nombre')
+        response = PDFTemplateResponse(request=request,
+                                       template=self.template,
+                                       filename="reporte-semana"+ seg_semana +".pdf",
+                                       context= {
+                                        'seguimiento_list':seguimiento,
+                                        'curso_list':curso,
+                                        'alumno_list':curso.alumno,
+                                        },
+                                        show_content_in_browser=True,
+                                       cmd_options={
+                                       "viewport-size" :"100 x 100",
+                                       'javascript-delay':3000,
+                                       "no-stop-slow-scripts":True,},
+                                       
+                                       )
+        return response
 
+class HistorialMyPDFViewCoordinadorEstudiante(View):
+    template='reportes/reporte.estudiante.html'
+    
+    def get(self, request, seg_semana, pk):
+        curso = Curso.objects.get(id=pk, cur_eliminado=False)
+        seguimiento = Seguimiento.objects.filter(
+            semestre_id=curso.semestre_id, 
+            periodo_id=curso.periodo_id, 
+            seg_estado=True,
+            seg_semana=seg_semana,
+            seg_paralelo = curso.cur_paralelo
+        ).order_by('seg_fecha', 'asignatura__asi_nombre')
+        response = PDFTemplateResponse(request=request,
+                                       template=self.template,
+                                       filename="reporte-semana"+ seg_semana +".pdf",
+                                       context= {
+                                        'seguimiento_list':seguimiento,
+                                        'curso_list':curso,
+                                        'alumno_list':curso.alumno,
+                                        },
+                                        show_content_in_browser=True,
+                                       cmd_options={
+                                       "viewport-size" :"100 x 100",
+                                       'javascript-delay':3000,
+                                       "no-stop-slow-scripts":True,},
+                                       
+                                       )
+        return response
+
+class ReportesMensualesView(ListView):
+    model = Seguimiento
+    template_name = 'coordinador/periodo/reportes/reporte.mensual.coordinador.template.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(ReportesMensualesView, self).get_context_data(**kwargs)
+        pk = self.kwargs.get('pk', 0)
+        periodo = Periodo.objects.get(id=pk, per_estado=True)
+
+        asignaturas = Horario.objects.filter(
+            hor_estado=True, 
+            periodo_id=periodo.id, 
+        ).values_list('asignatura__asi_nombre').distinct('asignatura')
+
+        semanas = Seguimiento.objects.filter(
+            periodo_id=periodo.id, 
+            seg_estado=True, 
+        ).values_list('seg_semana').order_by('seg_semana').distinct('seg_semana')
+
+        seguimiento = Seguimiento.objects.filter(
+            periodo_id=periodo.id, 
+            seg_estado=True, 
+        ).order_by('seg_semana', 'seg_fecha')
+
+        semanasValidas = []
+        for semana in semanas:
+            porcentajeIdealTotal = 0.0
+
+            for porcentajeIdeal in seguimiento:
+                if(semana[0] == porcentajeIdeal.seg_semana):
+                    porcentajeIdealTotal = porcentajeIdealTotal + porcentajeIdeal.seg_porcentaje_ideal
+            if(porcentajeIdealTotal/len(asignaturas) == 100):
+                semanasValidas.append(semana[0])
+        
+        print(semanasValidas)
+
+        mesesValidosA = {}
+        mesesValidosB = []
+        meses = {
+            1:'ENERO',
+            2:'FEBRERO',
+            3:'MARZO',
+            4:'ABRIL',
+            5:'MAYO',
+            6:'JUNIO',
+            7:'JULIO',
+            8:'AGOSTO',
+            9:'SEPTIEMBRE',
+            10:'OCTUBRE',
+            11:'NOVIEMBRE',
+            12:'DICIEMBRE',
+        }
+
+        for semana in semanasValidas:
+            semanasObject = {}
+            semanaMes = 0
+            seguimientoSemanasValidas = Seguimiento.objects.filter(
+                periodo_id=periodo.id, 
+                seg_estado=True,
+                seg_semana=semana
+            ).order_by('seg_semana', 'seg_fecha')
+            for seguimientoSemanaValida in seguimientoSemanasValidas:
+                semanasObject[seguimientoSemanaValida.seg_fecha.month] = 0
+            for seguimientoSemanaValida in seguimientoSemanasValidas:
+                semanasObject[seguimientoSemanaValida.seg_fecha.month] = semanasObject[seguimientoSemanaValida.seg_fecha.month] + 1
+                semanaMes = seguimientoSemanaValida.seg_semana
+            aux = [0,""]
+            for semanaObject in semanasObject:
+                if semanasObject[semanaObject] > aux[0]:
+                    aux[0] = semanaObject
+                    aux[1] = semanaMes
+
+            mesesValidosB.append([meses[aux[0]], aux[1]])
+
+        for mesSemana in mesesValidosB:
+            mesesValidosA[mesSemana[0]] = ""
+
+        for mesSemana in mesesValidosB:
+            mesesValidosA[mesSemana[0]] = mesesValidosA[mesSemana[0]] + "-" +mesSemana[1]
+            
+        print(mesesValidosA)
+        
+
+        context['meses_list'] = mesesValidosA
+        context['periodo'] = periodo
+        return context
+
+class MyPDFViewMensual(View):
+    template='reportes/reporte.coordinador.html'
+    
+    def get(self, request, semanas, periodo):
+        print(semanas.split("-")[1:])
+        seguimiento = Seguimiento.objects.filter(
+            periodo_id=periodo, 
+            seg_estado=True,
+            seg_semana__in=semanas.split("-")[1:],
+        ).order_by('seg_fecha', 'asignatura__asi_nombre')
+        response = PDFTemplateResponse(request=request,
+                                       template=self.template,
+                                       filename="reporte-semana.pdf",
+                                       context= {
+                                        'seguimiento_list':seguimiento,
+                                        'semanas':semanas.split("-")[1:]
+                                        },
+                                        show_content_in_browser=True,
+                                       cmd_options={
+                                       "viewport-size" :"100 x 100",
+                                       'javascript-delay':3000,
+                                       "no-stop-slow-scripts":True,},
+                                       
+                                       )
+        return response
+
+class HistorialSeguimientoListView(FormMessageMixin, CreateView):
+    form_class = SeguimientoForm
+    success_url = reverse_lazy('coordinador:periodos_curso_seguimiento')
+    template_name = 'coordinador/historial/periodo/index.seguimiento.template.html'
+    form_valid_message = 'FECHA REGISTRADA CON ÉXITO'
+    form_invalid_message = 'ERROR: NO SE PUEDE AGREGAR EL REGISTRO'
+    
+    def get_context_data(self, **kwargs):
+        context = super(HistorialSeguimientoListView, self).get_context_data(**kwargs)
+        pk = self.kwargs.get('pk', 0)
+        curso = Curso.objects.get(id=pk, cur_eliminado=False)
+        context['horario_list'] = Horario.objects.filter(
+            hor_estado=True, 
+            semestre_id=curso.semestre_id, 
+            periodo_id=curso.periodo_id, 
+            hor_paralelo=curso.cur_paralelo,
+            asignatura__carrera=curso.alumno.carrera_id
+        ).distinct('asignatura')
+        seguimiento = Seguimiento.objects.filter(
+            semestre_id=curso.semestre_id, 
+            periodo_id=curso.periodo_id, 
+            seg_estado=True, 
+            seg_paralelo = curso.cur_paralelo
+        ).order_by('seg_semana', 'seg_fecha')
+        context['horario_completo'] = Horario.objects.filter(
+            hor_estado=True, 
+            semestre_id=curso.semestre_id, 
+            periodo_id=curso.periodo_id, 
+            hor_paralelo=curso.cur_paralelo,
+            asignatura__carrera=curso.alumno.carrera_id
+        )
+        context['curso_list'] = curso
+        context['seguimiento_list'] = seguimiento
+        return context
+    

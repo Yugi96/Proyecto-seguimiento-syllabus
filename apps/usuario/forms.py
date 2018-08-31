@@ -42,6 +42,6 @@ class MensajeriaForm(forms.ModelForm):
             'men_mensaje' : forms.Textarea(attrs={
                 'class' : 'input-campo', 
                 'id' : 'men_mensaje',
-                'placeholder' : 'Escriba su mensaje aqui...'
+                'placeholder' : 'Escriba su mensaje aquí...'
                 }),
         }
