@@ -15,6 +15,7 @@
 {% block content %}
     <div class="content-docentes">
         <div class="docentes-top">
+            <a class="btn-cerrar" href="{% url 'coordinador:reportes_mensuales' periodos_list.0.id %}"><i class="icon-btn far fa-file-pdf " ></i>REPORTE MENSUAL</a>
         </div>
         <div class="docentes-list-perfil container-peridos">
             {% if periodos_list %}

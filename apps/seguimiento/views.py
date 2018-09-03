@@ -579,18 +579,24 @@ class MyPDFViewMensual(View):
     template='reportes/reporte.coordinador.html'
     
     def get(self, request, semanas, periodo):
-        print(semanas.split("-")[1:])
         seguimiento = Seguimiento.objects.filter(
             periodo_id=periodo, 
             seg_estado=True,
             seg_semana__in=semanas.split("-")[1:],
         ).order_by('seg_fecha', 'asignatura__asi_nombre')
+        cursos = Curso.objects.filter(periodo_id=periodo, cur_estado=True)
+        docentesAsignaturas = Horario.objects.filter(
+            hor_estado=True, 
+            periodo_id=periodo, 
+        ).distinct('asignatura','docente','hor_paralelo','carrera')
         response = PDFTemplateResponse(request=request,
                                        template=self.template,
                                        filename="reporte-semana.pdf",
                                        context= {
                                         'seguimiento_list':seguimiento,
-                                        'semanas':semanas.split("-")[1:]
+                                        'semanas':semanas.split("-")[1:],
+                                        'cursos':cursos,
+                                        'docentesAsignaturas':docentesAsignaturas
                                         },
                                         show_content_in_browser=True,
                                        cmd_options={

@@ -15,7 +15,7 @@
 
 
 <div class="content-reportes">
-    <p class="semana-reporte-title">SOLO SE MOSTRARÁN LAS SEMANAS CULMINADAS {{curso_list.id}} </p>
+    <p class="semana-reporte-title">SOLO SE MOSTRARÁN LAS SEMANAS CULMINADAS</p>
     {% for semana in semanas_list %}
         <a class="semana-content" href="{% url 'coordinador:report' curso_list.id semana %}" target="blank">
             <i class="far fa-file-pdf icon-pdf"></i>

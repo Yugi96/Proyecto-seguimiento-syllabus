@@ -15,7 +15,7 @@
 
 
 <div class="content-reportes">
-    <p class="semana-reporte-title">SOLO SE MOSTRARÁN LAS SEMANAS CULMINADAS</p>
+    <p class="semana-reporte-title">EN LOS MESES SOLO SE MOSTRARÁN LAS SEMANAS CULMINADAS</p>
     {% for mes, semana in meses_list.items %}
         <a class="semana-content" href="{% url 'coordinador:report_mensual' periodo.id semana%}" target="blank">
             <i class="far fa-file-pdf icon-pdf"></i>

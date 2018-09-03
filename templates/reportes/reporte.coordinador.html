@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
     <head>
-        <title>Title</title>
+        <title>REPORTE MENSUAL</title>
         <style type="text/css">
             body {
                 font-family: "Times New Roman";
@@ -13,27 +13,40 @@
                 border-collapse:collapse;
             }
 
-            td, th {
-                border: 1px solid #000;
-                padding: 10px 5px;
+            .no-salto {
+                white-space: nowrap;
             }
 
-            .verticalText {
-                writing-mode: vertical-lr;
-                transform: rotate(180deg);
-                }
+            td, th {
+                border: 1px solid #000;
+                padding-right: 5px;
+            }
+
+            #num-semanas-rango-content > th {
+                font-weight: normal;
+                padding: 0;
+            }
+
+            #num-semanas-rango-content > th.paddingTotal {
+                padding: 0 10px;
+            }
+
+            .paddingTopBottom {
+                padding-top: 15px;
+                padding-bottom: 15px;
+            }
 
             
         </style>
     </head>
     <body>
-        <table >
+        <table id="table-reporte">
             <tr>
                 <th rowspan="3">DOCENTE</th>
                 <th rowspan="3">CÓDIGO DE LA ASIGNATURA</th>
                 <th rowspan="3">ASIGNATURA</th>
-                <th rowspan="3">S<br>E<br>M<br>E<br>S<br>T<br>R<br>E</th>
-                <th colspan="6">AVANCE DE CONTENIDOS SEGÚN EL SYLLABUS CORRESPONDIENTES AL PERIODO<br>DEL {{ seguimiento_list.0.seg_fecha |date:'j' }} DE 
+                <th rowspan="3" class="paddingTopBottom">S<br>E<br>M<br>E<br>S<br>T<br>R<br>E</th>
+                <th id="AvanceTotalColspan" colspan="6" class="paddingTopBottom">AVANCE DE CONTENIDOS SEGÚN EL SYLLABUS CORRESPONDIENTES AL PERIODO<br>DEL {{ seguimiento_list.0.seg_fecha |date:'j' }} DE 
                     {{ seguimiento_list.0.seg_fecha |date:'F' | upper }} AL 
                     {% for seguimiento in seguimiento_list %}
                         {% if forloop.last %}
@@ -44,8 +57,8 @@
                     {% endfor %}
             </tr>
             <tr>
-                <th rowspan="2">Avance registrado en el SIUTMACH (%)</td>
-                <th colspan="3">Avance registrado por el seguimiento al syllabus del estudiante (%)<br>(registros del {{ seguimiento_list.0.seg_fecha |date:'d/m/Y' }} al 
+                <th rowspan="2" >Avance registrado en el SIUTMACH (%)</td>
+                <th id="AvanceColspan" colspan="3" class="paddingTopBottom">Avance registrado por el seguimiento al syllabus del estudiante (%)<br>(registros del {{ seguimiento_list.0.seg_fecha |date:'d/m/Y' }} al 
                     {% for seguimiento in seguimiento_list %}
                         {% if forloop.last %}
                             {{ seguimiento.seg_fecha |date:'d/m/Y' }}
@@ -55,40 +68,62 @@
                 <th rowspan="2">Observaciones (según el seguimiento al syllabus por parte del estudiante)</th>
                 <th rowspan="2">Nombre de estudiante del seguimiento al syllabus</th>
             </tr>
-            <tr id="num-semanas-rango-content">
-                <th>30/04/2018-04/05/2018</th>
-                <th>07/05/2018-11/05/2018</th>
-                <th>TOTAL</th>
-            </tr>
-            <tr>
-            </tr>
-            
+            <tr id="num-semanas-rango-content"></tr>      
         </table>
-        <div id="ejemplo">
-            {{curso}}
-        </div>
         <script>
-            var rangoSemanas = document.getElementById('num-semanas-rango-content');
+            var rangoSemanasContent = document.getElementById('num-semanas-rango-content');
             var semanasList = [];
             var seguimientoCompleto = [];
             var rangoSemanaFecha = []
+            var AvanceColspan = document.getElementById('AvanceColspan');
+            var AvanceTotalColspan = document.getElementById('AvanceTotalColspan');
+            var curso = [];
+            var docentesAsignaturas = [];
+            var tabla = document.getElementById('table-reporte');
+            
+            {% for curso in cursos %}
+                curso.push(["{{curso.alumno}}","{{curso.semestre}}","{{curso.cur_paralelo}}","{{curso.alumno.carrera}}"]);
+            {% endfor %}
 
             {% for semana in semanas %}
                 semanasList.push("{{semana}}")
             {% endfor %}
+
+            {% for docente in docentesAsignaturas %}
+                docentesAsignaturas.push([
+                "{{docente.docente.doc_apellidos}}" +" "+"{{docente.docente.doc_nombres}}",
+                "{{docente.asignatura.asi_codigo}}",
+                "{{docente.asignatura.asi_nombre}}",
+                "{{docente.semestre}}",
+                "{{docente.hor_paralelo}}",
+                {},
+                0.0,
+                "",
+                "",
+                "{{docente.carrera}}",
+                "",
+                ]);
+            {% endfor %}
+
+            for(var i=0;i<docentesAsignaturas.length;i++){
+                for(var k=0;k<semanasList.length;k++){
+                    docentesAsignaturas[i][5][semanasList[k]] = 0.0
+                }
+            }
 
             {% for seguimiento in seguimiento_list %}
                 seguimientoCompleto.push([
                 "{{seguimiento.seg_porcentaje_real}}",
                 "{{seguimiento.seg_porcentaje_ideal}}",
                 "{{seguimiento.seg_observaciones}}",
-                "{{seguimiento.docente.doc_apellidos}}" + "{{seguimiento.docente.doc_nombres}}",
+                "{{seguimiento.docente.doc_apellidos}}" +" "+"{{seguimiento.docente.doc_nombres}}",
                 "{{seguimiento.seg_fecha |date:'d/m/Y'}}",
                 "{{seguimiento.asignatura.asi_codigo }}",
                 "{{seguimiento.asignatura.asi_nombre }}",
                 "{{seguimiento.semestre }}",
                 "{{seguimiento.seg_paralelo }}",
                 "{{seguimiento.seg_semana }}",
+                "{{seguimiento.carrera}}"
                 ])
 
             {% endfor %}
@@ -98,16 +133,107 @@
                 aux = []
                 for(var k=0;k<seguimientoCompleto.length;k++){
                     if(semanasList[i] == seguimientoCompleto[k][9]){
-                        aux.push([[semanasList[i]], seguimientoCompleto[k][4]])
+                        aux.push([[semanasList[i]], seguimientoCompleto[k][4].replace(/\//g,"-")])
                     }
                 }
-                rangoSemanaFecha.push(aux)
+                rangoSemanaFecha.push(aux);
             }
+
+            AvanceColspan.setAttribute('colspan', rangoSemanaFecha.length+1)
+            AvanceTotalColspan.setAttribute('colspan', rangoSemanaFecha.length+4)
             
-            document.getElementById('ejemplo').innerHTML = rangoSemanaFecha;
+            for(var k=0;k<rangoSemanaFecha.length;k++){
+                rangoSemanasContent.appendChild(createRangoSemana(" "+rangoSemanaFecha[k][0][1]+"/"+rangoSemanaFecha[k][rangoSemanaFecha[k].length-1][1]+" "))
+            }
+            rangoSemanasContent.appendChild(createRangoSemanaTotalLabel())
+            
+            
+            for(var i=0;i<docentesAsignaturas.length;i++){
+                var auxDocente = docentesAsignaturas[i][0] +'-'+ docentesAsignaturas[i][1] +"-"+ docentesAsignaturas[i][3] +"-"+ docentesAsignaturas[i][4];
+                var totalPorcentaje = 0.0;
+                var totalIdeal = 0.0
+                var observaciones = "";
+                var auxSemestre = docentesAsignaturas[i][3] +"-"+ docentesAsignaturas[i][4] +'-'+docentesAsignaturas[i][9];
+
+
+                for(var k=0;k<seguimientoCompleto.length;k++){
+                    var auxSeguimiento = seguimientoCompleto[k][3] +'-'+ seguimientoCompleto[k][5] +"-"+ seguimientoCompleto[k][7] +"-"+ seguimientoCompleto[k][8];
+                    if(auxDocente == auxSeguimiento){
+                        for(var j=0;j<semanasList.length;j++){
+                            if(semanasList[j] == seguimientoCompleto[k][9]){
+                                docentesAsignaturas[i][5][semanasList[j]] += parseFloat(seguimientoCompleto[k][0].replace(",", "."))
+                            }
+                        }
+                        totalPorcentaje += parseFloat(seguimientoCompleto[k][0].replace(",", "."));
+                        totalIdeal += parseFloat(seguimientoCompleto[k][1].replace(",", "."));
+                        observaciones += seguimientoCompleto[k][2];
+                    }
+                    
+                }
+
+                if(totalIdeal == ""){
+                    docentesAsignaturas[i][10] = "iii"; 
+                } else {
+                    docentesAsignaturas[i][10] = totalIdeal; 
+                }
+
+                for(var h=0;h<curso.length;h++){
+                    var auxCurso = curso[h][1]+"-"+curso[h][2]+"-"+curso[h][3];
+                    if(auxCurso == auxSemestre && docentesAsignaturas[i][10] != "iii") {
+                        docentesAsignaturas[i][8] = curso[h][0];
+                    }
+                }
+                docentesAsignaturas[i][6] = totalPorcentaje/semanasList.length
+                
+                if(observaciones == ""){
+                    observaciones = "--------------"
+                } 
+                docentesAsignaturas[i][7] = observaciones
+            }
+
+            for (var i=0;i<docentesAsignaturas.length;i++){
+                var row = document.createElement('tr');
+                if(docentesAsignaturas[i][10] != "iii"){
+                    row.appendChild(createRowReporte(docentesAsignaturas[i][0], true));
+                    row.appendChild(createRowReporte(docentesAsignaturas[i][1]));
+                    row.appendChild(createRowReporte(docentesAsignaturas[i][2], true));
+                    row.appendChild(createRowReporte(docentesAsignaturas[i][3] +" "+docentesAsignaturas[i][4]));
+                    row.appendChild(createRowReporte("100%",false,true));
+                    for(var k=0;k<semanasList.length;k++){
+                        row.appendChild(createRowReporte(docentesAsignaturas[i][5][semanasList[k]]+"%",false,true));
+                    }
+                    row.appendChild(createRowReporte(docentesAsignaturas[i][6]+"%",false,true));
+                    row.appendChild(createRowReporte(docentesAsignaturas[i][7]));
+                    row.appendChild(createRowReporte(docentesAsignaturas[i][8], true));
+                }
+                tabla.appendChild(row);
+            }
+
             function createRangoSemana(texto){
                 item = document.createElement('th');
+                item.setAttribute('class', 'no-salto')
+                item.style.padding = "0 2px"
                 item.textContent = texto;
+                return item
+            }
+
+            function createRangoSemanaTotalLabel(){
+                item = document.createElement('th');
+                item.setAttribute('class', 'no-salto paddingTotal')
+                item.textContent = "TOTAL";
+                return item
+            }
+
+            function createRowReporte(texto, salto, center){
+                item = document.createElement('td');
+                if(salto) {
+                    item.setAttribute('class', 'no-salto')
+                }
+                if(center){
+                    item.style.textAlign = "center";
+                }
+                item.innerHTML = texto;
+                return item
             }
         </script>
     </body>

@@ -75,10 +75,10 @@ urlpatterns = [
     re_path('^historial/periodo/asignaturas-docente/(?P<pk>.+?)', permission_required('universidad.Coordinador')(HistorialAsignaturaDocenteView.as_view()), name='historial_docentes_asignaturas'),
 
 
-    re_path('^reportes/(?P<pk>.+?)/$', permission_required('universidad.Coordinador')(ReportesViewCoordinador.as_view()), name='reportes'),
-    # re_path('^reportes/mensuales-(?P<pk>\d+)', permission_required('universidad.Coordinador')(ReportesMensualesView.as_view()), name='reportes_mensuales'),
+    re_path('^reportes/semanal/(?P<pk>.+?)/$', permission_required('universidad.Coordinador')(ReportesViewCoordinador.as_view()), name='reportes'),
+    re_path('^reportes/mensuales/(?P<pk>.+?)/$', permission_required('universidad.Coordinador')(ReportesMensualesView.as_view()), name='reportes_mensuales'),
 
     re_path('^reporte/(?P<pk>.+?)/(?P<seg_semana>\d+)/$', permission_required('universidad.Coordinador')(MyPDFViewCoordinadorEstudiante.as_view()), name='report'),
-    # re_path('^reporte/mensual/(?P<periodo>\d+)/(?P<semanas>.+?)/$', permission_required('universidad.Coordinador')(MyPDFViewMensual.as_view()), name='report_mensual'),
+    re_path('^reporte/mensual/(?P<periodo>\d+)/(?P<semanas>.+?)/$', permission_required('universidad.Coordinador')(MyPDFViewMensual.as_view()), name='report_mensual'),
 
 ]
