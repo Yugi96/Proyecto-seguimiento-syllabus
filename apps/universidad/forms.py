@@ -709,6 +709,25 @@ class HistorialAsignaturaUpdateForm(forms.ModelForm):
             }),
         }
 
+class HistorialCarreraUpdateForm(forms.ModelForm):
+
+    class Meta:
+        model = Carrera
+
+        fields = [
+            'car_estado',
+        ]
+
+        labels = {
+            'car_estado' : 'ESTADO',
+        }
+
+        widgets = {
+            'car_estado' : forms.CheckboxInput(attrs={
+                'class' : 'campo-check',
+            }),
+        }
+
 class CarreraForm(forms.ModelForm):
     class Meta:
         model = Carrera

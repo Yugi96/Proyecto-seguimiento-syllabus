@@ -411,8 +411,18 @@ class MyPDFView(View):
             periodo_id=curso.periodo_id, 
             seg_estado=True,
             seg_semana=seg_semana,
-            seg_paralelo = curso.cur_paralelo
+            seg_paralelo = curso.cur_paralelo,
+            carrera = curso.alumno.carrera
         ).order_by('seg_fecha', 'asignatura__asi_nombre')
+        Seguimiento.objects.filter(
+            semestre_id=curso.semestre_id, 
+            periodo_id=curso.periodo_id, 
+            seg_estado=True,
+            seg_semana=seg_semana,
+            seg_paralelo = curso.cur_paralelo,
+            carrera = curso.alumno.carrera
+        ).update(seg_validado=True)
+
         response = PDFTemplateResponse(request=request,
                                        template=self.template,
                                        filename="reporte-semana"+ seg_semana +".pdf",
@@ -440,8 +450,17 @@ class MyPDFViewCoordinadorEstudiante(View):
             periodo_id=curso.periodo_id, 
             seg_estado=True,
             seg_semana=seg_semana,
-            seg_paralelo = curso.cur_paralelo
+            seg_paralelo = curso.cur_paralelo,
+            carrera = curso.alumno.carrera
         ).order_by('seg_fecha', 'asignatura__asi_nombre')
+        Seguimiento.objects.filter(
+            semestre_id=curso.semestre_id, 
+            periodo_id=curso.periodo_id, 
+            seg_estado=True,
+            seg_semana=seg_semana,
+            seg_paralelo = curso.cur_paralelo,
+            carrera = curso.alumno.carrera
+        ).update(seg_validado=True)
         response = PDFTemplateResponse(request=request,
                                        template=self.template,
                                        filename="reporte-semana"+ seg_semana +".pdf",
@@ -459,6 +478,19 @@ class MyPDFViewCoordinadorEstudiante(View):
                                        )
         return response
 
+class HabilitarSemanas(View):
+    def get(self, request, seg_semana, pk):
+        curso = Curso.objects.get(id=pk, cur_eliminado=False, cur_estado=True)
+        Seguimiento.objects.filter(
+            semestre_id=curso.semestre_id, 
+            periodo_id=curso.periodo_id, 
+            seg_estado=True,
+            seg_semana=seg_semana,
+            seg_paralelo = curso.cur_paralelo,
+            carrera = curso.alumno.carrera
+        ).update(seg_validado=False)
+        return redirect(reverse_lazy('coordinador:periodos'))
+
 class HistorialMyPDFViewCoordinadorEstudiante(View):
     template='reportes/reporte.estudiante.html'
     
@@ -469,7 +501,8 @@ class HistorialMyPDFViewCoordinadorEstudiante(View):
             periodo_id=curso.periodo_id, 
             seg_estado=True,
             seg_semana=seg_semana,
-            seg_paralelo = curso.cur_paralelo
+            seg_paralelo = curso.cur_paralelo,
+            carrera = curso.alumno.carrera
         ).order_by('seg_fecha', 'asignatura__asi_nombre')
         response = PDFTemplateResponse(request=request,
                                        template=self.template,
@@ -575,6 +608,126 @@ class ReportesMensualesView(ListView):
         context['periodo'] = periodo
         return context
 
+class HistorialReportesMensualesView(ListView):
+    model = Seguimiento
+    template_name = 'coordinador/historial/periodo/reporte.mensual.coordinador.template.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(HistorialReportesMensualesView, self).get_context_data(**kwargs)
+        pk = self.kwargs.get('pk', 0)
+        periodo = Periodo.objects.get(id=pk, per_estado=False)
+
+        asignaturas = Horario.objects.filter(
+            hor_estado=True, 
+            periodo_id=periodo.id, 
+        ).values_list('asignatura__asi_nombre').distinct('asignatura')
+
+        semanas = Seguimiento.objects.filter(
+            periodo_id=periodo.id, 
+            seg_estado=True, 
+        ).values_list('seg_semana').order_by('seg_semana').distinct('seg_semana')
+
+        seguimiento = Seguimiento.objects.filter(
+            periodo_id=periodo.id, 
+            seg_estado=True, 
+        ).order_by('seg_semana', 'seg_fecha')
+
+        semanasValidas = []
+        for semana in semanas:
+            porcentajeIdealTotal = 0.0
+
+            for porcentajeIdeal in seguimiento:
+                if(semana[0] == porcentajeIdeal.seg_semana):
+                    porcentajeIdealTotal = porcentajeIdealTotal + porcentajeIdeal.seg_porcentaje_ideal
+            if(porcentajeIdealTotal/len(asignaturas) == 100):
+                semanasValidas.append(semana[0])
+        
+        print(semanasValidas)
+
+        mesesValidosA = {}
+        mesesValidosB = []
+        meses = {
+            1:'ENERO',
+            2:'FEBRERO',
+            3:'MARZO',
+            4:'ABRIL',
+            5:'MAYO',
+            6:'JUNIO',
+            7:'JULIO',
+            8:'AGOSTO',
+            9:'SEPTIEMBRE',
+            10:'OCTUBRE',
+            11:'NOVIEMBRE',
+            12:'DICIEMBRE',
+        }
+
+        for semana in semanasValidas:
+            semanasObject = {}
+            semanaMes = 0
+            seguimientoSemanasValidas = Seguimiento.objects.filter(
+                periodo_id=periodo.id, 
+                seg_estado=True,
+                seg_semana=semana
+            ).order_by('seg_semana', 'seg_fecha')
+            for seguimientoSemanaValida in seguimientoSemanasValidas:
+                semanasObject[seguimientoSemanaValida.seg_fecha.month] = 0
+            for seguimientoSemanaValida in seguimientoSemanasValidas:
+                semanasObject[seguimientoSemanaValida.seg_fecha.month] = semanasObject[seguimientoSemanaValida.seg_fecha.month] + 1
+                semanaMes = seguimientoSemanaValida.seg_semana
+            aux = [0,""]
+            for semanaObject in semanasObject:
+                if semanasObject[semanaObject] > aux[0]:
+                    aux[0] = semanaObject
+                    aux[1] = semanaMes
+
+            mesesValidosB.append([meses[aux[0]], aux[1]])
+
+        for mesSemana in mesesValidosB:
+            mesesValidosA[mesSemana[0]] = ""
+
+        for mesSemana in mesesValidosB:
+            mesesValidosA[mesSemana[0]] = mesesValidosA[mesSemana[0]] + "-" +mesSemana[1]
+            
+        print(mesesValidosA)
+        
+
+        context['meses_list'] = mesesValidosA
+        context['periodo'] = periodo
+        return context
+
+class HistorialMyPDFViewMensual(View):
+    template='reportes/reporte.coordinador.html'
+    
+    def get(self, request, semanas, periodo):
+        seguimiento = Seguimiento.objects.filter(
+            periodo_id=periodo, 
+            seg_estado=True,
+            seg_semana__in=semanas.split("-")[1:],
+        ).order_by('seg_fecha', 'asignatura__asi_nombre')
+        cursos = Curso.objects.filter(periodo_id=periodo)
+        docentesAsignaturas = Horario.objects.filter(
+            hor_estado=True, 
+            periodo_id=periodo, 
+        ).distinct('asignatura','docente','hor_paralelo','carrera')
+        response = PDFTemplateResponse(request=request,
+                                       template=self.template,
+                                       filename="reporte-semana.pdf",
+                                       context= {
+                                        'seguimiento_list':seguimiento,
+                                        'semanas':semanas.split("-")[1:],
+                                        'cursos':cursos,
+                                        'docentesAsignaturas':docentesAsignaturas
+                                        },
+                                        show_content_in_browser=True,
+                                       cmd_options={
+                                       "viewport-size" :"100 x 100",
+                                       'javascript-delay':3000,
+                                       "no-stop-slow-scripts":True,},
+                                       
+                                       )
+        return response
+
+
 class MyPDFViewMensual(View):
     template='reportes/reporte.coordinador.html'
     
@@ -606,6 +759,53 @@ class MyPDFViewMensual(View):
                                        
                                        )
         return response
+
+class MyPDFViewEstudiante(View):
+    template='reportes/reporte.estudiante.coordinador.html'
+    
+    def get(self, request, periodo):
+        cursos = Curso.objects.filter(periodo_id=periodo, cur_estado=True).order_by('alumno')
+        response = PDFTemplateResponse(request=request,
+                                       template=self.template,
+                                       filename="reporte-estudiantes.pdf",
+                                       context= {
+                                        'cursos':cursos
+                                        },
+                                        show_content_in_browser=True,
+                                       cmd_options={
+                                       "viewport-size" :"100 x 100",
+                                       'javascript-delay':3000,
+                                       "no-stop-slow-scripts":True,
+                                       'orientation': 'portrait'
+                                       },
+                                       
+                                       )
+        return response
+
+
+class HistorialMyPDFViewEstudiante(View):
+    template='reportes/reporte.estudiante.coordinador.html'
+    
+    def get(self, request, periodo):
+        cursos = Curso.objects.filter(periodo_id=periodo).order_by('alumno')
+        response = PDFTemplateResponse(request=request,
+                                       template=self.template,
+                                       filename="reporte-estudiantes.pdf",
+                                       context= {
+                                        'cursos':cursos
+                                        },
+                                        show_content_in_browser=True,
+                                       cmd_options={
+                                       "viewport-size" :"100 x 100",
+                                       'javascript-delay':3000,
+                                       "no-stop-slow-scripts":True,
+                                       'orientation': 'portrait'
+                                       },
+                                       
+                                       )
+        return response
+
+
 
 class HistorialSeguimientoListView(FormMessageMixin, CreateView):
     form_class = SeguimientoForm

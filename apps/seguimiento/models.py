@@ -25,7 +25,8 @@ class Seguimiento(models.Model):
     seg_observaciones = models.CharField(max_length=100, blank=True, default="")
     seg_semana = models.CharField(max_length=20)
     seg_fecha = models.DateField()
+    seg_validado = models.BooleanField(default=False)
     seg_estado = models.BooleanField(default=True)
 
     class Meta:
-        unique_together = ("seg_fecha", "asignatura", "seg_semana")
+        unique_together = ("seg_fecha", "asignatura", "seg_semana", "carrera")

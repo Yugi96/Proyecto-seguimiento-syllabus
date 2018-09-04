@@ -30,7 +30,7 @@ from .forms import PeriodoForm, TerminarPeriodoForm
 # Import Asignatura Docente
 from .forms import AsignaturaDocenteForm, AsignaturaDocenteUpdateForm
 # Import Historial Estudiantes
-from .forms import HistorialAlumnoUpdateForm, HistorialDocenteUpdateForm, HistorialAsignaturaUpdateForm
+from .forms import HistorialAlumnoUpdateForm, HistorialDocenteUpdateForm, HistorialAsignaturaUpdateForm, HistorialCarreraUpdateForm
 
 from apps.seguimiento.forms import SeguimientoForm
 
@@ -444,6 +444,15 @@ class HistorialAsignaturaView(ListView):
         kwargs['object_list'] = Asignatura.objects.filter(asi_estado=False).order_by('carrera','semestre')
         return super(HistorialAsignaturaView, self).get_context_data(**kwargs)
 
+class HistorialCarreraView(ListView):
+    model = Carrera
+    template_name = 'coordinador/historial/carrera/index.carrera.template.html'
+
+    def get_context_data(self, **kwargs):
+        unidad = Unidad_Academica.objects.get(uni_codigo="UN0001")
+        kwargs['object_list'] = Carrera.objects.filter(car_estado=False, uni_codigo_id=unidad.uni_codigo)
+        return super(HistorialCarreraView, self).get_context_data(**kwargs)
+
 class HistorialPeriodosView(ListView):
     model = Periodo
     template_name = 'coordinador/historial/periodo/index.periodos.template.html'
@@ -473,6 +482,14 @@ class HistorialAsignaturaUpdateView(FormMessageMixin, UpdateView):
     form_valid_message = 'ASIGNATURA ACTUALIZADO CON ÉXITO'
     form_invalid_message = "ERROR: NO SE PUDO ACTUALIZAR EL DOCENTE"
     success_url = reverse_lazy('coordinador:asignaturas')
+
+class HistorialCarreraUpdateView(FormMessageMixin, UpdateView):
+    model = Carrera
+    template_name = 'coordinador/historial/carrera/actualizar.carrera.template.html'
+    form_class = HistorialCarreraUpdateForm
+    form_valid_message = 'CARRARA ACTUALIZADA CON ÉXITO'
+    form_invalid_message = "ERROR: NO SE PUDO ACTUALIZAR LA CARRERA"
+    success_url = reverse_lazy('coordinador:homeCoordinador')
 
 class IndexView(FormMessageMixin, CreateView):
     template_name = 'coordinador/index.coordinador.template.html'

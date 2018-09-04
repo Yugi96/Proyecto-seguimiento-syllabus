@@ -1650,8 +1650,8 @@ body {
 }
 
 .content-item-historial {
-    width: 23%;
-    height: 90%;
+    width: 18%;
+    height: 80%;
     background: #3E4149;
     display: flex;
     justify-content: center;
@@ -1671,16 +1671,28 @@ body {
 
 .img-item-historial {
     width: 100%;
-    font-size: 4em;
+    font-size: 3em;
     text-align: center;
     color: #fff;
 }
 
 .title-item-historial{
     width: 100%;
-    font-size: 1.2em;
+    font-size: 1em;
     text-align: center;
     color: #fff;
+}
+
+.modal-reportes {
+    display: flex;
+    justify-content: center;
+    align-content: space-around;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.mlrtb-5 {
+    margin: 5px;
 }
 
 .alinear-derecha {

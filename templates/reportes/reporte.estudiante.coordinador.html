@@ -1,0 +1,70 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+    <head>
+        <title>REPORTE ESTUDIANTES</title>
+        <style type="text/css">
+            body {
+                font-family: "Arial";
+                font-weight: 200;
+                font-size: 9px;
+            }
+            
+            table {
+                border-collapse:collapse;
+                width: 100%;
+            }
+
+            .no-salto {
+                white-space: nowrap;
+            }
+
+            .center {
+                text-align: center;
+            }
+
+            .ptb {
+                padding-top: 30px;
+                padding-bottom: 30px;
+            }
+
+            .tal {
+                text-align: left;
+            }
+
+            td, th {
+                border: 1px solid #000;
+                padding: 5px 10px;
+            }
+            
+        </style>
+    </head>
+    <body>
+        <table id="table-reporte">
+            <tr>
+                <th id="AvanceTotalColspan" colspan="6" class="ptb">ESTUDIANTES QUE SIGUEN EL SYLLABUS CORRESPONDIENTES AL PERIODO<br>DEL {{ cursos.0.periodo.per_inicio |date:'j' }} DE 
+                    {{ cursos.0.periodo.per_inicio |date:'F' | upper }} AL {{ cursos.0.periodo.per_fin |date:'j' }} DE 
+                    {{ cursos.0.periodo.per_fin |date:'F'| upper }} DE 
+                    {{ cursos.0.periodo.per_fin |date:'Y' }} 
+                </th>
+            </tr>
+            <tr>
+                <th>CÉDULA</td>
+                <th class="tal">APELLIDOS Y NOMBRES</th>
+                <th class="tal">CARRERA</th>
+                <th>SEMESTRE</th>
+                <th class="center">PARALELO</th>
+                <th class="tal">CORREO</th>
+            </tr>
+            {% for curso in cursos %}
+            <tr>
+                <td class="no-salto center">{{curso.alumno.usuario.username}}</td>
+                <td>{{curso.alumno.usuario.last_name}} {{curso.alumno.usuario.first_name}}</td>
+                <td>{{curso.alumno.carrera}}</td>
+                <td class="center no-salto">{{curso.semestre}}</td>
+                <td class="center no-salto">{{curso.cur_paralelo}}</td>
+                <td class="no-salto">{{curso.alumno.usuario.email}}</td>
+            </tr>      
+            {% endfor %}
+        </table>
+    </body>
+</html>

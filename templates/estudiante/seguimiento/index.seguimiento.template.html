@@ -164,10 +164,12 @@
                                                         <td class="text-center suma-por-ideal"><span>{{seguimiento.seg_porcentaje_ideal}}</span> %</td>
                                                         <td>{{seguimiento.seg_observaciones}}</td>
                                                         <td class="text-center">
-                                                            <div class="content-acciones">
-                                                                <a class="btn-acciones btn-acciones-eliminar" href="{% url 'estudiante:seguimientos_editar' seguimiento.id %}"><i class="fas fa-pencil-alt"></i></a>
-                                                                <a class="btn-acciones btn-acciones-editar" href="{% url 'estudiante:seguimientos_eliminar' seguimiento.id %}"><i class="fas fa-trash-alt"></i></a>
-                                                            </div>
+                                                            {% if not seguimiento.seg_validado %}
+                                                                <div class="content-acciones">
+                                                                    <a class="btn-acciones btn-acciones-eliminar" href="{% url 'estudiante:seguimientos_editar' seguimiento.id %}"><i class="fas fa-pencil-alt"></i></a>
+                                                                    <a class="btn-acciones btn-acciones-editar" href="{% url 'estudiante:seguimientos_eliminar' seguimiento.id %}"><i class="fas fa-trash-alt"></i></a>
+                                                                </div>
+                                                            {% endif %}
                                                         </td>
                                                     </tr>
                                                 {% endif %}

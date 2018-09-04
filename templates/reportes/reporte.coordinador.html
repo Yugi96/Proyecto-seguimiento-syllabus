@@ -202,7 +202,12 @@
                     for(var k=0;k<semanasList.length;k++){
                         row.appendChild(createRowReporte(docentesAsignaturas[i][5][semanasList[k]]+"%",false,true));
                     }
-                    row.appendChild(createRowReporte(docentesAsignaturas[i][6]+"%",false,true));
+                    if(docentesAsignaturas[i][6] != 100) {
+                        row.appendChild(createRowReporte(docentesAsignaturas[i][6]+"%",false,true, true));
+                    } else {
+                        row.appendChild(createRowReporte(docentesAsignaturas[i][6]+"%",false,true));
+                    }
+                    
                     row.appendChild(createRowReporte(docentesAsignaturas[i][7]));
                     row.appendChild(createRowReporte(docentesAsignaturas[i][8], true));
                 }
@@ -224,13 +229,16 @@
                 return item
             }
 
-            function createRowReporte(texto, salto, center){
+            function createRowReporte(texto, salto, center, esMenor){
                 item = document.createElement('td');
                 if(salto) {
                     item.setAttribute('class', 'no-salto')
                 }
                 if(center){
                     item.style.textAlign = "center";
+                }
+                if(esMenor){
+                    item.style.background = "#F25D5D";
                 }
                 item.innerHTML = texto;
                 return item

@@ -5,6 +5,7 @@
 {% endblock title %}
 
 {% block modal %}
+
 {% endblock modal %}
 
 {% block reporte-activo %}
@@ -17,12 +18,50 @@
 <div class="content-reportes">
     <p class="semana-reporte-title">SOLO SE MOSTRARÁN LAS SEMANAS CULMINADAS </p>
     {% for semana in semanas_list %}
-        <a class="semana-content" href="{% url 'estudiante:report' semana%}" target="blank">
+       <!-- Modal -->
+        <div class="modal fade" id="exampleModalCenter-{{semana}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle-{{semana}}" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalCenterTitle-{{semana}}">CONFIRMAR</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    </div>
+                    <div class="modal-body">
+                        <p class="p-mensaje"><i class="fas fa-check check-mensaje"></i>AL IMPRIMIR EL REPORTE DE LA SEMANA {{semana}}, TOME EN CONSIDERACIÓN QUE DICHA SEMANA NO PODRÁ SER MODIFICADA NI ELIMINADA.</p>
+                        <p class="p-mensaje"><i class="fas fa-check check-mensaje"></i>PARA PODER MODIFICAR LA SEMANA SOLICITE PERMISOS AL COORDINADOR.</p>
+                    </div>
+                    <div class="modal-footer">
+                    <button type="button" class="btn-cerrar" data-dismiss="modal"><i class="icon-btn fas fa-times"></i>CANCELAR</button>
+                    <a class="btn-agregar" href="{% url 'estudiante:report' semana%}" target="blank" id="aceptar-{{semana}}"><i class="icon-btn fas fa-check"></i>ACEPTAR</a>
+                    </div>
+                </div>
+                </div>
+        </div>
+        <div class="semana-content" data-toggle="modal" data-target="#exampleModalCenter-{{semana}}" onclick="contenedor(this);">
             <i class="far fa-file-pdf icon-pdf"></i>
-            <p class="semana-class">SEMANA {{semana}}</p>
-        </a>
+            <p class="semana-class">SEMANA <span>{{semana}}</span> </p>
+        </div>
+
     {% endfor %}
-    
 </div>
+
+<script>
+    var modal = "";
+    var aceptar;
+    
+    contenedor = function(obj){
+        modal = obj.children[1].children[0].textContent;
+        aceptar = document.getElementById('aceptar-'+modal);
+        aceptar.addEventListener('click', ()=>{
+            cerrarModal();
+        });
+    }
+
+    function cerrarModal(){
+        $('#exampleModalCenter-'+modal).modal('hide');
+    }
+</script>
 
 {% endblock content %}
