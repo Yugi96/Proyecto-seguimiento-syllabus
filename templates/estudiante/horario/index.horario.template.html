@@ -20,26 +20,26 @@
     {% endfor %}
     {% endif %}
     <div class="content-docentes transparent">
-        <div class="docentes-top bg-white">
+        <div class="docentes-top bg-white top-horario-query">
             {% if not horario_list  %}
                 <div class="content-btn-agregar w-30">
-                    <a class="btn-agregar" id="btn-agregar" href="{% url 'coordinador:periodos_curso_horario_crear' curso_list.id %}"><i class="icon-btn fas fa-plus" ></i>AGREGAR HORARIO</a>
+                    <a class="btn-agregar btn-query-top btn-horario-query" id="btn-agregar" href="{% url 'coordinador:periodos_curso_horario_crear' curso_list.id %}"><i class="icon-btn fas fa-plus" ></i>AGREGAR HORARIO</a>
                 </div>
                 <div class="curso-info-horario w-70">
-                    <span id="label-periodo "><strong>PERIODO:</strong> <span>{{curso_list.periodo}}</span></span>
-                    <span id="label-periodo "><strong></strong> <span>{{curso_list.alumno.carrera}}</span></span>
-                    <span id="label-semestre"><strong></strong> <span>{{curso_list.semestre}}</span></span>
-                    <span id="label-paralelo"><strong>PERALELO:</strong> <span>{{curso_list.cur_paralelo}}</span></span>
+                    <span id="label-periodo " class="label-query"><strong>PERIODO:</strong> <span>{{curso_list.periodo}}</span></span>
+                    <span id="label-periodo " class="label-query"><strong></strong> <span>{{curso_list.alumno.carrera}}</span></span>
+                    <span id="label-semestre" class="label-query"><strong></strong> <span>{{curso_list.semestre}}</span></span>
+                    <span id="label-paralelo" class="label-query"><strong>PERALELO:</strong> <span>{{curso_list.cur_paralelo}}</span></span>
                 </div>
             {% else %}
                 <div class="content-btn-agregar w-30">
-                    <a class="btn-cerrar" id="btn-eliminar" href="{% url 'coordinador:periodos_curso_horario_eliminar' curso_list.id %}"><i class="icon-btn fas fa-trash" ></i>ELIMINAR HORARIO</a>
+                    <a class="btn-cerrar btn-query-top btn-horario-query" id="btn-eliminar" href="{% url 'coordinador:periodos_curso_horario_eliminar' curso_list.id %}"><i class="icon-btn fas fa-trash" ></i>ELIMINAR HORARIO</a>
                 </div>
                 <div class="curso-info-horario w-100">
-                    <span id="label-periodo "><strong>PERIODO:</strong> <span>{{curso_list.periodo}}</span></span>
-                    <span id="label-periodo "><strong></strong> <span>{{curso_list.alumno.carrera}}</span></span>
-                    <span id="label-semestre"><strong></strong> <span>{{curso_list.semestre}}</span></span>
-                    <span id="label-paralelo"><strong>PERALELO:</strong> <span>{{curso_list.cur_paralelo}}</span></span>
+                    <span id="label-periodo " class="label-query"><strong>PERIODO:</strong> <span>{{curso_list.periodo}}</span></span>
+                    <span id="label-periodo " class="label-query"><strong></strong> <span>{{curso_list.alumno.carrera}}</span></span>
+                    <span id="label-semestre" class="label-query"><strong></strong> <span>{{curso_list.semestre}}</span></span>
+                    <span id="label-paralelo" class="label-query"><strong>PERALELO:</strong> <span>{{curso_list.cur_paralelo}}</span></span>
                 </div>
             {% endif %}
         </div>
@@ -164,7 +164,7 @@
                     
                 </div>
             {% else %}
-                <div class="cursos-content border">
+                <div class="cursos-content">
                     <div class="content-vacio">
                         <img class="no-hay-img no-img-docente" src="{% static 'img/no-hay.png' %}" alt="">
                         <h2 class="title-no-hay">NO HAY HORARIO EN EL CURSO.</h2>

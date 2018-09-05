@@ -14,25 +14,27 @@
         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
             <div class="modal-header">
-                <div class="header-modal-dias">
-                    <div class="content-num-creditos-modal">
-                        <span class="num-creditos-modal" id="modal-num-creditos"></span>
-                        <span class="num-creditos-modal">CREDITOS</span>
+                <div class="contet-query">
+                    <div class="header-modal-dias">
+                        <div class="content-num-creditos-modal">
+                            <span class="num-creditos-modal" id="modal-num-creditos"></span>
+                            <span class="num-creditos-modal">CREDITOS</span>
+                        </div>
+                        <div class="title-modal-header">
+                            <h5 class="modal-asignatura" id="modal-asignatura"></h5>
+                            <p class="modal-docente" id="modal-docente"></p>
+                        </div>
                     </div>
-                    <div class="title-modal-header">
-                        <h5 class="modal-asignatura" id="modal-asignatura"></h5>
-                        <p class="modal-docente" id="modal-docente"></p>
+                    <div class="content-num-dias-semana">
+                        <span for="{{ form.alu_estado.name }}" class="label-dar-baja text-center">NUM. DÍAS A LA<br>SEMANA</span>
+                        <input type="text" class="input-campo input-dias" onkeypress='return soloNumeros(event);' id="modal-num-dias" value="0">
                     </div>
                 </div>
-                <div class="content-num-dias-semana">
-                    <span for="{{ form.alu_estado.name }}" class="label-dar-baja text-center">NUM. DÍAS A LA<br>SEMANA</span>
-                    <input type="text" class="input-campo input-dias" onkeypress='return soloNumeros(event);' id="modal-num-dias" value="0">
-                </div>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-                </button>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
             </div>
-            <div class="modal-body" id="modal-body">
+            <div class="modal-body modal-body-dias-semana-query" id="modal-body">
                 
             </div>
             <div class="modal-footer">

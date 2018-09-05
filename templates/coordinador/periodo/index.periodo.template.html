@@ -92,14 +92,14 @@
     <div class="content-docentes">
         <div class="docentes-top">
             {% if not periodos_list  %}
-                <div class="content-btn-agregar">
-                    <span class="btn-agregar" id="btn-agregar" href="" data-toggle="modal" data-target="#exampleModalCenter"><i class="icon-btn fas fa-plus" ></i>AGREGAR PERIODO</span>
+                <div class="content-btn-agregar content-buttom-ad fl-start">
+                    <span class="btn-agregar " id="btn-agregar" href="" data-toggle="modal" data-target="#exampleModalCenter"><i class="icon-btn fas fa-plus" ></i>AGREGAR PERIODO</span>
                 </div>
             {% else %}
                 <div class="content-buttom-ad fl-start">
-                    <button type="button" class="btn-cerrar" data-toggle="modal" data-target="#exampleModalCenterReportes"><i class="icon-btn far fa-file-pdf " ></i>REPORTES</button>
-                    <a class="btn-agregar bg-dark margin-left" href="{% url 'coordinador:periodos_curso_agregar' %}"><i class="icon-btn fas fa-plus" ></i>AGREGAR ESTUDIANTE</a>
-                    <a class="btn-agregar bg-dark margin-left" href="{% url 'coordinador:periodos_docentes_agregar' %}"><i class="icon-btn fas fa-plus" ></i>ASIGNAR MATERIA A DOCENTE</a>
+                    <button type="button" class="btn-cerrar btn-query-top" data-toggle="modal" data-target="#exampleModalCenterReportes"><i class="icon-btn far fa-file-pdf " ></i>REPORTES</button>
+                    <a class="btn-agregar bg-dark margin-left btn-query-top" href="{% url 'coordinador:periodos_curso_agregar' %}"><i class="icon-btn fas fa-plus" ></i>AGREGAR ESTUDIANTE</a>
+                    <a class="btn-agregar bg-dark margin-left btn-query-top" href="{% url 'coordinador:periodos_docentes_agregar' %}"><i class="icon-btn fas fa-plus" ></i>ASIGNAR MATERIA A DOCENTE</a>
                 </div>
             {% endif %}
         </div>
@@ -109,8 +109,8 @@
                     <div class="periodo-title">
                         <span class="title-label">{{ periodos_list.0.per_nombre }}</span>
                         <div class="content-buttom-et">
-                                <a class="btn-editar btn-periodo blanco" href="{% url 'coordinador:periodo_editar' periodos_list.0.id %}"><i class="icon-btn fas fa-pencil-alt"></i>EDITAR</a>
-                                <a class="btn-cerrar btn-periodo blanco" href="{% url 'coordinador:periodo_terminar' periodos_list.0.id %}"><i class="icon-btn fas fa-times"></i>TERMINAR PERIODO</a>
+                            <a class="btn-cerrar btn-query btn-periodo blanco z-query-btn" href="{% url 'coordinador:periodo_editar' periodos_list.0.id %}"><i class="icon-btn fas fa-pencil-alt"></i>EDITAR</a>
+                            <a class="btn-cerrar btn-periodo blanco z-query-btn" href="{% url 'coordinador:periodo_terminar' periodos_list.0.id %}"><i class="icon-btn fas fa-times"></i>TERMINAR PERIODO</a>
                         </div>
                     </div>
                     <div class="content-periodo-descripcion">
@@ -140,23 +140,23 @@
                 <table class="table">
                     <thead class="bg-primary blanco">
                         <tr>
-                        <th scope="col"></th>
-                        <th scope="col">#</th>
+                        <th scope="col" class="row-paddin-query"></th>
+                        <th scope="col" class="text-center">#</th>
                         <th scope="col">DOCENTE</th>
                         <th class="text-center" scope="col">ACCIÓN</th>
-                        <th scope="col"></th>
+                        <th scope="col" class="row-paddin-query"></th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for docente in docentes_asingaturas_list %}
                             <tr>
-                                <td></td>
-                                <th scope="row">{{ forloop.counter }}</th>
+                                <td class="row-paddin-query"></td>
+                                <th scope="row" class="text-center">{{ forloop.counter }}</th>
                                 <td>{{docente.docente}}</td>
                                 <td class="text-center">
                                     <a class="btn-editar btn-asignatura bg-primary" href="{% url 'coordinador:periodos_docentes_editar' docente.id %}"></i>MOSTRAR</a>
                                 </td>
-                                <td></td
+                                <td class="row-paddin-query"></td>
                             </tr>
                         {% endfor %}
                     </tbody>
@@ -176,21 +176,21 @@
                     <table class="table table-striped">
                         <thead class="bg-primary blanco">
                             <tr>
-                                <th scope="col"></th>
-                                <th scope="col">#</th>
+                                <th scope="col" class="row-paddin-query"></th>
+                                <th scope="col" class="text-center">#</th>
                                 <th scope="col">ESTUDIANTE</th>
                                 <th scope="col">CARRERA</th>
                                 <th class="text-center" scope="col">SEMESTRES</th>
                                 <th class="text-center" scope="col">PARALELO</th>
                                 <th class="text-center" scope="col">ACCIÓN</th>
-                                <th scope="col"></th>
+                                <th scope="col" class="row-paddin-query"></th>
                             </tr>
                         </thead>
                         <tbody>
                             {% for curso in cursos_list %}
                                 <tr>
-                                    <td></td>
-                                    <th scope="row">{{ forloop.counter }}</th>
+                                    <td class="row-paddin-query"></td>
+                                    <td scope="row" class="text-center">{{ forloop.counter }}</td>
                                     <td>{{curso.alumno}}</td>
                                     <td>{{curso.alumno.getCarrera}}</td>
                                     <td class="text-center">{{curso.semestre}}</td>
@@ -202,7 +202,7 @@
                                         <a class="btn-editar btn-asignatura bg-dark " href="{% url 'coordinador:reportes' curso.id %}"></i>REPORTES</a>
                                         <a class="btn-editar btn-asignatura bg-danger" href="{% url 'coordinador:periodos_curso_remplazar' curso.id %}"></i>REMPLAZAR</a>
                                     </td>
-                                    <td></td
+                                    <td class="row-paddin-query"></td>
                                 </tr>
                             {% endfor %}
                         </tbody>

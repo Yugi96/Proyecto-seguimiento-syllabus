@@ -75,19 +75,19 @@
     <div class="content-docentes">
         <div class="docentes-top">
             <div class="content-btn-agregar">
-                <span class="btn-agregar" id="btn-agregar" href="" data-toggle="modal" data-target="#exampleModalCenter"><i class="icon-btn fas fa-plus" ></i>AGREGAR ASIGNATURA</span>
+                <span class="btn-agregar btn-completo-query" id="btn-agregar" href="" data-toggle="modal" data-target="#exampleModalCenter"><i class="icon-btn fas fa-plus" ></i>AGREGAR ASIGNATURA</span>
             </div>
             <div class="content-search">
                 <input class="input-buscar" id="searchTerm" type="text" onkeyup="convertirMayuscula(this); doSearch(); " placeholder="BUSCAR..."><i class="icon-buscar fas fa-search"></i>
             </div>
-            </div>
+        </div>
         <div class="docentes-list-perfil">
             {% if object_list %}
             <div class="docentes-list list-asignatura table-wrapper-scroll-y">
                 <table class="table table-striped" id="datos">
                     <thead class="bg-primary table-head-pro">
                         <tr class="row-pro">
-                            <th scope="col"></th>
+                            <th scope="col" class="row-paddin-query"></th>
                             <th scope="col">#</th>
                             <th scope="col">CÓDIGO</th>
                             <th scope="col">NOMBRE</th>
@@ -95,15 +95,15 @@
                             <th class="text-center" scope="col">SEMESTRE</th>
                             <th class="text-center" scope="col">NÚM. CRÉDITOS</th>
                             <th class="text-center" scope="col">ACCIÓN</th>
-                            <th scope="col"></th>
+                            <th scope="col" class="row-paddin-query"></th>
                         </tr>
                     </thead>
                     <tbody>
                         
                             {% for asignatura in object_list %}
                                 <tr>
-                                    <td></td>
-                                    <th scope="row">{{ forloop.counter }}</th>
+                                    <td class="row-paddin-query"></td>
+                                    <th scope="row" class="text-center">{{ forloop.counter }}</th>
                                     <td>{{ asignatura.asi_codigo }}</td>
                                     <td>{{ asignatura.asi_nombre }}</td>
                                     <td>{{ asignatura.carrera }}</td>
@@ -112,7 +112,7 @@
                                     <td class="text-center">
                                         <a class="btn-editar btn-asignatura" href="{% url 'coordinador:asignaturas_editar' asignatura.asi_codigo %}">EDITAR</a>
                                     </td>
-                                    <td></td>
+                                    <td class="row-paddin-query"></td>
                                 </tr>
                             {% endfor %} 
                         

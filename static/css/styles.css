@@ -29,6 +29,7 @@ body {
     box-shadow: 15px 0px 15px 0px rgba(0,0,0,0.15);
     z-index: 100;
     overflow: auto;
+    position: relative;
 }
 
 .container-fluid{
@@ -1161,7 +1162,6 @@ body {
 .card-body-content {
     margin: 10px 10px;
     border-radius: 10px;
-    overflow: hidden;
     border: 1px solid #dee2e6;
 }
 
@@ -1742,7 +1742,6 @@ body {
     background: #fff;
     border-radius: 10px;
     box-shadow: 0 3px 8px 1px rgba(0, 0, 0, .2);
-    overflow: hidden;
  }
 
 
@@ -1891,8 +1890,6 @@ body {
     background: transparent;
     display: flex;
     justify-content: center;
-    align-items: center;
-    align-content: center;
     flex-wrap: wrap;
 }
 
@@ -1968,8 +1965,26 @@ body {
     display: none;
 }
 
-/* Media queries
-@media (max-width: 320px) { 
+.close-menu-query {
+    position: absolute;
+    top: 0;
+    right: 0%;
+    margin: 10px 20px;
+    font-size: 1.5em;
+    display: none;
+    cursor: pointer;
+}
+
+/* Media queries */
+
+@media (min-width: 320px) {
+    .btn-query {
+        background: #F8A618;
+    }
+}
+
+
+@media (max-width: 1200px){ 
     .sidebar {
         position: fixed;
         top: 0;
@@ -1981,8 +1996,45 @@ body {
         font-size: 13px;
     }
 
+    .navbar.navbar-light.bg-white {
+        width: 100%;
+    }
+
+    .navbar > ul > a > i {
+        font-size: 1.7em;
+    }
+
+    .navbar > ul.menu-icon-query-navbar{
+        width: 45%;
+    }
+
+    .navbar > ul.menu-icon-query-navbar > a{
+        margin-left: 25px !important; 
+        margin-right: 25px !important; 
+        
+    }
+    
+    .navbar > ul.nav.pull-rigth{
+        width: 45%;
+    }
+
+    .navbar-brand {
+        width: 10%;
+        /* display: none; */
+
+    }
+
+    .logo-title {
+        font-size: .5em;
+        padding-left: 25px;
+    }
+
+    .navbar.navbar-light {
+        font-size: .7em;
+    }
+
     .menu-item-lateral {
-        justify-content: center;
+        justify-content: flex-start;
         padding-left: 0;
     }
 
@@ -1997,8 +2049,10 @@ body {
     }
 
     .imagecood {
-        width: 20%;
+        width: 25%;
+        margin-top: 20px;
     }
+
 
     #open-hide-btn {
         display: none;
@@ -2006,10 +2060,747 @@ body {
 
     #open-hide-btn-query {
         display: block;
+        font-size: .8em;
+        margin: 0;
+        padding: 0;
     }
     
     .query-sidebar {
         left: 0;
         transition: .3s ease all;
     }
-} */
+
+    .query-close-icon {
+        display: block;
+    }
+
+    /* index style 320px */
+    .title-unidad-academica {
+        font-size: 1.1em;
+        padding: 5px;
+    }
+
+    .abreviatura-unidad-academica {
+        font-size: 1.1em;
+    }
+
+    .content-error {
+        font-size: .5em;
+        width: 70%;
+    }
+
+    .btn-agregar,
+    .btn-cerrar,
+    .btn-editar,
+    .btn-query {
+        font-size: .6em;
+        padding: 10px 20px;
+    }
+
+    .btn-query {
+        background: #F8A618;
+    }
+
+    .btn-editar {
+        font-size: .9em;
+        padding: 5px 15px;
+    }
+
+    .content-unidad-academica {
+        height: 50%;
+    }
+
+    .close {
+        font-size: 2em;
+    }
+
+    .close > span {
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        line-height: .4;
+    }
+    
+    .content-carrera {
+        height: 47%;
+    }
+
+    .table {
+        font-size: .6em;
+    }
+
+    .row-paddin-query {
+        display: none;
+    }
+
+    .modal-title {
+        font-size: .8em;
+        font-weight: bold;
+    }
+
+
+    .group-campo {
+        width: 100%;
+        font-size: .8em;
+    }
+
+    .custom-select {
+        font-size: 1em;
+    }
+
+    .group-fila-cna,
+    .group-fila-tc {
+        flex-wrap: wrap;
+    }
+
+    .group-fila-cna {
+        margin: 0;
+    }
+
+    /* Periodo style 320px */
+    .docente-asignatura-content {
+        width: 100%;
+        height: 35%;
+    }
+    
+    .periodo-content {
+        width: 100%;
+        height: 30%;
+    }
+
+    .cursos-content {
+        width: 100%;
+        height: 35%;
+    }
+
+    .content-periodo-descripcion {
+        font-size: .6em;
+    }
+
+    .title-label {
+        font-size: 1em;
+        padding-bottom: 5px;
+    }
+
+    .z-query-btn {
+        padding: 5px 20px;
+        
+    }
+
+    .content-buttom-ad.fl-start {
+        display: flex;
+        flex-wrap: wrap;
+        height: 100%;
+        padding: 0;
+    }
+
+    .btn-query-top {
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-content: center;
+        align-items: center;
+        border-radius: 0;
+    }
+
+    .docentes-top {
+        padding: 0;
+    }
+
+
+    .content-docentes-editar {
+        width: 90%;
+    }
+
+    .p-mensaje {
+        font-size: .8em;
+    }
+
+    .title-mensaje {
+        font-size: 1em;
+    }
+
+    .modal-body {
+        overflow: scroll;
+    }
+
+    /* Dar de baja stilo */
+    .campo-check {
+        width: 70px;
+        height: 20px;
+    }
+
+    .campo-check:checked {
+        background: #6AC259;
+    }
+
+    .campo-check:before {
+        width: 20px;
+        height: 20px;
+    }
+
+    .campo-check:after {
+        padding-right: 5px;
+        font-size: .5em;
+    }
+
+    .campo-check:checked:before {
+        left: 50px;
+    }
+
+    .campo-check:checked:after { 
+        padding-left: 10px;
+        font-size: .5em;
+    }
+
+    .content-app {
+        overflow: scroll;
+    }
+
+    .docentes-editar-top {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        flex-direction: column;
+    }
+
+
+    .campo-check-mul {
+        font-size: .8em;
+    }
+    
+    .campo-check-mul li {
+        list-style: none;
+    }
+
+    .group-campo.w-100.alc-fs.h-200 {
+        height: 150px;
+        padding-bottom: 10px;
+    }
+
+    /* Horario estilos 320px */ 
+    .content-horario-body {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .content-horario-body-dias {
+        width: 100%;
+        height: 65%;
+        margin-bottom: 10px;
+    }
+
+    .content-horario-body-dias-header {
+        font-size: .8em;
+        padding: 15px;
+    }
+
+    .asignatura-cell {
+        font-size: .6em;
+    }
+
+    .docentes-cell {
+        font-size: .6em;
+    }
+
+    .horas-cell {
+        font-size: .6em;
+    }
+    
+    .curso-info-horario {
+        font-size: .6em;
+    }
+
+    .content-btn-agregar {
+        width: 100%;
+        margin: 0;
+        padding: 0;
+    }
+
+    .docentes-top {
+        flex-wrap: wrap;
+        align-items: flex-start;
+    }
+
+
+    .curso-info-horario {
+        display: flex;
+        justify-content: center;
+        margin: 0;
+        padding: 0 15px;
+        flex-wrap: wrap;
+        align-content: center;
+        align-items: center;
+        width: 100%;
+    }
+
+    .label-query {
+        width: 50%;
+        text-align: center;
+    }
+
+    .title-no-hay {
+        font-size: .8em;
+    }
+
+    .content-horario-top-asignatura {
+        width: 100%;
+    }
+
+    .content-horario-top {
+        flex-wrap: wrap;
+        height: 55%;
+        margin-bottom: 40px;
+    }
+
+    .content-horario-top-dias {
+        width: 100%;
+        margin: 10px 0;
+        font-size: .6em;
+        height: 50%;
+    }
+
+    .dias-asignados-row {
+        padding: 10px 0px;
+    }
+
+    .btn-dias {
+        font-size: .8em;
+    }
+    
+    .content-botones-formulario {
+        position: fixed;
+        bottom: 0%;
+        right: 5%;
+    }
+
+
+    .header-modal-dias {
+        font-size: .8em;
+        display: flex;
+        height: 50%;
+        width: 100%;
+    }
+
+    .content-num-dias-semana {
+        height: 50%;
+        font-size: .8em;
+        width: 100%;
+        margin-top: 10px;
+    }
+
+    .contet-query {
+        display: flex;
+        flex-wrap: wrap;
+        width: 100%;
+        
+    }
+
+    .modal-asignatura {
+        font-size: 1em;
+    }
+
+    .modal-docente {
+        font-size: .8em;
+    }
+
+    .dia-content-modal {
+        font-size: .8em;
+        justify-content: space-between;
+    }
+
+    .dias-select {
+        width: 40%;
+    }
+
+    .label-dia {
+        padding-left: 0;
+        padding-right: 10px;
+    }
+
+    .content-num-horas {
+        width: 50%;
+    }
+
+    /* Seguimiento style 320px */
+
+    .informacion-periodo {
+        font-size: .6em;
+    }
+
+    .card-header {
+        font-size: .8em;
+    }
+
+    .asignatura-title {
+        font-size: 1em;
+    }
+
+    .content-info-seguimiento {
+        font-size: .8em;
+        width: 100%;
+        padding: 0;
+        margin: 0;
+        justify-content: space-between;
+        margin-top: 10px;
+    }
+
+    .grupo-campo-valor {
+        font-size: .8em;
+    }
+
+    .seguimiento-content-btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .card-body-top {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .pagination {
+        display: flex;
+        flex-wrap: wrap;
+        width: 100%;
+        font-size: .8em;
+    }
+
+    .content-pagination {
+        font-size: .8em;
+    }
+
+    .page-item.item-semana{
+        margin-bottom: 10px;
+    }
+
+    .semana-content {
+        font-size: .8em;
+        width: 35%;
+        margin-bottom: 10px;
+    }
+
+    .semana-reporte-title {
+        font-size: .8em;
+    }
+
+    .content-reportes {
+        overflow: auto;
+    }
+
+    .modal-footer-query-conformation {
+        display: flex;
+        flex-direction: column-reverse;
+    }
+
+    .docentes-list {
+        width: 100%;
+        height: 50%;
+    }
+
+    .docentes-perfil {
+        width: 100%;
+        height: 50%;
+        
+    }
+
+    .docentes-list-perfil {
+        display: flex;
+        flex-wrap: wrap;
+        width: 100%;
+    }
+
+    .perfil-username {
+        width: 100%;
+        height: 30%;
+    }
+
+    .perfil-img {
+        display: none;
+    }
+
+    .content-username {
+        font-size: .7em;
+        padding: 0;
+        margin: 0;
+    }
+
+    .perfil-informacion {
+        font-size: .7em;
+        height: 70%;
+    }
+
+    .content-btn {
+        display: flex;
+        justify-content: flex-start;
+    }
+
+    .content-btn-agregar {
+        justify-content: center;
+    }
+
+    .content-search {
+        font-size: .6em;
+        justify-content: center;
+        width: 100%;
+        margin-top: 5px;
+        text-align: center;
+    }
+
+    .btn-completo-query {
+        width: 100%;
+        border-radius: 0;
+    }
+
+    .table-docente {
+        font-size: .6em;
+    }
+
+    .docentes-list.list-asignatura {
+        height: 100%;
+    }
+
+
+    /* historial style 320px */
+    .content-item-historial {
+        font-size: .5em;
+        height: 40%;
+        width: 30%;
+        margin: 10px 10px;
+        padding: 30px 0;
+    }
+
+    .content-historial {
+        flex-wrap: wrap;
+        justify-content: center;
+        align-content: center;
+        align-items: center;
+    }
+
+    .no-hay-img {
+        width: 100px;
+        height: 100px;
+    }
+
+    .errores-seguimiento {
+        font-size: .8em;
+    }
+
+    .group-campo {
+        width: 100% !important;
+        margin-left: 0;
+    }
+
+    .campo-remitente,
+    .campo-destinatario {
+        flex-direction: column;
+        font-size: .8em;
+        flex-wrap: wrap;
+        width: 100%;
+    }
+
+    .campo-remitente > select {
+        width: 100%;
+    }
+
+    .campo-destinatario > ul {
+        width: 100%;
+    }
+}
+
+@media (min-width: 480px) {
+    .imagecood {
+        width: 20%;
+        margin-top: 20px;
+    }
+
+    
+}
+
+@media (min-width: 768px) {
+    .imagecood {
+        width: 15%;
+        margin-top: 20px;
+    }
+
+    .content-buttom-ad.fl-start {
+        justify-content: space-around;
+        align-content: center;
+        align-items: center;
+    }
+
+    .btn-query-top {
+        width: 30%;
+        height: 60%;
+        font-size: .8em;
+        border-radius: 5px;
+    }
+
+    .docente-asignatura-content {
+        width: 50%;
+        height: 40%;
+    }
+    
+    .periodo-content {
+        width: 50%;
+        height: 40%;
+    }
+
+    .cursos-content {
+        width: 100%;
+        height: 60%;
+    } 
+
+    .docentes-list {
+        width: 60%;
+        height: 100%;
+    }
+
+    .docentes-perfil {
+        width: 40%;
+        height: 100%;
+        
+    }
+
+    .docentes-list.list-asignatura {
+        height: 100%;
+        width: 100%;
+    }
+
+    .btn-completo-query {
+        width: 60%;
+        border-radius: 5px;
+    }
+
+    .docentes-top {
+        flex-direction: row;
+        flex-wrap: nowrap;
+        align-content: center;
+        align-items: center;
+    }
+
+    .semana-content {
+        width: 15%;
+    }
+
+    .modal-footer-query-conformation {
+        flex-direction: row;
+        
+    }
+
+    .informacion-periodo {
+        justify-content: space-around;
+        width: 100%;
+    }
+
+    .curso-info-horario {
+        width: 60%;
+    }
+
+    .btn-horario-query {
+        width: 90%;
+        padding: 10px 10px;
+    }
+
+    .label-query {
+        width: 20%;
+    }
+
+    .content-btn-agregar {
+        width: 40%;
+    }
+
+    .curso-info-horario {
+        justify-content: space-around;
+    }
+
+    .content-horario-body-dias {
+        width: 30%;
+        margin: 10px 5px;
+    }
+
+    .content-horario-body {
+        justify-content: center;
+    }
+
+    .card-body-top {
+        flex-wrap: nowrap;
+    }
+
+    #fecha-seguimiento {
+        font-size: .9em;
+    }
+
+    .seguimiento-content-btn {
+        width: 20%;
+    }
+
+}
+
+@media (min-width: 1024px) {
+    .imagecood {
+        width: 10%;
+        margin-top: 20px;
+    }
+}
+
+@media (min-width: 1200px) {
+    .imagecood {
+        width: 45%;
+        margin-top: 20px;
+    }
+
+    .btn-query-top {
+        width: auto;
+        padding: 10px 20px;
+        font-size: 1em;
+    }
+
+    .content-buttom-ad.fl-start {
+        justify-content: flex-end;
+    }
+
+    .docentes-top {
+        justify-content: flex-end;
+    }
+
+    .btn-completo-query {
+        width: auto;
+    }
+
+    .docente-asignatura-content {
+        width: 50%;
+        height: 50%;
+    }
+    
+    .periodo-content {
+        width: 50%;
+        height: 50%;
+    }
+
+    .cursos-content {
+        width: 100%;
+        height: 50%;
+    } 
+    
+    .contet-query {
+        width: 100%;
+        display: flex;
+        align-content: center;
+        align-items: center;
+    }
+
+    .content-btn-agregar {
+        width: 80%;
+    }
+
+    .seguimiento-content-btn {
+        width: 20%;
+    }
+
+    .content-info-seguimiento {
+        width: 80%;
+    }
+}

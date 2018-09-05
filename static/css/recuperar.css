@@ -83,3 +83,12 @@ button:hover{
     height: 50px;
     padding: 10px 20px;
 }
+
+.container-fluid {
+    overflow: auto;
+}
+
+.texto-recuperacion {
+    font-size: .5em !important;
+    line-height: none;
+}

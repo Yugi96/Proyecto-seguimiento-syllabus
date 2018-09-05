@@ -65,27 +65,27 @@
         <h2 class="abreviatura-unidad-academica">{{unidad_list.uni_abreviatura}}</h2>
         <a href="" class="btn btn-agregar bg-primary" data-toggle="modal" data-target="#exampleModalCenter">AGREGAR CARRERA</a>
     </div>
-    <div class="content-carrera">
+    <div class="content-carrera table-wrapper-scroll-y">
         <table class="table">
             <thead class="bg-primary blanco">
                 <tr>
-                <th scope="col"></th>
-                <th scope="col" class="text-center">CÓDIGO</th>
-                <th scope="col">CARRERA</th>
-                <th class="text-center" scope="col">ACCIÓN</th>
-                <th scope="col"></th>
+                    <th scope="col" class="row-paddin-query"></th>
+                    <th scope="col" class="text-center">CÓDIGO</th>
+                    <th scope="col">CARRERA</th>
+                    <th class="text-center" scope="col">ACCIÓN</th>
+                    <th scope="col" class="row-paddin-query"></th>
                 </tr>
             </thead>
             <tbody>
                 {% for carrera in carreras_list %}
                     <tr>
-                        <td></td>
+                        <td class="row-paddin-query"></td>
                         <th scope="row" class="text-center">{{ carrera.car_codigo }}</th>
                         <td>{{ carrera.car_nombre }}</td>
                         <td class="text-center">
                             <a class="btn-editar btn-asignatura " href="{% url 'coordinador:carrera_editar' carrera.car_codigo %}"></i>EDITAR</a>
                         </td>
-                        <td></td
+                        <td class="row-paddin-query"></td>
                     </tr>
                 {% endfor %}
             </tbody>

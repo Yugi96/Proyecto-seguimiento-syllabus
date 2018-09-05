@@ -30,11 +30,11 @@
         </div>
         <div class="docentes-list-perfil">
             {% if estudiantes_list %}
-                <div class="docentes-list  w-65">
+                <div class="docentes-list table-wrapper-scroll-y w-65">
                     <table class="table" id="table">
                         <thead class="bg-primary blanco">
                             <tr>
-                                <th></th>
+                                <th class="row-paddin-query"></th>
                                 <th class="celdas-ocultas">Cedula</th>
                                 <th class="celdas-ocultas">Nombres</th>
                                 <th class="celdas-ocultas">Apellidos</th>
@@ -44,14 +44,14 @@
                                 <th class="column-cont">#</th>
                                 <th class="">APELLIDOS Y NOMBRES</th>
                                 <th class="">CARRERA</th>
-                                <th></th>
+                                <th class="row-paddin-query"></th>
                             </tr>
                         </thead>
                         <tbody class="">
                             
                                 {% for estudiante in estudiantes_list %}
                                     <tr class="" id="docente-row">
-                                        <td></td>
+                                        <td class="row-paddin-query"></td>
                                         <td class="celdas-ocultas">{{ estudiante.id }}</td>
                                         <td class="celdas-ocultas">{{ estudiante.usuario.username }}</td>
                                         <td class="celdas-ocultas">{{ estudiante.usuario.first_name }}</td>
@@ -62,7 +62,7 @@
                                         <td class="column-cont">{{ forloop.counter }}</td>
                                         <td>{{ estudiante.usuario.first_name }} {{ estudiante.usuario.last_name }}</td>
                                         <td>{{ estudiante.carrera }}</td>
-                                        <td></td>
+                                        <td class="row-paddin-query"></td>
                                     </tr>
                                 {% endfor %} 
                             

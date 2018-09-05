@@ -92,3 +92,7 @@
     box-shadow: 3px 3px 15px 0px rgba(0,0,0,0.4);
     border-radius: 5px;
 }
+
+.container-fluid {
+    overflow: auto;
+}

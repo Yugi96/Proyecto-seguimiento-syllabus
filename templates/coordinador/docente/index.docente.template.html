@@ -75,7 +75,7 @@
     <div class="content-docentes">
         <div class="docentes-top">
             <div class="content-btn-agregar">
-                <span class="btn-agregar" id="btn-agregar" href="" data-toggle="modal" data-target="#exampleModalCenter"><i class="icon-btn fas fa-plus" ></i>AGREGAR DOCENTE</span>
+                <span class="btn-agregar btn-completo-query" id="btn-agregar" href="" data-toggle="modal" data-target="#exampleModalCenter"><i class="icon-btn fas fa-plus" ></i>AGREGAR DOCENTE</span>
             </div>
             <div class="content-search">
                 <input class="input-buscar" id="searchTerm" type="text" onkeyup="convertirMayuscula(this); doSearch(); " placeholder="BUSCAR..."><i class="icon-buscar fas fa-search"></i>
@@ -83,7 +83,7 @@
         </div>
         <div class="docentes-list-perfil">
             {% if object_list %}
-            <div class="docentes-list">
+            <div class="docentes-list table-wrapper-scroll-y">
                 <table class="table-docente" id="table">
                     <thead class="docente-header">
                         <tr>
